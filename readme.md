@@ -43,6 +43,7 @@ py manage.py migrate --run-syncdb
 py manage.py createsuperuser
 py manage.py dbshell
 py manage.py shell
+py manage.py startapp appName
 ## sqlite ##
 ctrl + shift + p
 open database
