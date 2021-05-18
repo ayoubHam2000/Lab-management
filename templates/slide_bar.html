@@ -1,0 +1,36 @@
+{% load static %}
+
+<div id = 'slidebar' >
+
+    <div class = 'toggle-btn' onclick = 'show()' >  
+
+    <img src="{% static 'resources/graduation.svg' %}">
+        
+
+    </div>
+
+    <ul>
+
+        <li>
+        <svg viewBox="0 0 32 32">
+            <use xlink:href="{% static 'resources/home-icon.svg' %}"></use>
+        </svg>
+            
+            Accueil 
+        </li>
+
+        <li>
+            <img src="{% static 'resources/books-stack.svg' %}">
+            Bibliothéque 
+        </li>
+
+        <li>
+            <img src="{% static 'resources/admin.svg' %}">
+            Ajouter Membre 
+        </li>
+
+     
+    </ul>
+
+</div>
+
