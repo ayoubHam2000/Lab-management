@@ -14,6 +14,9 @@ git branch -M main
 git remote add origin https://github.com/ayoubHam2000/Lab-management-.git
 git push -u origin main
 
+git log --oneline
+git checkout -b [branch] [6e559cb]
+
 git branch -m ayoub Main
 git fetch origin
 git branch -u origin/Main Main
@@ -40,6 +43,7 @@ py manage.py migrate --run-syncdb
 py manage.py createsuperuser
 py manage.py dbshell
 py manage.py shell
+py manage.py startapp appName
 ## sqlite ##
 ctrl + shift + p
 open database
