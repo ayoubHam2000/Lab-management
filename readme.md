@@ -38,7 +38,7 @@ $ git push origin :[name_of_your_new_branch]
 pip install django
 django-admin startproject djcrm .
 py manage.py migrate => sync the models with the data base
-py manage.py makemigrations => create the shema
+py manage.py makemigrations  => create the shema
 py manage.py migrate --run-syncdb
 py manage.py createsuperuser
 py manage.py dbshell

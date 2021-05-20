@@ -1,0 +1,63 @@
+{% load static %}
+
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <link rel="stylesheet" href="{% static 'styles/content.css' %}">
+</head>
+<body>
+    <div>
+        <ul>
+            <li><a href="#">Doctorant</a></li>
+            <li><a href="#">Encadrant</a></li>
+            
+        </ul>
+    </div>
+    <div>
+        <form id= "searchbox" method= "get" action= "/search">
+            <input name= "q" type= "text" size= "15" placeholder= "Type here…" />
+            <input id= "button-submit" type= "submit" value= "Search" />
+        </form>
+        <ul class = 'butt'>
+            <li class = 'pos'><input  type="submit" value="Supprimer"></li></li>
+            <li class = 'pos'><input  type="submit" value="Ajouter"></li></li>
+        </ul>
+    </div>
+    <table style="width:90%">
+        <tr>
+            <th class = "wid">Email</th>
+            <th>La Date D'ajoute</th>
+            <th>Departement</th>
+            <th>Inscrite</th>
+            <td><input type="checkbox" id="scales" name="scales"></td>   
+        </tr>
+        <tr>
+            <td>Jill</td>
+            <td>Smith</td>
+            <td>Smith</td>
+            <td>Smith</td>
+            <td><input type="checkbox" id="scales" name="scales"></td>
+        </tr>
+        <tr>
+            <td>Eve</td>
+            <td>Jackson</td>
+            <td>Jackson</td>
+            <td>Smith</td>
+            <td><input type="checkbox" id="scales" name="scales"></td>
+        </tr>
+        <tr>
+            <td></td>
+            <td></td>
+            <td></td>
+            <td></td>
+            <td><input type="checkbox" id="scales" name="scales"></td>
+        </tr>
+</table>
+    
+        
+</body>
+</html>
+

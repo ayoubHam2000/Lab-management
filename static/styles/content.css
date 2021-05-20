@@ -1,0 +1,19 @@
+table,th,td{
+    border: 1px solid ;
+    border-collapse: collapse;
+}
+table{
+    margin: 20px;
+    margin-right: 70px;
+    margin-left: 70px;
+    
+}
+td{
+    padding: 5px;
+}
+th{
+    text-align: left;
+}
+.wid{
+    width: 35%;
+}

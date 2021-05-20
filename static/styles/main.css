@@ -35,6 +35,11 @@
     fill : #ffffff;
 }
 
+#slidebar ul li svg {
+    width : 30px;
+    fill : #ffffff;
+}
+
 #slidebar .toggle-btn{
     position : absolute;
     top: 30px;
