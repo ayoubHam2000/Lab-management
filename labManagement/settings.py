@@ -11,6 +11,7 @@ https://docs.djangoproject.com/en/3.2/ref/settings/
 """
 
 from pathlib import Path
+from dotenv import dotenv_values
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
@@ -38,7 +39,7 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
 
-    'Admin',
+    'Account',
 ]
 
 MIDDLEWARE = [
@@ -120,13 +121,35 @@ USE_TZ = True
 # https://docs.djangoproject.com/en/3.2/howto/static-files/
 
 STATIC_URL = '/static/'
-STATICFILES_DIRS=[
-    BASE_DIR / 'static',
+
+STATICFILES_DIRS = [
+    BASE_DIR / 'static'
 ]
+
+MEDIA_ROOT = BASE_DIR / 'static/media/'
+MEDIA_URL = '/media/'
 
 # Default primary key field type
 # https://docs.djangoproject.com/en/3.2/ref/settings/#default-auto-field
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
-AUTH_USER_MODEL = 'Admin.User'
+##ADDED
+
+AUTH_USER_MODEL = 'Account.UserAccount'
+LOGIN_REDIRECT_URL = '/'
+
+EMAIL_BACKEND = 'django.core.mail.backends.console.EmailBackend'
+
+# config = dotenv_values(".env")
+# EMAIL_HOST = config['EMAIL_HOST']
+# EMAIL_HOST_USER = config['EMAIL_HOST_USER']
+# EMAIL_USE_TLS = True
+# EMAIL_PORT = 587
+# EMAIL_HOST_PASSWORD = config['EMAIL_HOST_PASSWORD']
+# DEFAULT_FROM_EMAIL = config['EMAIL_HOST_USER']
+
+
+#----------------------------- Token
+
+PASSWORD_RESET_TIMEOUT_DAYS = 1

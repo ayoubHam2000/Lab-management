@@ -1,0 +1,33 @@
+{% extends "base.html" %}
+
+{% block title %}
+
+    Test
+
+{% endblock title %}
+
+
+{% block content %}
+
+    <p>User Is Authenticated : {{ user.is_authenticated }}</p>
+    <p>Username : {{ user.username }}</p>
+    <p>Group : {{ user.groups.all.0.name  }}</p>
+    {% if  user.groups.all.0.name == 'admin' %}
+        <p> IsAdmin : True </p>
+    {% endif %}
+
+
+   {% comment %} {% if  not user.is_authenticated %} {% endcomment %}
+        <h1><a href=" {% url 'Account:login' %} "> Log In </a></h1>
+        <h1><a href=" {% url 'Account:home' %} "> Home </a></h1>
+        <h1><a href=" {% url 'Account:addMember' %} "> addMember </a></h1>
+        <h1><a href=" {% url 'Account:checkEmail' %} "> checkEmail </a></h1>
+        
+        
+        
+    {% comment %} {% else %} {% endcomment %}
+        <h1><a href="{% url 'Account:logout' %}" > Log Out </a></h1>
+    {% comment %} {% endif %} {% endcomment %}
+
+
+{% endblock content %}
