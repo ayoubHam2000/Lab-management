@@ -1,0 +1,18 @@
+{% extends "base.html" %}
+
+{% block title %}
+
+    home
+
+{% endblock title %}
+
+
+{% block content %}
+
+    <h1>Home</h1>
+    <p>User Is Authenticated : {{ user.is_authenticated }}</p>
+    <p>Username : {{ user.username }}</p>
+    <h1><a href="{% url 'Account:logout' %}" > Log Out </a></h1>
+    
+    
+{% endblock content %}

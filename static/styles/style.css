@@ -3,6 +3,11 @@
     padding : 0;
 }
 
+p{
+    font-size: 25px;
+    color: blue;
+}
+
 .body{
     font-family: Source Sans Pro;
 }

@@ -1,0 +1,32 @@
+{% extends "base.html" %}
+
+{% block title %}
+
+    Log in
+
+{% endblock title %}
+
+
+{% block content %}
+
+   
+    <form action="." method = 'POST' >
+    
+        {% csrf_token %}
+        {{ form.as_p }}
+
+        <button type = 'submit' > Login </button>
+        
+    
+    </form>
+
+    <a href="{% url 'Account:checkEmail' %}"> Register </a>
+
+    <div>
+        {% for message in messages %}
+            <p>{{message}}</p>
+        {% endfor %}
+    </div>
+
+
+{% endblock content %}
