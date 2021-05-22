@@ -1,5 +1,7 @@
 {
     "emmet.includeLanguages": {
         "django-html" : "html"
-    }
+    },
+
+    "python.languageServer": "Jedi",
 }
