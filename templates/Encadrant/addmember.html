@@ -1,0 +1,66 @@
+{% load static %}
+
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Test</title>
+    <link rel="stylesheet" href="{% static 'styles/test_style.css' %}">
+</head>
+<body>
+    <nav id="barre">
+        <ul class = "l1">
+            <li><a href="#">Doctorant</a></li>
+            <li><a href="#">Encadrant</a></li>
+            
+        </ul>
+    </nav>
+    <nav class= "menu">
+        <ul>
+            <li><button id ="cl1">SUPRIMER</button></li>
+            <li><button id="cl2">AJOUTER</button></li>
+        </ul>
+         <form id= "searchbox" method= "get" action= "/search">
+            <input name= "q" type= "text" size= "15" placeholder= "Type here…" />
+            <input id= "button-submit" type= "submit" value= "Search" />
+        </form>
+    </nav>
+    <nav>
+        <table style="width:90%">
+            <tr>
+                <th class = "wid">Email</th>
+                <th>La Date D'ajoute</th>
+                <th>Inscrit</th>
+                <th>Departement</th>
+                <td><input type="checkbox" id="scales" name="scales"></td>   
+            </tr>
+            <tr>
+                <td>omar.jed@uit.ac.ma</td>
+                <td>2020-7-11</td>
+                <td>true</td>
+                <td>Informatique</td>
+                <td><input type="checkbox" id="scales" name="scales"></td>
+            </tr>
+            <tr>
+                <td>ayoub.benhamou@uit.ac.ma</td>
+                <td>2020-6-21</td>
+                <td>true</td>
+                <td>Informatique</td>
+                <td><input type="checkbox" id="scales" name="scales"></td>
+            </tr>
+            <tr>
+                <td>omar.jed@uit.ac.ma</td>
+                <td>2019-6-21</td>
+                <td>false</td>
+                <td>Informatique</td>
+                <td><input type="checkbox" id="scales" name="scales"></td>
+            </tr>
+        </table>
+    </nav>
+
+
+
+
+</body>
+</html>
