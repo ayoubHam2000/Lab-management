@@ -33,6 +33,10 @@ $ git branch -d [name_of_your_new_branch]
 -- Delete the branch on github :
 $ git push origin :[name_of_your_new_branch]
 
+**merge master with master**
+git checkout [branch]
+git merge master
+
 ## django ##
 
 pip install django
@@ -49,6 +53,8 @@ py manage.py migrate your_app zero
 py manage.py migrate --fake <app-name> zero
 py manage.py makemigrations <app-name>
 py manage.py migrate <app-name>
+
+pip install -r  requirement.txt
 
 ## sqlite ##
 ctrl + shift + p
@@ -207,3 +213,4 @@ my_app
 
 
 section_title
+pip install -U python-dotenv

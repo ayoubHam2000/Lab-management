@@ -7,6 +7,7 @@ from six import text_type
 def myredirect(url):
     return redirect(reverse(url))
 
+
 def current_milli_time():
     return round(time.time() * 1000)
 
