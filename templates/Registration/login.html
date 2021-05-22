@@ -1,4 +1,4 @@
-{% extends "base.html" %}
+{% extends "register.html" %}
 
 {% block title %}
 
@@ -10,13 +10,20 @@
 {% block content %}
 
    
-    <form action="." method = 'POST' >
-    
-        {% csrf_token %}
-        {{ form.as_p }}
-
-        <button type = 'submit' > Login </button>
+     <form action="." method = 'POST' >{% csrf_token %}
         
+        {% for field in form %}
+         <div class="user-box">
+         
+           
+            {{ field }}
+            <label>{{ field.label }}</label> 
+         </div>
+            
+            
+        {% endfor %}
+
+        <button type = 'submit' > Register </button>
     
     </form>
 

@@ -194,3 +194,16 @@ token_generator.check_token(member, token)
 ## user image profile
 py -m pip install pillow
 MEDIA_ROOT = BASE_DIR
+
+
+## svg
+pip install django-inline-svg
+my_app
+|-- static
+|   |-- svg
+|       |-- bell.svg
+{% comment %} {% load svg %}
+<h1 class="logo">{% svg 'bell' %}</h1> {% endcomment %}
+
+
+section_title
