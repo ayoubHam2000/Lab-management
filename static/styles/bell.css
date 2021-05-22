@@ -1,0 +1,74 @@
+
+
+.bell {
+	display: flex;
+	align-items: center;
+    position: relative;
+    left: 60px;
+}
+.icon {
+	cursor: pointer;
+	margin-right: 50px;
+	line-height: 60px;
+}
+.icon span {
+	background: #f00;
+	padding: 5px;
+	border-radius: 50%;
+    font-size: 9px;
+	color: #fff;
+	vertical-align: top;
+	margin-left: -20px;
+}
+.icon img {
+	display: inline-block;
+	width: 35px;
+}
+.icon svg {
+	width: 35px;
+}
+.icon svg path{
+	fill:#FFD700;
+}
+
+.icon:hover {
+	opacity: .7;
+}
+
+
+.notifi-box {
+	width: 300px;
+	opacity: 0;
+	position: absolute;
+    overflow-y: scroll;
+	top: 63px;
+	right: 35px;
+	transition: 1s opacity, 250ms height;
+	box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.19);
+}
+
+.notifi-item {
+	display: flex;
+	border-bottom: 1px solid #eee;
+	padding: 15px 5px;
+	margin-bottom: 15px;
+	cursor: pointer;
+}
+.notifi-item:hover {
+	background-color: #eee;
+}
+.notifi-item img {
+	display: block;
+	width: 50px;
+	margin-right: 10px;
+	border-radius: 50%;
+}
+.notifi-item .text h4 {
+	color: #777;
+	font-size: 16px;
+	margin-top: 10px;
+}
+.notifi-item .text p {
+	color: #aaa;
+	font-size: 12px;
+}

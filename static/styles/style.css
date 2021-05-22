@@ -19,7 +19,7 @@ p{
     background: #19033B;
     left : 0px;
     transition : .4s;
-
+    
 }
 
 #slidebar.active{
@@ -54,6 +54,10 @@ p{
     background : #000;
     display : block;
     margin-top : 4px;
+}
+
+.logo path{
+    fill:aqua;
 }
 
 

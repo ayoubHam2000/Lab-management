@@ -1,4 +1,4 @@
-{% extends "base.html" %}
+{% extends "register.html" %}
 
 {% block title %}
 
@@ -11,19 +11,30 @@
 
     <div> {{ form.errors }} </div>
     <form action="." method = 'POST' >{% csrf_token %}
+        
         {% for field in form1 %}
-            <p>{{ field.label }}</p>
-            <p>{{ field }}</p>
+         <div class="user-box">
+         
+           
+            {{ field }}
+            <label>{{ field.label }}</label> 
+         </div>
+            
             
         {% endfor %}
 
         {% for field in form2 %}
-            <p>{{ field.label }}</p>
-            <p>{{ field }}</p>
+         <div class="user-box">
+         
+           
+            {{ field }}
+            <label>{{ field.label }}</label> 
+         </div>
+            
             
         {% endfor %}
 
-        <button type = 'submit' > RegisterEncadrant </button>
+        <button type = 'submit' > Register </button>
     
     </form>
 

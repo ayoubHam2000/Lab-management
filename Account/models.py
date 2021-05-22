@@ -84,6 +84,10 @@ class UserAccount(AbstractBaseUser, PermissionsMixin):
     
     def has_module_perms(self, app_label):
         return True
+    
+    def getImage(self):
+        return f'/media/{self.profile_image}'
+    
 
 #endregion
 
