@@ -2,3 +2,13 @@ asgiref==3.3.4
 Django==3.2.2
 pytz==2021.1
 sqlparse==0.4.1
+
+
+filefield() : utiliser au sein d'un atributs dans un models
+sert a importer un fichier a partir de la page admine
+c a d on importer des fichier des le debut de la saisie des information
+
+
+path('', include('Admin.uril faut remplir la formulaire et immporter un fichier
+puis le click sur save nous permet de sauvgarder les données taper par l'utilisateur dans notre base de donnée
+et donc on peut les recuperer plus-tard
