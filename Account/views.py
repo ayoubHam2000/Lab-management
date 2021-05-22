@@ -53,6 +53,7 @@ def decorator_user(allowed_roles):
 
 #region Register
 
+
 class TestView(View):
     template_name = 'Registration/test.html'
 
@@ -90,7 +91,7 @@ class LoginView(View):
         if user is not None:
             isAdmin = user.groups.all()[0].name == 'admin'
             if not self.checkMemberValide(email) and not isAdmin:
-                messages.info(request, 'E-mail n\'est pas valide')
+                messages.info(request, 'votre compte a eté retirer ')
             else:
                 login(request, user)
                 return myredirect( 'Account:test' )
@@ -173,8 +174,8 @@ class CheckEmailView(View):
         activate_url = 'http://' + domain + link
 
         send_mail(
-            'E-mail de vérification ',
-            f'cliquez sur ce lien {activate_url} pour vérifier votre adresse e-mail',
+            'Lien de vérification ',
+            f'cliquez sur ce lien {activate_url} pour la vérification',
             'noreply@uit.ac.ma',
             [member.email],
             fail_silently=False,
@@ -271,7 +272,7 @@ class MemberRegister(View):
                 user = form1.saveUser(member)
                 form2.saveDoctorant(user)
                 self.saveMember(member)
-                #return myredirect('Account:login')
+                return myredirect('Account:login')
 
         context = {"form1" : form1,"form2" : form2,}
         return render(request, self.doctorant_register_template, context)
