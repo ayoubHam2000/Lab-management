@@ -22,6 +22,8 @@ urlpatterns = [
     path('admin/', admin.site.urls),
     
     path('', include('Account.urls')),
+
+    path('', include('Biblio.urls')),
 ]
 
 from django.conf.urls.static import static

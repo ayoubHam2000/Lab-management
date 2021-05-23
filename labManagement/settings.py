@@ -42,6 +42,8 @@ INSTALLED_APPS = [
     'Account',
 
     'svg',
+
+    'Biblio',
 ]
 
 MIDDLEWARE = [

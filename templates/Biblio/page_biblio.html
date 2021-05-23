@@ -1,0 +1,25 @@
+{% load static %}
+
+
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="{% static 'styles/page_biblio.css' %}">
+    <script src="{% static 'scriptes/formulaire.js' %}" > </script>
+    
+    <title>bibliotheque</title>
+</head>
+<body>
+    {% for i in formulaires %}
+    <div>
+        <p> {{ i.name }} <br>
+            {{ i.Email }} <br>
+        <span id="dots" class="c_dots">...</span><span id="more" class="c_more">{{ i.Filiere }} </span></p>
+        
+        <button onclick="myFunction(event)" id="myBtn">Read more</button>
+    </div>
+    {% endfor %}
+</body>
+</html>

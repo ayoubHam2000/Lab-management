@@ -1,8 +1,13 @@
 from django.urls import path
-from .views import Ajouter
 
-app_name = 'biblio'
+from .views import (
+    Ajouter,
+    pagebib,
+)
+
+app_name = 'Biblio'
 
 urlpatterns = [
-    path('', Ajouter, name = "formulaire"),
+    path('add', Ajouter, name = "formulaire"),
+    path('info', pagebib, name = "information"),
 ]
