@@ -1,10 +1,10 @@
 from django.forms import fields, forms
 from django.forms.models import ModelForm
-from biblio.models import formulaire
+from .models import Formulaire
 
-class formulaireForm(ModelForm):
+class FormulaireForm(ModelForm):
     class Meta:
-        model = formulaire
+        model = Formulaire
         fields = [
-            'name','Email','Filiere','photo'
+            'name','email','filiere','photo'
         ]

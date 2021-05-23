@@ -1,0 +1,36 @@
+#more {display: none;
+}
+div{
+	border: 0px solid black;
+	display: inline-block;
+	width: 75%;
+	margin: 40px;
+	box-shadow: 4px 5px rgba(13, 13, 14, 0.1);
+}
+#myBtn {
+	float: right;
+	margin: 5px;
+}
+p{
+	text-align: center;
+}
+#myBtn{
+
+    background-color: #f7f5f8;
+    border: none;
+    color: rgb(0, 0, 0);
+    padding: 15px 15px;
+    text-align: center;
+    text-decoration: none;
+    display: inline-block;
+    font-size: 14px;
+    border-radius: 5px;
+}
+button {
+    transition-duration: 0.3s;
+  }
+  
+#myBtn:hover {
+    background-color: #28232bad;
+    color: azure;
+  }
