@@ -1,21 +1,21 @@
 #more {display: none;
 }
-div{
+.bib_item{
 	border: 0px solid black;
 	display: inline-block;
-	width: 75%;
-	margin: 40px;
+	width: 65%;
 	box-shadow: 4px 5px rgba(13, 13, 14, 0.1);
+  margin: 40px 90px;
 }
 #myBtn {
 	float: right;
 	margin: 5px;
 }
-p{
+.bib_item p{
 	text-align: center;
+  color: black;
 }
 #myBtn{
-
     background-color: #f7f5f8;
     border: none;
     color: rgb(0, 0, 0);
@@ -26,7 +26,7 @@ p{
     font-size: 14px;
     border-radius: 5px;
 }
-button {
+.bib_item button {
     transition-duration: 0.3s;
   }
   

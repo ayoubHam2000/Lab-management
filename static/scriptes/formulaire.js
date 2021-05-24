@@ -1,3 +1,5 @@
+
+console.log("asdfasdf")
 function myFunction(e) {
     btn = e.target
     par = btn.parentElement
@@ -14,4 +16,5 @@ function myFunction(e) {
       btn.innerHTML = "Read less"; 
       moreText.style.display = "inline";
     }
+
   }

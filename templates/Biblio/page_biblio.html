@@ -1,25 +1,34 @@
+{% extends "base.html" %}
 {% load static %}
 
 
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta http-equiv="X-UA-Compatible" content="IE=edge">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <link rel="stylesheet" href="{% static 'styles/page_biblio.css' %}">
+{% block title %}
+    bibliotheque
+{% endblock title %}
+
+{% block content %}
+   <link rel="stylesheet" href="{% static  'styles/page_biblio.css' %}">
     <script src="{% static 'scriptes/formulaire.js' %}" > </script>
-    
-    <title>bibliotheque</title>
-</head>
-<body>
-    <p>
-    {{formulaires}}
-    {{mot_cles}}
-    {{journals}}
-    {{base_biblios}}
-    {{auteurs}}
-    </p>
-    
-    
-</body>
-</html>
+
+
+    {% for i in formulaires %}
+    <div class='bib_item' >
+        <p> {{ i.titre }} <br>
+            {{ i.type_pub }} <br>
+        <span id="dots" class="c_dots">...</span>
+        
+        <span id="more" class="c_more">
+        <a href="{{i.getLien}}">{{ i.getName }}</a> <br>
+        {{i.issn}} <br>
+        {{i.publisher}} <br>
+         </span></p>
+        
+        <button onclick="myFunction(event)" id="myBtn">Read more</button>
+    </div>
+    {% endfor %}
+
+
+
+{% endblock content %}
+
+

@@ -13,17 +13,7 @@
         <form method="post" enctype="multipart/form-data">
             {% csrf_token %}
 
-
-            {{ formF.as_p }}
-            {{ formB.as_p }}
-            {{ formA.as_p }}
-            {{ formJ.as_p }}
-            {{ formMC.as_p }}
-           
-
-
-
-
+            {{ form.as_p }}
 
             <button type="submit">save</button>
 
