@@ -1,0 +1,226 @@
+/*
+position: absolute;
+   
+*/
+
+:root {
+    --background: #00000080;
+    --size:35%;
+    --primiry_color:#03e9f4;
+    --btn_hover_color:#f59048;
+    --image_bacground: url('../../resources/images/landscape.jpg');
+    --border_bottom:2px solid #9b9b9b;
+    --text_color:#fff;
+    --focus_input_color:#11998e;
+    --focus_input_color_2:#38ef7d;
+  }
+
+*{
+    margin: 0;
+}
+
+
+
+body{
+    background:var(--image_bacground);
+    background-repeat: no-repeat;
+    background-attachment: fixed;
+    background-position: center; 
+    background-size: 100% 100%;
+    padding: 50px;
+}
+
+
+
+.center_horizontal{
+    position: relative;
+
+    left: 50%;
+    transform: translate(-50%, -0%);
+    width: var(--size);
+}
+
+
+.form_box {
+
+    border-radius: 10px;
+    padding: 16px 30px;
+    background-color: var(--background);
+    box-shadow: 0 15px 25px rgba(0,0,0,.6);
+    
+}
+
+
+
+.error_box{
+    background-color: #C83727cc;
+    padding: 10px 19px;
+    border-radius: 2px;
+
+}
+
+.error_box div{
+
+    color:#fff;
+
+}
+
+.message_box{
+    background-color: #29e06fcc;
+    padding: 10px 19px;
+    border-radius: 2px;
+
+}
+
+.message_box div{
+
+    color:#fff;
+
+}
+
+
+  /*
+###################################################
+*/
+
+.form__group {
+    position: relative;
+    padding: 15px 0 0;
+    margin-top: 10px;
+    width: 100%;
+}
+  
+.form__group input {
+    font-family: inherit;
+    width: 100%;
+    border: 0;
+    border-bottom: var(--border_bottom);
+    outline: 0;
+    font-size: 1.3rem;
+    color: var(--text_color);
+    padding: 9px 0;
+    background: transparent;
+    transition: border-color 0.2s;
+}
+
+
+.form__group input::placeholder {
+    color: transparent;
+}
+
+
+.form__group input:placeholder-shown ~ label {
+    font-size: 1.3rem;
+    cursor: text;
+    top: 20px;
+}
+
+.form__group label {
+    position: absolute;
+    top: 0;
+    display: block;
+    transition: 0.2s;
+    font-size: 1rem;
+    color: var(--primiry_color);
+}
+
+.form__group input:focus {
+    padding-bottom: 6px;
+    font-weight: 700;
+    border-width: 3px;
+    border-image: linear-gradient(to right, var(--focus_input_color), var(--focus_input_color_2));
+    border-image-slice: 1;
+}
+
+.form__group input:focus ~ label {
+    position: absolute;
+    top: 0;
+    display: block;
+    transition: 0.2s;
+    font-size: 1rem;
+    color: var(--focus_input_color);
+    font-weight: 700;
+}
+
+/* reset input */
+.form__group input:required, .form__group input:invalid {
+    box-shadow: none;
+}
+
+
+/*
+###################################################
+*/
+
+
+
+.form_box .gap{
+    height: 30px;
+}
+
+.form_box form .primiry_btn , .secondry_btn{
+    position: relative;
+    display: inline-block;
+    padding: 10px 20px;
+    
+    width: 100%;
+    font-size: 16px;
+    text-decoration: none;
+    text-transform: uppercase;
+    overflow: hidden;
+    transition: .5s;
+    margin: 10px 0px;
+    letter-spacing: 4px;
+    border: var(--primiry_color) solid 2px;
+    text-align: center;
+    background: var(--primiry_color);
+}
+
+.form_box .primiry_btn:hover {
+    background: var(--btn_hover_color);
+    border: var(--btn_hover_color) solid 2px;
+
+    color: rgb(255, 255, 255);
+    border-radius: 5px;
+}
+
+.form_box form .secondry_btn {
+    background : none;
+    color: var(--primiry_color);
+}
+  
+.form_box .secondry_btn:hover {
+    border: var(--btn_hover_color) solid 2px;
+
+    color: var(--btn_hover_color) ;
+    border-radius: 5px;
+}
+
+
+  /*
+###################################################
+*/
+
+select {
+  border: 0px #00000000 solid;
+  width: 100%;
+  margin: 20px 0px;
+  background-color: #00000000;
+  color: #ffffff;
+  font-size: 18px;
+  -webkit-appearance: none;
+    -moz-appearance: none;
+    background: transparent;
+    background-image: url("data:image/svg+xml;utf8,<svg fill='white' height='39' viewBox='0 0 24 24' width='24' xmlns='http://www.w3.org/2000/svg'><path d='M7 10l5 5 5-5z'/><path d='M0 0h24v24H0z' fill='none'/></svg>");
+    background-repeat: no-repeat;
+    background-position-x: 100%;
+    background-position-y: 5px;
+}
+
+
+
+
+
+
+
+  

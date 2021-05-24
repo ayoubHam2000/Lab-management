@@ -1,4 +1,5 @@
 {% extends "register.html" %}
+{% load widget_tweaks %}
 
 {% block title %}
 
@@ -9,34 +10,82 @@
 
 {% block content %}
 
-    <div> {{ form.errors }} </div>
-    <form action="." method = 'POST' >{% csrf_token %}
-        
-        {% for field in form1 %}
-         <div class="user-box">
-         
-           
-            {{ field }}
-            <label>{{ field.label }}</label> 
-         </div>
-            
-            
-        {% endfor %}
-
-        {% for field in form2 %}
-         <div class="user-box">
-         
-           
-            {{ field }}
-            <label>{{ field.label }}</label> 
-         </div>
-            
-            
-        {% endfor %}
-
-        <button type = 'submit' > Register </button>
     
-    </form>
+
+
+    <div class='center_horizontal' >
+
+        <div class="form_box">
+
+
+            {% if form.errors|length != 0 %}
+                
+                <div class = 'error_box'>
+                
+                    {% for key, value in form.errors.items  %}
+                        <div>{{value}}</div>
+                    {% endfor %}
+                </div>
+
+            {% endif %}
+
+            {% if messages|length != 0 %}
+                
+                <div class = 'error_box'>
+                    {% for message in messages %}
+                        <div>{{message}}</div>
+                    {% endfor %}
+                </div>
+
+            {% endif %}
+            
+
+
+
+            <form action="." method = 'POST' >{% csrf_token %}
+                
+                {% for field in form1 %}
+
+                    <div class="form__group field">
+
+                        {% render_field field placeholder="{{field.name}}"  %}
+                        <label >{{field.label}}</label>
+                        
+                    </div>
+                
+                {% endfor %}
+
+                {% for field in form2 %}
+
+                    <div class="form__group field">
+
+                        {% render_field field placeholder="{{field.name}}"  %}
+                        <label >{{field.label}}</label>
+                        
+                    </div>
+                
+                {% endfor %}
+
+                {% for k, v in form2.university.items %}
+                    <label value="{{ k }}">{{ v }}</label>
+                {% endfor %}
+
+
+                
+                
+
+                <div class='gap' ></div>
+
+                <button class="primiry_btn" type = 'submit' >  Register </button>
+                
+            
+            </form>
+
+
+        </div>
+
+    
+    </div>
 
 
 {% endblock content %}
