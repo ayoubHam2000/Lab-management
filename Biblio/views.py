@@ -9,32 +9,38 @@ from .models import Formulaire
 from .forms import FormulaireForm
 
 def Ajouter(request):
-    form = FormulaireForm() 
-    if request.POST :
-        form = FormulaireForm(request.POST , request.FILES)
-        
-        if form.is_valid():
-            form.save()
-    
-    form = FormulaireForm() 
+	form = FormulaireForm() 
+	if request.POST :
+		form = FormulaireForm(request.POST , request.FILES)
+		
+		if form.is_valid():
+			form.save()
+	
+	form = FormulaireForm() 
 
-    context ={
-        "form" : form
-     }
-         
-    return render(request,'Biblio/telechargement.html', context)
+	context ={
+		"biblio_active" : "active",
+		"form" : form,
+        "title_section" : "Bibliotheque"
+	 }
+		 
+	return render(request,'Biblio/telechargement.html', context)
 
 
 
 
 def pagebib(request):
 
-    formulaires = Formulaire.objects.all()
-    
-    context ={
+	formulaires = Formulaire.objects.all()
 
-        "formulaires" : formulaires
-    }
+	if len(formulaires) != 0:
+		return render(request,'Biblio/empty_bib.html')
+	
+	context ={
+		"biblio_active" : "active",
+		"formulaires" : formulaires,
+        "title_section" : "Bibliotheque"
+	}
 
-    return render(request,'Biblio/page_biblio.html', context)
+	return render(request,'Biblio/page_biblio.html', context)
  

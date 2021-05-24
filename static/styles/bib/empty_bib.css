@@ -1,0 +1,60 @@
+
+:root {
+    --background: #00000080;
+    --size: 35%;
+    --primiry_color: #03e9f4;
+    --btn_hover_color: #f59048;
+    --image_bacground: url('../../resources/images/landscape.jpg');
+    --border_bottom: 2px solid #9b9b9b;
+    --text_color: #fff;
+    --focus_input_color: #11998e;
+    --focus_input_color_2: #38ef7d;
+}
+
+.log_empty_bib {
+    margin: 0;
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+}
+
+.log_empty_bib img{
+    width:100px;
+}
+
+
+.log_empty_bib p {
+    width: 28px;
+}
+
+
+/*
+
+    from register/main.css
+
+*/
+
+.primiry_btn {
+    position: relative;
+    display: inline-block;
+    padding: 10px 20px;
+    width: 100%;
+    font-size: 16px;
+    text-decoration: none;
+    text-transform: uppercase;
+    overflow: hidden;
+    transition: .5s;
+    margin: 10px 0px;
+    letter-spacing: 4px;
+    border: var(--primiry_color) solid 2px;
+    text-align: center;
+    background: var(--primiry_color);
+}
+
+.primiry_btn:hover {
+    background: var(--btn_hover_color);
+    border: var(--btn_hover_color) solid 2px;
+    color: rgb(255, 255, 255);
+    border-radius: 5px;
+}

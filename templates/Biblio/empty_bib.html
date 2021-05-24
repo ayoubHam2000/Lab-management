@@ -1,0 +1,26 @@
+{% extends "base.html" %}
+{% load static %}
+
+
+{% block title %}
+    bibliotheque
+{% endblock title %}
+
+{% block content %}
+<link rel="stylesheet" href="{% static  'styles/bib/empty_bib.css' %}">
+
+
+
+    <div class="log_empty_bib" >
+
+        <img  src="{% static 'resources/images/logo-scale.png' %}" />
+        <p> Bibliothèque vide </p>
+        <button class="primiry_btn" > Ajouter </button>
+
+    </div>
+
+
+
+{% endblock content %}
+
+

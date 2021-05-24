@@ -24,90 +24,13 @@
 </head>
 
 
-<body id="body-pd">
+<body id="body-pd" style="background-color: #f8f9fa;" >
 
 
     {% include "General/menu.html" %}
     {% include "General/slide_bar.html" %}
 
 
-<<<<<<< HEAD
-            <div class="bell" >
-                
-                
-
-            </div>
-              
-
-            <span class="nav_logo-name user_name">
-            {{ request.user.first_name }} {{ request.user.last_name }}
-            </span>
-            
-            <div class="header_img"> 
-            {% if request.user.profile_image %}
-                <img src="{{ request.user.getImage }}" alt="">
-            {% else %}
-                <img src="/media/profile_images/default/default_profile_image.png" alt="">
-            {% endif %}
-                
-            </div> 
-            
-            <a href="#" > 
-            
-                <i class="fa fa-caret-down nav_logo-icon" aria-hidden="true"></i>                
-               
-            </a>
-            
-
-        </div>
-        
-        
-
-    </header>
-
-    <div class="l-navbar" id="nav-bar">
-        <nav class="nav">
-            <div> 
-                
-                <a href="#" class="nav_logo"> 
-                    <i class="fa fa-graduation-cap nav_logo-icon" aria-hidden="true"></i>
-                    <span class="nav_logo-name">Lab</span> 
-                    <hr>
-                </a>
-
-
-                <div class="nav_list">
-
-                    <a href="#" class="nav_link active"> 
-                        <i class="fa fa-home nav_icon" aria-hidden="true"></i>
-
-                        <span class="nav_name">Dashboard</span> 
-                    </a>
-
-                    <a href="#" class="nav_link active"> 
-                        <i class="fa fa-book nav_icon" aria-hidden="true"></i>
-
-                        <span class="nav_name">Dashboard</span> 
-                    </a>
-                
-                    <a href="#" class="nav_link"> 
-                        <i class="fa fa-address-book nav_icon" aria-hidden="true"></i>
-                        <span class="nav_name">Messages</span> 
-                    </a> 
-                    
-                    
-                </div>
-            </div> 
-            <a href="#" class="nav_link"> 
-                <i class='fa fa-sign-out nav_icon'></i> 
-                <span class="nav_name">SignOut</span> 
-            </a>
-
-        </nav>
-    </div>
-=======
->>>>>>> 07dc03b2e02b528b3d667a170670bf5b3a04520b
-    <!--Container Main start-->
     <div class="height-100 bg-light">
         {% block content %}
     
