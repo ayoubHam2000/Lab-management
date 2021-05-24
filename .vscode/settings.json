@@ -4,4 +4,5 @@
     },
 
     "python.languageServer": "Jedi",
+    "python.pythonPath": "C:\\Users\\ayqse-99\\AppData\\Local\\Programs\\Python\\Python39\\python.exe",
 }

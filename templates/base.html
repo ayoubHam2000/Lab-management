@@ -26,21 +26,12 @@
 
 <body id="body-pd">
 
-    <header class="header" id="header">
-        <div class="header_toggle"> <i class='fa fa-bars' id="header-toggle"></i> </div>
 
-        <div class="user_name"> 
-            <span class="nav_logo-name">
-            {% block section_title %}
-                Title
-            {% endblock section_title %}
-            
-            </span> 
-        </div>
-        
-        <div class="user_account"> 
+    {% include "General/menu.html" %}
+    {% include "General/slide_bar.html" %}
 
 
+<<<<<<< HEAD
             <div class="bell" >
                 
                 
@@ -114,6 +105,8 @@
 
         </nav>
     </div>
+=======
+>>>>>>> 07dc03b2e02b528b3d667a170670bf5b3a04520b
     <!--Container Main start-->
     <div class="height-100 bg-light">
         {% block content %}

@@ -55,11 +55,12 @@ def decorator_user(allowed_roles):
 
 
 class TestView(View):
-    template_name = 'Registration/test.html'
+    #template_name = 'Registration/test.html'
 
     def get(self, request):
-        context = {}
-        return render(request, self.template_name, context)
+        return myredirect('Account:login')
+        #context = {}
+        #return render(request, self.template_name, context)
 
 # if already log in go to home page
 @method_decorator(decorator_auth, name = 'dispatch')
@@ -112,7 +113,10 @@ class LogoutView(View):
 class HomeView(View):
     template_name = 'Registration/home.html'
     def get(self, request):
-        context = {}
+        context = {
+            "home_active" : "active",
+            "title_section" : "Home"
+        }
         return render(request, self.template_name, context)
 
         
@@ -138,7 +142,9 @@ class AddMember(View):
         members = MemberModel.objects.all()
         context = {
             "form" : form,
-            "members" : members
+            "members" : members,
+            "addMember_active" : "active",
+            "title_section" : "Add Member "
         }
         return render(request, self.template_name, context)
     
@@ -149,7 +155,10 @@ class AddMember(View):
         members = MemberModel.objects.all()
         context = {
             "form" : form,
-            "members" : members
+            "members" : members,
+            "addMember_active" : "active",
+            "title_section" : "Add Member"
+            
         }
         return render(request, self.template_name, context)
 
@@ -178,7 +187,7 @@ class CheckEmailView(View):
             f'cliquez sur ce lien {activate_url} pour la vérification',
             'noreply@uit.ac.ma',
             [member.email],
-            fail_silently=False,
+            fail_silently=True,
         )
         print(activate_url)
 

@@ -1,36 +1,51 @@
 {% load static %}
+{% load svg %}
 
-<div id = 'slidebar' >
-
-    <div class = 'toggle-btn' onclick = 'show()' >  
-
-    <img src="{% static 'resources/graduation.svg' %}">
-        
-
-    </div>
-
-    <ul>
-
-        <li>
-        <svg viewBox="0 0 32 32">
-            <use xlink:href="{% static 'resources/home-icon.svg' %}"></use>
-        </svg>
+<div class="l-navbar" id="nav-bar">
+    <nav class="nav">
+        <div> 
             
-            Accueil 
-        </li>
+            <a href="{% url 'Account:home' %}" class="nav_logo"> 
+                <i class="fa fa-graduation-cap nav_logo-icon" aria-hidden="true"></i>
+                <span class="nav_logo-name">Lab</span> 
+                <hr>
+            </a>
 
-        <li>
-            <img src="{% static 'resources/books-stack.svg' %}">
-            Bibliothéque 
-        </li>
 
-        <li>
-            <img src="{% static 'resources/admin.svg' %}">
-            Ajouter Membre 
-        </li>
+            <div class="nav_list">
 
-     
-    </ul>
 
+
+                <a href="{% url 'Account:home' %}" class="nav_link {{ home_active }}"> 
+                    <i class="fa fa-home nav_icon" aria-hidden="true"></i>
+
+                    <span class="nav_name">Home</span> 
+                </a>
+
+                <a href="{% url 'Biblio:information' %}"  class="nav_link {{ biblio_active }}"> 
+                    <i class="fa fa-book nav_icon" aria-hidden="true"></i>
+
+                    <span class="nav_name">Bibliothéque</span> 
+                </a>
+
+
+                {% for group in request.user.groups.all %}
+                    {% if group.name == 'admin' %}
+                        <a href="{% url 'Account:addMember' %}"  class="nav_link {{ addMember_active }}"> 
+                            <i class="fa fa-address-book nav_icon" aria-hidden="true"></i>
+                            <span class="nav_name">Ajouter Membre</span> 
+                        </a> 
+                    {% endif %}
+                {% endfor %}
+
+                    
+                
+            </div>
+        </div> 
+        <a href="{% url 'Account:logout' %}" class="nav_link"> 
+            <i class='fa fa-sign-out nav_icon'></i> 
+            <span class="nav_name">SignOut</span> 
+        </a>
+
+    </nav>
 </div>
-
