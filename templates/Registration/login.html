@@ -1,5 +1,7 @@
 {% extends "register.html" %}
 
+{% load widget_tweaks %}
+
 {% block title %}
 
     Log in
@@ -9,30 +11,62 @@
 
 {% block content %}
 
-   
-     <form action="." method = 'POST' >{% csrf_token %}
-        
-        {% for field in form %}
-         <div class="user-box">
+   <div class='center_horizontal' >
+
+        <div class="form_box">
 
 
-             {{ field }}
-             <label>{{ field.label }}</label>
-         </div>
+            {% if form.errors|length != 0 %}
+                
+                <div class = 'error_box'>
+                    {% for key, value in form.errors.items  %}
+                        <div>{{value}}</div>
+                    {% endfor %}
+                </div>
+
+            {% endif %}
+
+            {% if messages|length != 0 %}
+                
+                <div class = 'error_box'>
+                    {% for message in messages %}
+                        <div>{{message}}</div>
+                    {% endfor %}
+                </div>
+
+            {% endif %}
             
-            
-        {% endfor %}
-
-        <button type = 'submit' > Register </button>
     
-    </form>
 
-    <a href="{% url 'Account:checkEmail' %}"> Register </a>
+    
+            <form action="." method = 'POST' >{% csrf_token %}
+                
+                {% for field in form %}
 
-    <div>
-        {% for message in messages %}
-            <p>{{message}}</p>
-        {% endfor %}
+                    <div class="form__group field">
+
+                        {% render_field field placeholder="{{field.name}}"  %}
+                        <label for="name">{{field.label}}</label>
+
+                    </div>
+                
+                {% endfor %}
+
+                <div class='gap' ></div>
+
+                <button class="primiry_btn" type = 'submit' >  Login </button>
+                <a href="{% url 'Account:checkEmail' %}" class="btn secondry_btn"> Register </a>
+
+                {% comment %} <button class="secondry_btn" type = 'submit' >  Register </button> {% endcomment %}
+                {% comment %} <a href="{% url 'Account:checkEmail' %}"> Register </a> {% endcomment %}
+                
+            
+            </form>
+
+
+        </div>
+
+    
     </div>
 
 

@@ -11,7 +11,8 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
 
    
-    <link rel="stylesheet" href="{% static 'styles/form.css' %}">
+    <link rel="stylesheet" href="{% static 'styles/register/main.css' %}">
+    {% comment %} <link rel="stylesheet" href="{% static 'styles/form.css' %}"> {% endcomment %}
 
     
 
@@ -25,17 +26,10 @@
 
 <body>
 
-
+    {% block content %}
     
-     <div class="login-box">
-     
-        {% block content %}
-        
-        {% endblock content %}
-        
-      </div>
-
-
+    {% endblock content %}
+    
     
 </body>
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0-beta1/dist/js/bootstrap.bundle.min.js" ></script>

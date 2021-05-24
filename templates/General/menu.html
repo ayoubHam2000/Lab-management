@@ -1,0 +1,92 @@
+{% load static %}
+{% load svg %}
+
+<header class="header" id="header">
+    <div class="header_toggle"> <i class='fa fa-bars' id="header-toggle"></i> </div>
+
+    <div class="user_name"> 
+        <span class="nav_logo-name">
+        
+            {{ title_section }}
+        
+        </span> 
+    </div>
+    
+    <div class="user_account"> 
+
+
+        <div class="bell" >
+            
+            <div class="icon" onclick="toggleNotifi()">
+                <img alt="">{% svg 'bell' %} <span>17</span>
+            </div>
+
+            <div class="notifi-box" id="box" style="display: none">
+                <div class="notifi-item">
+                    <img src="img/avatar1.png" alt="img">
+                    <div class="text">
+                        <h4>Elias Abdurrahman</h4>
+                        <p>@lorem ipsum dolor sit amet</p>
+                    </div> 
+                </div> <div class="notifi-item">
+                    <img src="img/avatar1.png" alt="img">
+                    <div class="text">
+                        <h4>Elias Abdurrahman</h4>
+                        <p>@lorem ipsum dolor sit amet</p>
+                    </div> 
+                </div> <div class="notifi-item">
+                    <img src="img/avatar1.png" alt="img">
+                    <div class="text">
+                        <h4>Elias Abdurrahman</h4>
+                        <p>@lorem ipsum dolor sit amet</p>
+                    </div> 
+                </div> <div class="notifi-item">
+                    <img src="img/avatar1.png" alt="img">
+                    <div class="text">
+                        <h4>Elias Abdurrahman</h4>
+                        <p>@lorem ipsum dolor sit amet</p>
+                    </div> 
+                </div> <div class="notifi-item">
+                    <img src="img/avatar1.png" alt="img">
+                    <div class="text">
+                        <h4>Elias Abdurrahman</h4>
+                        <p>@lorem ipsum dolor sit amet</p>
+                    </div> 
+                </div> <div class="notifi-item">
+                    <img src="img/avatar1.png" alt="img">
+                    <div class="text">
+                        <h4>Elias Abdurrahman</h4>
+                        <p>@lorem ipsum dolor sit amet</p>
+                    </div> 
+                </div>
+    
+            
+            </div>
+        </div>
+            
+
+        <span class="nav_logo-name user_name">
+        {{ request.user.first_name }} {{ request.user.last_name }}
+        </span>
+        
+        <div class="header_img"> 
+        {% if request.user.profile_image %}
+            <img src="{{ request.user.getImage }}" alt="">
+        {% else %}
+            <img src="/media/profile_images/default/default_profile_image.png" alt="">
+        {% endif %}
+            
+        </div> 
+        
+        <a href="#" > 
+        
+            <i class="fa fa-caret-down nav_logo-icon" aria-hidden="true"></i>                
+            
+        </a>
+        
+
+    </div>
+    
+    
+
+</header>
