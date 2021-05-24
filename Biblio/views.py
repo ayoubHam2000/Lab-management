@@ -4,34 +4,68 @@ from django.views.generic import TemplateView
 from django.core.files.storage import FileSystemStorage
 
 
-from .models import Formulaire
+from .models import Formulaire,Auteur,Mot_cle,Base_Bibliographique,Journal
 
-from .forms import FormulaireForm
+from .forms import FormulaireForm,Mot_CleForm,AuteurForm,BibliographiqueForm,JournalForm
 
 def Ajouter(request):
-    form = FormulaireForm()
+    formF = FormulaireForm() 
+    formJ = JournalForm()
+    formA = AuteurForm()
+    formMC = Mot_CleForm()
+    formB = BibliographiqueForm()
     if request.POST :
-        form = FormulaireForm(request.POST , request.FILES)
-        if form.is_valid() :
-            form.save()
+        formF = FormulaireForm(request.POST , request.FILES)
+        formJ = JournalForm(request.POST)
+        formA = AuteurForm(request.POST)
+        formB = BibliographiqueForm(request.POST)
+        formMC = Mot_CleForm(request.POST)
+
+        
+        if formf.is_valid() and formJ.is_valid() and formA.is_valid() and formB.is_valid() and formMC.is_valid() :
+            formF.save()
+            formJ.save()
+            formA.save()
+            formB.save()
+            formMC.save()
     
-    form = FormulaireForm() 
+    formF = FormulaireForm() 
+    formJ = JournalForm()
+    formA = AuteurForm()
+    formMC = Mot_CleForm()
+    formB = BibliographiqueForm()
+
+    froms = [formF, formJ, formA, formB, formMC]
     context ={
 
-        "form" : form
+        "formF" : formF,
+        "formJ" : formJ,
+        "formA" : formA,
+        "formB" : formB,
+        "formMC" : formMC
+
      }
          
     return render(request,'Biblio/telechargement.html', context)
 
 
 
+
 def pagebib(request):
 
     formulaires = Formulaire.objects.all()
+    mot_cles = Mot_cle.objects.all()
+    #journals = Journal.object.all()
+    base_biblios = Base_Bibliographique.objects.all()
+    auteurs = Auteur.objects.all()
 
     context ={
 
-        "formulaires" : formulaires
+        "formulaires" : formulaires,
+        "mot_cles" : mot_cles,
+        #"journals" : journals,
+        "base_biblios" : base_biblios,
+        "auteurs" : auteurs
     }
 
     return render(request,'Biblio/page_biblio.html', context)
