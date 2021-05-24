@@ -12,14 +12,14 @@
     <title>bibliotheque</title>
 </head>
 <body>
-    {% for i in formulaires %}
-    <div>
-        <p> {{ i.name }} <br>
-            {{ i.Email }} <br>
-        <span id="dots" class="c_dots">...</span><span id="more" class="c_more">{{ i.Filiere }} </span></p>
-        
-        <button onclick="myFunction(event)" id="myBtn">Read more</button>
-    </div>
-    {% endfor %}
+    <p>
+    {{formulaires}}
+    {{mot_cles}}
+    {{journals}}
+    {{base_biblios}}
+    {{auteurs}}
+    </p>
+    
+    
 </body>
 </html>
