@@ -23,7 +23,7 @@ urlpatterns = [
     
     path('', include('Account.urls')),
 
-    path('', include('Biblio.urls')),
+    path('bib/', include('Biblio.urls')),
 ]
 
 from django.conf.urls.static import static
