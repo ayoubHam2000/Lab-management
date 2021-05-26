@@ -1,5 +1,3 @@
-
-console.log("asdfasdf")
 function myFunction(e) {
     btn = e.target
     par = btn.parentElement
