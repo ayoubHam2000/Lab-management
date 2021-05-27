@@ -22,6 +22,9 @@ class AddMemberModelForm(ModelForm):
             'userType'
         ]
 
+
+
+
 class CheckEmailForm(forms.Form):
     email = forms.CharField(max_length=MAXCHAR)
     
@@ -159,7 +162,6 @@ class UserForm(UserCreationForm):
 
         self.userSetGroup(user, member)
         return user
-
 
 class DoctorantModelForm(ModelForm):
     university = forms.ChoiceField(choices = UNIVERSITIES)

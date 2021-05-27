@@ -1,0 +1,43 @@
+{% for member in members %}
+
+
+<tr class="alert" role="alert">
+    
+    <td class="d-flex align-items-center">
+        <div class="img"></div>
+        <div class="pl-3 email">
+            <span>{{ member.email }}</span>
+            <span class='detail_member' >Added: {{ member.date }}</span>
+            <span class='detail_member' >{{ member.userType }}</span>
+        </div>
+    </td>
+
+
+    
+    {% if member.signed %}
+
+        {% if member.active %}
+            <td class="status"><span class="active">Active</span></td>
+        {% else %}
+            <td class="status"><span class="waiting">Not Active</span></td>
+        {% endif %}
+
+    {% else %}
+
+        <td class="status"><span class="notsigned">Not Signed</span></td>
+
+    {% endif %}
+
+    
+    
+
+    <td>
+        <input form="delete_member_form" name = 'id' type="hidden" value = '{{ member.id }}'/>
+        <button form="delete_member_form" type="submit" class="close" data-dismiss="alert" aria-label="Close">
+            <span aria-hidden="true"><i class="fa fa-close"></i></span>
+        </button>
+    </td>
+</tr>
+
+
+{% endfor %}

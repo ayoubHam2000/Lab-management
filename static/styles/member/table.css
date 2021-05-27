@@ -1,0 +1,223 @@
+:root {
+    --green: #cff6dd;
+    --green-dark: #1fa750;
+    --purple: #25044b;
+
+    --blue: #007bff;
+    --indigo: #6610f2;
+    
+    --pink: #e83e8c;
+    --red: #dc3545;
+    --orange: #fd7e14;
+    --yellow: #ffc107;
+
+    --teal: #20c997;
+    --cyan: #17a2b8;
+    --white: #fff;
+    --gray: #6c757d;
+    --gray-dark: #343a40;
+    --primary: #007bff;
+    --secondary: #6c757d;
+    --success: #28a745;
+    --info: #17a2b8;
+    --warning: #ffc107;
+    --danger: #dc3545;
+    --light: #f3f4f5;
+    --dark: #343a40;
+    --font-family-sans-serif: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, "Noto Sans", sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol", "Noto Color Emoji";
+    --font-family-monospace: SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace; 
+}
+
+*, ::before, ::after {
+    -webkit-box-sizing: border-box;
+    box-sizing: border-box;
+}
+
+body{
+    font-family: var(--font-family-monospace);
+}
+
+/*=============================================================*/
+/*=============================================================*/
+/*=============================================================*/
+
+.row{
+    width: 100%;
+    height: 100%;
+    background-color:var(--light); 
+    align-content: flex-start;
+}
+  
+body {
+    margin: 0;
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, "Noto Sans", sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol", "Noto Color Emoji";
+    font-size: 1rem;
+    font-weight: 400;
+    line-height: 1.5;
+    color: #212529;
+    text-align: left;
+
+    font-family: "Poppins", Arial, sans-serif;
+    font-size: 16px;
+    line-height: 1.8;
+    font-weight: normal;
+    color: gray;
+    
+}
+
+/* Table =======================================================================*/
+
+.t thead {
+    background-color: #fff;
+    text-align: left;
+    align-content: center;
+    vertical-align: middle;
+    padding: .5rem;
+    
+}
+
+.t thead  {
+    background-color: #fff;
+    border-bottom:4px solid var(--light);
+}
+
+.table thead th {
+    border: none;
+    padding: 15px 40px;
+    font-size: 13px;
+    font-weight: 500;
+    color: gray;
+}
+
+.table tbody th, .table tbody td {
+    border: none;
+    padding: 15px 30px;
+    font-size: 14px;
+    background: #fff;
+    vertical-align: middle;
+}
+
+.table tbody tr{
+    margin-bottom: 10px;
+    border-bottom: 4px solid var(--light);
+}
+
+
+/* Email =======================================================================*/
+
+.table tbody td .img {
+    width: 30px;
+    height: 30px;
+    border-radius: 50%;
+}
+
+.img {
+    background-image: url(../../media/profile_images/default/default_profile_image.png);
+    background-size: cover;
+    background-repeat: no-repeat;
+    background-position: center center;
+    cursor: pointer;
+}
+
+
+
+.table tbody td .email span {
+    display: block;
+    
+    
+}
+
+.pl-3, .px-3 {
+    padding-left: 1rem !important;
+}
+
+.table tbody td .email .detail_member {
+    color: rgba(0, 0, 0, 0.3);
+}
+
+
+
+/* Status =======================================================================*/
+
+.table tbody td.status .active {
+    background: var(--green);
+    color: var(--green-dark);
+}
+
+.table tbody td.status .waiting {
+    background: #d0d0d1;
+    color:var(--gray-dark);
+}
+
+.table tbody td.status .notsigned {
+    background: #c7d4f8;
+    color: #007bff;
+}
+
+
+.table tbody td.status span {
+    position: relative;
+    border-radius: 30px;
+    padding: 5px 15px;
+    cursor: pointer;
+    display: block;
+    width: 99px;
+    text-align: center;
+}
+
+
+
+
+
+/* X ============================================== */
+
+.fa {
+    display: inline-block;
+    font: normal normal normal 14px/1 FontAwesome;
+    font-size: 14px;
+    font-size: inherit;
+    text-rendering: auto;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+}
+
+button:not(:disabled), [type="button"]:not(:disabled), [type="reset"]:not(:disabled), [type="submit"]:not(:disabled) {
+    cursor: pointer;
+}
+
+button.close {
+    padding: 0;
+    background-color: transparent;
+    border: 0;
+    -webkit-appearance: none;
+    -moz-appearance: none;
+    appearance: none;
+}
+
+.close {
+    float: right;
+    font-size: 1.5rem;
+    font-weight: 700;
+    line-height: 1;
+    color: #000;
+    text-shadow: 0 1px 0 #fff;
+    opacity: .5;
+}
+
+.table tbody td .close span {
+    color: #dc3545;
+}
+
+/*  ============================================== */
+
+.table span{
+    font-size: 10px;
+}
+
+.table tbody td .close span {
+    font-size: 10px;
+}
+
+.table tbody td .email span:last-child {
+    font-size: 10px;
+}

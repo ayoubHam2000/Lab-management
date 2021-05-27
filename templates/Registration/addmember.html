@@ -1,0 +1,143 @@
+{% extends "base.html" %}
+{% load static %}
+
+{% block styles %}
+
+    <link rel="stylesheet" href="{% static 'styles/member/table.css' %}">
+    <link rel="stylesheet" href="{% static 'styles/member/bar.css' %}">
+    <link rel="stylesheet" href="{% static 'styles/member/modal.css' %}">
+    <link rel="stylesheet" href="{% static 'styles/member/modal_ele.css' %}">
+
+{% endblock styles %}
+
+{% block title %}
+
+    Add Member
+
+{% endblock title %}
+
+{% block content %}
+
+<!-- The Modal -->
+<div id="Ajouter" class="modal">
+
+    <!-- Modal content -->
+    <div class="modal-content">
+      <span class="close" onclick="closeModel()" >&times;</span>
+      
+        <form action="{% url 'Account:memberInfo' 'add' %}" method = 'POST' id='ajouter_member_form'>
+        {% csrf_token %}
+
+            {{ form.email.label }}
+            {{ form.email }}
+            
+            {% if request.user.isAdmin %}
+                {{ form.userType.label }}
+                {{ form.userType }}
+            {% endif %}
+
+            <div class = "ajouter"   >
+                <button type = 'submit' > Ajouter </button>
+            </div>
+            
+        </form>
+
+    </div>
+  
+</div>
+
+<!-- The Modal -->
+<div id="order" class="modal">
+
+    <!-- Modal content -->
+    <div class="modal-content">
+      <span class="close" onclick="closeModel()" >&times;</span>
+      
+        <label> Sort By </label>
+        <select class='member_select' name="cars" id="cars">
+            <option value="date">Date</option>
+            <option value="email">E-mail</option>
+            <option value="userType">Type d'utilisateur </option>
+            <option value="status ">Statut</option>
+        </select>
+        
+        <label> Order </label>
+        <select class='member_select' name="cars" id="cars">
+            <option value="Ascendant">Ascendant </option>
+            <option value="Descendant">Descendant </option>
+        </select>
+
+        <div class = "ajouter">
+            <button  onclick='orderButton(event)'> Ok </button>
+          </div>
+
+    </div>
+  
+</div>
+
+<form action="{% url 'Account:memberInfo' 'delete' %}" method="POST" id='delete_member_form'>
+    {% csrf_token %}
+
+</form>
+
+<div class="row">
+
+    <div class = 'top_bar' >
+        <div class="search__container">
+            <input id = 'member_search_input' class="search__input" type="text" placeholder="Search" value = ''>
+            <button class="filter" onclick="openModel(self, 'order')" > <i class="fa fa-sort-amount-desc" aria-hidden="true"></i> </button>
+        </div>
+
+        <div class = "add" onclick="openModel(event, 'Ajouter')">
+            <button> Ajouter </button>
+        </div>
+        
+    </div>
+    
+    
+    <table class="table table-responsive-xl t">
+
+        <thead>
+
+            <tr>
+                
+                <th>Email</th>
+                <th>Status</th>
+                <th>&nbsp;</th>
+
+            </tr>
+
+
+        </thead>
+
+        <tbody id = 'member_content'>
+
+
+
+
+        
+        </tbody>
+
+    </table>
+
+    <div id='error_js' ></div>
+
+</div>
+
+
+
+{% endblock content %}
+
+{% block scripts %}
+<script>
+    URL_MEMBER_DATA = "{% url 'Account:memberInfo' 'memberList' %}"
+</script>
+<script src="{% static 'scriptes/member/member.js' %}" > </script>
+<script src="{% static 'scriptes/member/getmember.js' %}" > </script>
+
+
+{% endblock scripts %}
+
+
+
+

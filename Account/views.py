@@ -3,6 +3,7 @@ from django.shortcuts import render,HttpResponse
 from django.urls import reverse
 from django.views import View
 from django.contrib.auth.models import Group
+from django.http import HttpResponseBadRequest
 
 
 from django.core.mail import send_mail
@@ -132,35 +133,115 @@ from django.contrib.sites.shortcuts import get_current_site
 from Utils.functions import token_generator
 
 #only admin can acces this page
+import json 
 @method_decorator(decorator_login, name='dispatch')
-@method_decorator(decorator_user(['admin']), name = 'dispatch')
+@method_decorator(decorator_user(['admin', 'encadrant']), name = 'dispatch')
 class AddMember(View):
-    template_name = 'Registration/member_mgr.html'
+    template_name = 'Registration/addmember.html'
+    template_memebers_list = 'Registration\jsPages\members.html'
 
-    def get(self, request):
-        form = AddMemberModelForm()
-        members = MemberModel.objects.all()
+    def getContext(self):
         context = {
-            "form" : form,
-            "members" : members,
             "addMember_active" : "active",
             "title_section" : "Add Member "
         }
+        return context
+
+    def getMemberData(self, members):
+        #get data ready to use in html easily
+        data = []
+        for member in members:
+            theObject = {}
+            theObject['id'] = member.id
+            theObject['email'] = member.email
+            theObject['userType'] = MemberModel.TYPES[member.userType][1]
+            theObject['signed'] = member.signed
+            theObject['active'] = member.active
+            theObject['date'] = member.date
+            data.append(theObject)
+        return data
+
+    def searshFilter(self, members, search):
+        filterMember = []
+        for item in members:
+            if search in item.email:
+                filterMember.append(item)
+        return filterMember
+
+    def getOrderedListMember(self, datafor):
+        dataform = json.loads(datafor)
+        print(dataform)
+        search = dataform['search']
+        sortType = dataform['sortType']
+        order = dataform['order']
+
+        reverse = '-' if  order == 'Descendant' else ''
+        #__contains is Django ORM's equivalent to SQL's LIKE keyword.
+        #email__contains=f'%{searsh}%'
+        filterMember = MemberModel.objects.all()
+        if order == 'status':
+            filterMember = filterMember.order_by(f'{reverse}signed', f'{reverse}active')
+        else:
+            filterMember = filterMember.order_by(f'{reverse}{sortType}')
+        
+        filterMember = self.searshFilter(filterMember, search)
+        return self.getMemberData(filterMember)
+
+    def getDefaultPage(self, request):
+        form = AddMemberModelForm()
+        context = self.getContext()
+        context["form"] = form
         return render(request, self.template_name, context)
     
-    def post(self, request):
+    def getMemberList(self, request):     
+        context = {
+            "members" : self.getOrderedListMember(request.GET.get('dataform'))
+        }
+        return render(request, self.template_memebers_list, context)       
+
+    def get(self, request, theType = None):
+        print(f'-->{theType}')
+        if theType == None:
+            return self.getDefaultPage(request)
+        
+        elif theType == 'memberList':
+             #javascript member.js setMemberContent()
+            return self.getMemberList(request)
+
+    #POST ======================================
+    #POST ======================================
+
+    def addMember(self, request):
         form = AddMemberModelForm(request.POST)
+     
+        email = request.POST.get('email')
+        if request.user.email == email:
+            return HttpResponseBadRequest("impossible d'ajouter votre e-mail")
         if form.is_valid():
             form.save()
-        members = MemberModel.objects.all()
-        context = {
-            "form" : form,
-            "members" : members,
-            "addMember_active" : "active",
-            "title_section" : "Add Member"
-            
-        }
-        return render(request, self.template_name, context)
+        else:
+            return HttpResponseBadRequest("l'email existe déjà ")
+        return HttpResponse()
+
+    def deleteMember(self, request):
+        print("---> delete")
+        id = request.POST.get('id')
+
+        member = MemberModel.objects.get(id= int(id))
+        user = UserAccount.objects.filter(email = member.email)
+        if user.exists():
+            user[0].delete()
+        else:
+            member.delete()
+        return HttpResponse()
+        
+
+    def post(self, request, theType = None):
+        if theType == 'add':
+            return self.addMember(request)
+        elif theType == 'delete':
+            return self.deleteMember(request)
+
 
 class CheckEmailView(View):
     template_name = 'Registration/check_email.html'

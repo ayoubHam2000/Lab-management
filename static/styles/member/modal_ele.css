@@ -1,0 +1,47 @@
+.ajouter{
+    width: 100%;
+}
+
+.ajouter button{
+    float: right;
+    margin: 10px 0px 0px 0px;
+    border: none;
+    padding: 5px 30px;
+}
+
+.ajouter button:hover{
+    background-color: #6610f2;
+    color: white;
+}
+
+.modal-content{
+    width: 50%;
+}
+
+
+/*=====================================================*/
+
+.member_select{
+    border: 1px #000000 solid;
+    width: 100%;
+    margin: 10px 0px;
+    background-color: #000000;
+    color: #000000;
+    font-size: 18px;
+    -webkit-appearance: none;
+    -moz-appearance: none;
+    background: transparent;
+    background-image: url("data:image/svg+xml;utf8,<svg fill='Black' height='39' viewBox='0 0 24 24' width='24' xmlns='http://www.w3.org/2000/svg'><path d='M7 10l5 5 5-5z'/><path d='M0 0h24v24H0z' fill='none'/></svg>");
+    background-repeat: no-repeat;
+    background-position-x: 100%;
+    background-position-y: 0px;
+}
+
+
+/*=====================================================*/
+
+.modal-content input, select{
+    height:35px;
+    width: 100%;
+    margin: 5px 5px;
+}

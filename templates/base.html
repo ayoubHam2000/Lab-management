@@ -10,11 +10,14 @@
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0-beta1/dist/css/bootstrap.min.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
 
-    <link rel="stylesheet" href="{% static 'styles/menu.css' %}">
-    <link rel="stylesheet" href="{% static 'styles/bell.css' %}">
-    <link rel="stylesheet" href="{% static 'styles/style.css' %}">
+    <link rel="stylesheet" href="{% static 'styles/base/menu.css' %}">
+    <link rel="stylesheet" href="{% static 'styles/base/bell.css' %}">
+    <link rel="stylesheet" href="{% static 'styles/base/style.css' %}">
+    <link rel="stylesheet" href="{% static 'styles/base/alert.css' %}">
 
+    {% block styles %}
     
+    {% endblock styles %}
 
     <title> 
         {% block title %}
@@ -31,18 +34,27 @@
     {% include "General/slide_bar.html" %}
 
 
+    <!--Container Main end-->
     <div class="height-100 bg-light">
         {% block content %}
     
         {% endblock content %}
     </div>
-    <!--Container Main end-->
 
+    
 
+    <div id='alter_pupup' class="theAlert">
+      <span class="closebtn" onclick="this.parentElement.style.display='none';">&times;</span> 
+    </div>
     
 </body>
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0-beta1/dist/js/bootstrap.bundle.min.js" ></script>
 <script src="{% static 'scriptes/jquery-3.6.0.min.js' %}" > </script>
 <script src="{% static 'scriptes/script.js' %}" > </script>
-<script src="{% static 'scriptes/bell.js' %}" > </script>
+<script src="{% static 'scriptes/base/alert.js' %}" > </script>
+
+{% block scripts %}
+
+{% endblock scripts %}
+
 </html>

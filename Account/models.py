@@ -87,6 +87,12 @@ class UserAccount(AbstractBaseUser, PermissionsMixin):
     
     def getImage(self):
         return f'/media/{self.profile_image}'
+
+    def isAdmin(self):
+        return self.groups.filter(name='admin').exists()
+    
+    def isEncadrant(self):
+        return self.groups.filter(name='encadrant').exists() or self.isAdmin()
     
 
 #endregion
@@ -120,7 +126,7 @@ class MemberModel(models.Model):
     )
 
     email = models.EmailField(unique=True)
-    userType = models.IntegerField(choices= TYPES)
+    userType = models.IntegerField(choices= TYPES, default = 1)
     date = models.DateTimeField(auto_now_add=True)
     signed = models.BooleanField(default= False)
     active = models.BooleanField(default=True)
