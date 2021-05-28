@@ -3,7 +3,7 @@
     --background: #00000080;
     --size: 35%;
     --primiry_color: #03e9f4;
-    --btn_hover_color: #f59048;
+    --btn_hover_color: #340964;
     --image_bacground: url('../../resources/images/landscape.jpg');
     --border_bottom: 2px solid #9b9b9b;
     --text_color: #fff;
@@ -16,18 +16,24 @@
     position: absolute;
     top: 50%;
     left: 50%;
-    transform: translate(-50%, -50%);
+    transform: translate(-37%, -50%);
 }
 
 .log_empty_bib img{
-    width:100px;
+    width:500px;
+    margin-left: 0px;
+
 }
 
-
-.log_empty_bib p {
-    width: 28px;
 }
-
+.para{
+    margin: 10px 15px;
+}
+.para pre{
+    font-size: 40px;
+    color: #2e0d86;
+    margin-left: 10px;
+}
 
 /*
 
@@ -39,7 +45,7 @@
     position: relative;
     display: inline-block;
     padding: 10px 20px;
-    width: 100%;
+    width: 40%;
     font-size: 16px;
     text-decoration: none;
     text-transform: uppercase;
@@ -50,7 +56,11 @@
     border: var(--primiry_color) solid 2px;
     text-align: center;
     background: var(--primiry_color);
+    color: black;
+    margin-left: 100px;
+    margin-top: 40px;
 }
+
 
 .primiry_btn:hover {
     background: var(--btn_hover_color);

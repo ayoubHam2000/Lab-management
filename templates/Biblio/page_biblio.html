@@ -7,29 +7,76 @@
 {% endblock title %}
 
 {% block content %}
-   <link rel="stylesheet" href="{% static  'styles/page_biblio.css' %}">
-    <script src="{% static 'scriptes/formulaire.js' %}" > </script>
+<link rel="stylesheet" href="{% static  'styles/bib/page_biblio.css' %}">
+<link rel="stylesheet" href="{% static  'styles/bib/page_biblio.css' %}">
+<link rel="stylesheet" href="{% static  'styles/bib/sugestion.css' %}">
 
-
-    {% for i in formulaires %}
-    <div class='bib_item' >
-        <p> {{ i.titre }} <br>
-            {{ i.type_pub }} <br>
-        <span id="dots" class="c_dots">...</span>
-        
-        <span id="more" class="c_more">
-        <a href="{{i.getLien}}">{{ i.getName }}</a> <br>
-        {{i.issn}} <br>
-        {{i.publisher}} <br>
-         </span></p>
-        
-        <button onclick="myFunction(event)" id="myBtn">Read more</button>
+<!--Make sure the form has the autocomplete function switched off:-->
+<form autocomplete="off" action="./info">
+    <select name="searchType" onchange="setSearchType(event)">
+        <option value="auteur">Auteur</option>
+        <option value="titre">Titre</option>
+        <option value="journal">Journal</option>
+    </select>
+    <div class="autocomplete">
+        <input id="myInput" type="text" name="mySearch" placeholder="search">
     </div>
-    
+    <input type="submit">
+</form>
+
+
+
+
+<!--Make sure the form has the autocomplete function switched off:-->
+    {% for i in formulaires %}
+
+
+
+<div class='bib_item'>
+    <ul class="tp">
+        <li><b> {{ i.type_pub }}</b></li>
+    </ul>
+
+    <ul class="jrnl">
+        <li><b><u>{{ i.journal }}</u></b></li>
+        <li class="issn"><b>ISSN : {{i.issn}}</b></li>
+    </ul>
+    <br>
+    <p id="title_pub">{{ i.titre }}</p>
+    <span id="dots" class="c_dots">...</span>
+
+    <span id="more" class="c_more">
+        <ul>
+            <li><b>Auteurs : {{i.pr_auteur}} , {{i.get_coAuteur}}</b></li>
+            <li><b> DOI : {{i.doi}}</b></li>
+            <li><b>Volume : {{i.volume}}</b></li>
+            <li><b>Pages : {{i.pr_page}}-{{i.der_page}}</b></li>
+            <li><b>Publisher : {{i.publisher}}</b></li>
+            <li><b>Telecharger l'article : </b><a href="{{i.getLien}}">{{ i.getName }}</a> <br></li>
+        </ul>
+
+
+        <form id="deleteform" method="POST" action="{% url 'Biblio:deleteFormulaire' i.id %}">
+            {% csrf_token %}
+            <button type="submit" id="myBtn3"> supprimer </button>
+        </form>
+        <button id="myBtn1"><a href="{% url 'Biblio:update' i.id %}">modifier</a></button>
+
+    </span>
+
+    <button onclick="myFunction(event)" id="myBtn2">Read more</button>
+</div>
+
     {% endfor %}
 
 
 
 {% endblock content %}
+
+
+{% block script %}
+<script src="{% static 'scriptes/bib/formulaire.js' %}"></script>
+<script src="{% static 'scriptes/bib/sugestion.js' %}"></script>
+{% endblock script %}
 
 

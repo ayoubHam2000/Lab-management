@@ -16,7 +16,7 @@ py manage.py shell -c "from django.contrib.auth.models import Group; Group.objec
 echo 'Create SuperUSer'
 superUser="from Account.models import UserAccount;"
 superUser+="user = UserAccount.objects.create_superuser"
-superUser+="('ayoub@gmail.com', 'ayoub', 'ayoub', 'ben hamou', 1, 'ase123@$');"
+superUser+="('omar@gmail.com', 'omar', 'omar', 'jed', 1, 'omarjed');"
 superUser+="from django.contrib.auth.models import Group;"
 superUser+="from Account.models import EncadrantModel;"
 superUser+="EncadrantModel(user = user, university = 'Iben tofail').save();"

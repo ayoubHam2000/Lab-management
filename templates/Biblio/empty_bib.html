@@ -14,8 +14,10 @@
     <div class="log_empty_bib" >
 
         <img  src="{% static 'resources/images/logo-scale.png' %}" />
-        <p> Bibliothèque vide </p>
-        <button class="primiry_btn" > Ajouter </button>
+        <div class='para'>
+              <pre>Espace Bibliothéque</pre> 
+        </div>
+        <a class="primiry_btn" href="{% url 'Biblio:formulaire' %}" > Ajouter </a>
 
     </div>
 
