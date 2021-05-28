@@ -1,15 +1,20 @@
+
 {% for member in members %}
 
+{% if member.email != request.user.email %}
 
 <tr class="alert" role="alert">
     
     <td class="d-flex align-items-center">
-        <div class="img"></div>
+
+        <div class="img" onclick='openMenu(event, {{member.id}}, {{member.getStatus}})' style='background-image: url( "{{member.getImage}}" );' ></div>
+        
         <div class="pl-3 email">
             <span>{{ member.email }}</span>
             <span class='detail_member' >Added: {{ member.date }}</span>
-            <span class='detail_member' >{{ member.userType }}</span>
+            <span class='detail_member' >{{ member.getUserType }}</span>
         </div>
+
     </td>
 
 
@@ -32,12 +37,14 @@
     
 
     <td>
-        <input form="delete_member_form" name = 'id' type="hidden" value = '{{ member.id }}'/>
-        <button form="delete_member_form" type="submit" class="close" data-dismiss="alert" aria-label="Close">
+        <button class="close" data-dismiss="alert" aria-label="Close" onclick="delete_member(event, {{member.id}})" >
             <span aria-hidden="true"><i class="fa fa-close"></i></span>
         </button>
     </td>
 </tr>
+
+
+{% endif %}
 
 
 {% endfor %}

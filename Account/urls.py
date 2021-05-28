@@ -6,11 +6,12 @@ from django.urls import path
 from .views import (
     TestView,
     LoginView,
-    AddMember,
+    MemberManagement,
     LogoutView,
     HomeView,
     CheckEmailView,
     MemberRegister,
+    AccountUpdate,
 )
 
 app_name = 'Account'
@@ -18,8 +19,9 @@ app_name = 'Account'
 urlpatterns = [
     path('', TestView.as_view(), name = 'test'),
     path('login/', LoginView.as_view(), name = 'login'),
-    path('members/', AddMember.as_view(), name = 'addMember'),
-    path('members/<theType>/', AddMember.as_view(), name = 'memberInfo'),
+    path('members/', MemberManagement.as_view(), name = 'addMember'),
+    path('members/<theType>/', MemberManagement.as_view(), name = 'memberInfo'),
+    path('members/<str:userType>/<int:accountId>/', AccountUpdate.as_view(), name = 'updateAccount'),
     path('logout/', LogoutView.as_view(), name = 'logout'),
     path('home/', HomeView.as_view(), name = 'home'),
     path('checkEmail/', CheckEmailView.as_view(), name = 'checkEmail'),

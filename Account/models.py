@@ -1,7 +1,11 @@
 from django.db import models
 from django.contrib.auth.models import AbstractBaseUser, BaseUserManager, PermissionsMixin
 from Utils.const import *
-from Utils.functions import current_milli_time
+from Utils.functions import current_milli_time, getFileName
+from PIL import Image
+import os
+from django.core.files.storage import FileSystemStorage
+
 
 #region User Account
 def get_default_profile_image():
@@ -49,7 +53,16 @@ class MyUserManager(BaseUserManager):
         user.is_superuser = True
         user.save(using = self._db)
         return user
-    
+
+# keep one image in the saerver
+class OverwriteStorage(FileSystemStorage):
+    def _save(self, name, content):
+        if self.exists(name):
+            self.delete(name)
+        return super(OverwriteStorage, self)._save(name, content)
+
+    def get_available_name(self, name, *args, **kwargs):
+        return name
 
 class UserAccount(AbstractBaseUser, PermissionsMixin):
     #required
@@ -63,7 +76,7 @@ class UserAccount(AbstractBaseUser, PermissionsMixin):
     is_staff = models.BooleanField(default=False)
     is_superuser = models.BooleanField(default=False)
     is_active = models.BooleanField(default=True)
-    profile_image = models.ImageField(max_length=255, upload_to = get_profile_image_filepath, null = True, blank = True, default = get_default_profile_image)
+    profile_image = models.ImageField(max_length=255, storage=OverwriteStorage(), upload_to = get_profile_image_filepath, null = True, blank = True, default = get_default_profile_image)
 
     user_type = models.IntegerField()
 
@@ -94,6 +107,21 @@ class UserAccount(AbstractBaseUser, PermissionsMixin):
     def isEncadrant(self):
         return self.groups.filter(name='encadrant').exists() or self.isAdmin()
     
+    def save(self, *args, **kwargs):
+        newWidth = 400
+        # reduce quality image
+        super(UserAccount, self).save(*args, **kwargs)
+        if(os.path.isfile(self.profile_image.path)):
+            image = Image.open(self.profile_image.path)
+            width = image.width
+            height = image.height
+            ratio = width / height
+            output_size = (width, newWidth / ratio)
+            # resize and save
+            image.thumbnail(output_size)
+            image.save(self.profile_image.path)
+
+    
 
 #endregion
 
@@ -104,6 +132,7 @@ class DoctorantModel(models.Model):
     university = models.CharField(max_length=MAXCHAR)
     apogee = models.CharField(max_length=APOGEE_MAX)
     cin = models.CharField(max_length=CIN_MAX)
+    these = models.CharField(max_length=MAXCHAR_XXX, blank=True)
 
     def __str__(self):
         return self.user.email
@@ -114,6 +143,9 @@ class EncadrantModel(models.Model):
 
     def __str__(self):
         return self.user.email
+
+from django import template
+register = template.Library()
 
 class MemberModel(models.Model):
     ENCADRANT = 0
@@ -133,5 +165,40 @@ class MemberModel(models.Model):
 
     def __str__(self):
         return str(self.email)
+    
+    def getImage(self):
+        user = UserAccount.objects.filter(email = self.email)
+        if user.exists():
+            return '/media/' + user[0].profile_image.name
+        return '/media/' + get_default_profile_image()
+
+    def getStatus(self):
+        if not self.signed:
+            return 2
+        else:
+            if self.active:
+                return 1
+            else:
+                return 0
+    
+    def getUserType(self):
+        return MemberModel.TYPES[self.userType][1]
+    
+
+
+class DoctorantRelation(models.Model):
+    ENCADRANT = 0
+    CO_ENCADRANT = 1
+
+    TYPES = (
+        (ENCADRANT, 'ENCADRANT'),
+        (CO_ENCADRANT, 'CO.ENCADRANT')
+    )
+    doctorant = models.OneToOneField(UserAccount, on_delete=models.CASCADE)
+    #encadrant = models.EmailField()
+    userType = models.IntegerField(choices= TYPES, default = 0)
+
+    def __str__(self):
+        return self.doctorant.email
 
 #endregion

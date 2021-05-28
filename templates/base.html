@@ -14,6 +14,7 @@
     <link rel="stylesheet" href="{% static 'styles/base/bell.css' %}">
     <link rel="stylesheet" href="{% static 'styles/base/style.css' %}">
     <link rel="stylesheet" href="{% static 'styles/base/alert.css' %}">
+    <link rel="stylesheet" href="{% static 'styles/base/poppup_menu.css' %}">
 
     {% block styles %}
     
@@ -42,16 +43,20 @@
     </div>
 
     
-
+{% comment %} for error and notification {% endcomment %}
     <div id='alter_pupup' class="theAlert">
       <span class="closebtn" onclick="this.parentElement.style.display='none';">&times;</span> 
     </div>
+
     
 </body>
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0-beta1/dist/js/bootstrap.bundle.min.js" ></script>
 <script src="{% static 'scriptes/jquery-3.6.0.min.js' %}" > </script>
 <script src="{% static 'scriptes/script.js' %}" > </script>
+<script src="{% static 'scriptes/base/js.js' %}" > </script>
 <script src="{% static 'scriptes/base/alert.js' %}" > </script>
+<script src="{% static 'scriptes/base/pupopMenu.js' %}" > </script>
+<script src="{% static 'scriptes/base/menuScript.js' %}" > </script>
 
 {% block scripts %}
 

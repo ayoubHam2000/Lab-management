@@ -75,9 +75,6 @@
   
 </div>
 
-<form action="{% url 'Account:memberInfo' 'delete' %}" method="POST" id='delete_member_form'>
-    {% csrf_token %}
-
 </form>
 
 <div class="row">
@@ -131,9 +128,13 @@
 {% block scripts %}
 <script>
     URL_MEMBER_DATA = "{% url 'Account:memberInfo' 'memberList' %}"
+    URL_MEMBER_DEACTIVATE = "{% url 'Account:memberInfo' 'deactivate' %}"
+    URL_MEMBER_DELETE = "{% url 'Account:memberInfo' 'delete' %}"
+    URL_MEMBER_ACCOUNT = "{% url 'Account:memberInfo' 'account' %}"
 </script>
+<script src="{% static 'scriptes/member/modal.js' %}" > </script>
+<script src="{% static 'scriptes/member/imageclick.js' %}" > </script>
 <script src="{% static 'scriptes/member/member.js' %}" > </script>
-<script src="{% static 'scriptes/member/getmember.js' %}" > </script>
 
 
 {% endblock scripts %}

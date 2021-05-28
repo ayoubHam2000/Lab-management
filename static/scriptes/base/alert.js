@@ -36,7 +36,7 @@ function errorAlert(message){
 
 function showError(e){
     console.log(e.responseText)
-    if(e.responseText.length < 100){
+    if(e.responseText.length < 100 || e.responseText.length == 0){
         errorAlert(e.responseText)
     }else{
         errorAlert("quelque chose s'est mal passé ")
@@ -45,4 +45,16 @@ function showError(e){
 
 function showDefaultError(){
     errorAlert("quelque chose s'est mal passé ")
+}
+
+
+//==================================================
+//==================================================
+//==================================================
+
+function ft_confirm(message = ""){
+    if(message == ""){
+        return confirm("Are you sure ??")
+    }
+    return confirm(message)
 }

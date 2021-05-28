@@ -18,6 +18,8 @@ superUser="from Account.models import UserAccount;"
 superUser+="user = UserAccount.objects.create_superuser"
 superUser+="('ayoub@gmail.com', 'ayoub', 'ayoub', 'ben hamou', 1, 'ase123@$');"
 superUser+="from django.contrib.auth.models import Group;"
+superUser+="from Account.models import EncadrantModel;"
+superUser+="EncadrantModel(user = user, university = 'Iben tofail').save();"
 superUser+="group = Group.objects.get(name = 'admin');"
 superUser+="user.groups.add(group);"
 

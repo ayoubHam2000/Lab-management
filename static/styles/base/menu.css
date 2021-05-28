@@ -1,13 +1,13 @@
 @import url("https://fonts.googleapis.com/css2?family=Nunito:wght@400;600;700&display=swap");
 
 :root {
-    --header-height: 1.9rem;
+    --header-height: 2.5rem;
     --nav-width: 68px;
     --first-color: #19033B;
     --first-color-light: #ded9f1;
     --white-color: #ffffff;
     --body-font: 'Nunito', sans-serif;
-    --normal-font-size: 1rem;
+    --normal-font-size: 1.2rem;
     --z-fixed: 100
 }
 
@@ -16,6 +16,18 @@
 ::after {
     box-sizing: border-box
 }
+
+.btn-group:hover .dropdown-menu {
+    display: block;
+    left:-150px;
+    top:9px;
+}
+
+.drop_airrow{
+    left: 40px;
+    margin: 0px 40px 2px 0px;
+}
+
 
 body {
     position: relative;
@@ -52,14 +64,15 @@ a {
     cursor: pointer
 }
 
+/* Here you can change image size */
 .header_img {
-    width: 30px;
-    height: 30px;
+    width: 32px;
+    height: 32px;
     display: flex;
     justify-content: center;
     border-radius: 100%;
     overflow: hidden;
-    background-color: #ffffff;
+    background-color: #ffffff00;
 }
 
 .user_account{
@@ -67,9 +80,6 @@ a {
     align-items: center;
 }
 
-.user_account a{
-    margin: 0px 20px;
-}
 
 .user_name{
     margin: 0px 30px;
@@ -175,13 +185,14 @@ a {
         padding: 0 2rem 0 calc(var(--nav-width) + 2rem)
     }
 
-    .header_img {
+    /*.header_img {
         width: 40px;
         height: 40px
-    }
+    }*/
 
     .header_img img {
-        width: 45px
+        cursor: pointer;
+        /*width: 45px*/
     }
 
     .l-navbar {

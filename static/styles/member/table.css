@@ -84,15 +84,15 @@ body {
 .table thead th {
     border: none;
     padding: 15px 40px;
-    font-size: 13px;
-    font-weight: 500;
+    font-size: 16px;
+    font-weight: 550;
     color: gray;
 }
 
 .table tbody th, .table tbody td {
     border: none;
     padding: 15px 30px;
-    font-size: 14px;
+    font-size: 16px;
     background: #fff;
     vertical-align: middle;
 }
@@ -106,13 +106,12 @@ body {
 /* Email =======================================================================*/
 
 .table tbody td .img {
-    width: 30px;
-    height: 30px;
+    width: 60px;
+    height: 60px;
     border-radius: 50%;
 }
 
 .img {
-    background-image: url(../../media/profile_images/default/default_profile_image.png);
     background-size: cover;
     background-repeat: no-repeat;
     background-position: center center;
@@ -211,13 +210,13 @@ button.close {
 /*  ============================================== */
 
 .table span{
-    font-size: 10px;
+    font-size: 16px;
 }
 
 .table tbody td .close span {
-    font-size: 10px;
+    font-size: 15px;
 }
 
 .table tbody td .email span:last-child {
-    font-size: 10px;
+    font-size: 14px;
 }
