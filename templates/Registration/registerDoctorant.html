@@ -17,18 +17,21 @@
         <div class="form_box">
 
 
-            {% if form.errors|length != 0 %}
+            {% if form1.errors|length != 0 or form2.errors|length != 0 %}
                 
                 <div class = 'error_box'>
                 
-                    {% for key, value in form.errors.items  %}
+                    {% for key, value in form1.errors.items  %}
+                        <div>{{value}}</div>
+                    {% endfor %}
+                    {% for key, value in form2.errors.items  %}
                         <div>{{value}}</div>
                     {% endfor %}
                 </div>
 
             {% endif %}
 
-            {% if messages|length != 0 %}
+            {% comment %} {% if messages|length != 0 %}
                 
                 <div class = 'error_box'>
                     {% for message in messages %}
@@ -36,7 +39,7 @@
                     {% endfor %}
                 </div>
 
-            {% endif %}
+            {% endif %} {% endcomment %}
             
     
 
@@ -47,7 +50,7 @@
 
                     <div class="form__group field">
  
-                        {% render_field field placeholder="{{field.name}}"  %}
+                        {% render_field field placeholder=field.name  %}
                         <label >{{field.label}}</label>
                         
                     </div>
@@ -58,7 +61,7 @@
 
                     <div class="form__group field">
  
-                        {% render_field field placeholder="{{field.name}}"  %}
+                        {% render_field field placeholder=field.name  %}
                         <label >{{field.label}}</label>
                         
                     </div>

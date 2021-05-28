@@ -31,11 +31,23 @@
             
         </div> 
         
-        <a href="#" > 
+
+        <div class="btn-group drop_airrow">
+
+          <a  > 
         
             <i class="fa fa-caret-down nav_logo-icon" aria-hidden="true"></i>                
             
-        </a>
+          </a>
+
+          <div class="dropdown-menu">
+            <a class="dropdown-item" href="{% url 'Account:updateAccount' 'encadrant' request.user.id %}">Account</a>
+            <a class="dropdown-item" href="{% url 'Account:logout' %}">Logout</a>
+          </div>
+
+         
+        </div>
+
         
 
     </div>

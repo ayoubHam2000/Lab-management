@@ -29,16 +29,12 @@
                 </a>
 
 
-                {% for group in request.user.groups.all %}
-                    {% if group.name == 'admin' %}
-                        <a href="{% url 'Account:addMember' %}"  class="nav_link {{ addMember_active }}"> 
-                            <i class="fa fa-address-book nav_icon" aria-hidden="true"></i>
-                            <span class="nav_name">Ajouter Membre</span> 
-                        </a> 
-                    {% endif %}
-                {% endfor %}
-
-                    
+                {% if request.user.isEncadrant %}
+                    <a href="{% url 'Account:addMember' %}"  class="nav_link {{ addMember_active }}"> 
+                        <i class="fa fa-address-book nav_icon" aria-hidden="true"></i>
+                        <span class="nav_name">Ajouter Membre</span> 
+                    </a> 
+                {% endif %} 
                 
             </div>
         </div> 
