@@ -5,7 +5,8 @@ __pycache__/
 
 # me me
 .djan
-.static/media/*
+static/media/**
+reset.sh
 # C extensions
 *.so
 

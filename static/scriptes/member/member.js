@@ -25,7 +25,7 @@ function getMemberData() {
             closeModel()
         },
         error: function(e, x, r){
-            setMemberContent("Something went wrong")
+            $('#member_content').html("Something went wrong");
             console.log(e.responseText)
         }
     });
@@ -98,10 +98,10 @@ function deactivate_activate_member(e, id){
 }
 
 function delete_member(e, id){
-    console.log('delete_member')
-    
+    console.log('ask delete_member')
     var a = ft_confirm("Are you sure ?? (if account exist it will be also deleted)")
     if(a){
+        console.log('delete_member')
         data = getPostDict()
         data['id'] = id
 

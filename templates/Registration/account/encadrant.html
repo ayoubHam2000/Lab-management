@@ -1,4 +1,5 @@
 {% extends "base.html" %}
+{% load static %}
 {% load widget_tweaks %}
 
 {% block title %}
@@ -8,87 +9,69 @@
 {% endblock title %}
 
 
+{% block styles %}
+
+    <link rel="stylesheet" href="{% static 'styles/base/account.css' %}">
+
+{% endblock styles %}
+
+
 {% block content %}
 
     
 
+    {% if form1.errors|length != 0 or form2.errors|length != 0 %}
+        
+        <div class = 'error_box'>
+        
+            {% for key, value in form1.errors.items  %}
+                <div>{{value}}</div>
+            {% endfor %}
+            {% for key, value in form2.errors.items  %}
+                <div>{{value}}</div>
+            {% endfor %}
+        </div>
 
-    <div class='center_horizontal' >
+    {% endif %}
 
-        <div class="form_box">
+        
 
+    <form class="post_form" action="." method = 'POST' enctype="multipart/form-data" >
+    {% csrf_token %}
 
-            {% if form1.errors|length != 0 or form2.errors|length != 0 %}
+    {% for field in form1 %}
+        <div class="form-group">
+
+            {% if field.name != 'profile_image' %}
                 
-                <div class = 'error_box'>
+                <label for="{{field.name}}">{{field.label}}</label>
+                {% render_field field id=field.name class="form-control" placeholder=field.name  %}
                 
-                    {% for key, value in form1.errors.items  %}
-                        <div>{{value}}</div>
-                    {% endfor %}
-                    {% for key, value in form2.errors.items  %}
-                        <div>{{value}}</div>
-                    {% endfor %}
-                </div>
+            {% else %}
+
+            <label class="filebutton">
+                <img class="img-responsive" src={{ form1.instance.profile_image.url }} />
+                <span> {{ field }} </span>
+            </label>
 
             {% endif %}
 
-            {% comment %} {% if messages|length != 0 %}
-                
-                <div class = 'error_box'>
-                    {% for message in messages %}
-                        <div>{{message}}</div>
-                    {% endfor %}
-                </div>
-
-            {% endif %} {% endcomment %}
-            
-
-
-
-            <form action="." method = 'POST' enctype="multipart/form-data" >{% csrf_token %}
-                
-                {% for field in form1 %}
-
-                    <div class="form__group field">
-
-                        {% render_field field placeholder="{{field.name}}"  %}
-                        <label >{{field.label}}</label>
-                        
-                    </div>
-                
-                {% endfor %}
-
-                {% for field in form2 %}
-
-                    <div class="form__group field">
-
-                        {% render_field field placeholder="{{field.name}}"  %}
-                        <label >{{field.label}}</label>
-                        
-                    </div>
-                
-                {% endfor %}
-
-                {% for k, v in form2.university.items %}
-                    <label value="{{ k }}">{{ v }}</label>
-                {% endfor %}
-
-
-                
-                
-
-                <div class='gap' ></div>
-
-                <button class="primiry_btn" type = 'submit' >  Save </button>
-                
-            
-            </form>
-
-
         </div>
 
-    
-    </div>
+    {% endfor %}
+
+    {% for field in form2 %}
+
+        <div class="form-group">
+        <label for="{{field.name}}">{{field.label}}</label>
+        {% render_field field id=field.name class="form-control" placeholder=field.name  %}
+        </div>
+
+    {% endfor %}
+
+    <button type="submit" class="btn btn-primary btn_post">Submit</button>
+    </form>
+
 
 
 {% endblock content %}

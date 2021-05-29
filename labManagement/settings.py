@@ -46,6 +46,7 @@ INSTALLED_APPS = [
     'widget_tweaks',
 
     'Biblio',
+    'Compt'
 ]
 
 MIDDLEWARE = [

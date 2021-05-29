@@ -1,0 +1,121 @@
+{% for post in posts %}
+
+
+
+<div>
+  <div>
+
+
+    <div class="box box-widget">
+      
+      
+      <div class="box-header with-border">
+        <div class="user-block">
+
+
+          <img class="img-circle" src="{{ post.user.getImage }}" alt="User Image">
+          <span class="username"><a href="#">{{ post.user.getFullName }}</a></span>
+          <span class="description">Partagé publiquement - {{ post.getDate }} </span>
+
+
+
+        </div>
+
+        <div class="btn-group drop_airrow box-tools my_menu_post">
+
+          <div class="dropdown">
+            
+            <button type="button" class="btn btn-box-tool my_menu_btn" data-toggle="dropdown">
+              <i class="fa fa-ellipsis-v" aria-hidden="true"></i>
+            </button>
+
+            <div class="dropdown-menu dropdown-menu-right">
+              <a class="dropdown-item" href="#">Delete</a>
+            </div>
+
+          </div>
+         
+        </div>
+
+        
+
+
+        
+
+
+      </div>
+  
+      <div class="box-body" style="display: block;">
+
+
+        <p class = "text-justify"> {{ post.post }}</p>
+
+        <img class="img-responsive pad" src="{{ post.getImage }}">
+
+
+
+      </div>
+
+{% if  post.postcommentmodel_set.all %}
+
+      <div class="box-footer box-comments" style="display: block;">
+
+
+
+
+        <p>
+          <a class='cmment_collapse' data-toggle="collapse" href="#collapseExample_{{ post.id }}" role="button" aria-expanded="false" aria-controls="collapseExample">
+            Commentaires 
+          </a>
+        </p>
+        <div class="collapse" id="collapseExample_{{ post.id }}" >
+        
+          <div id="post_comments" class="card card-body">
+
+            {% for comment in post.postcommentmodel_set.all %}
+
+              <div class="box-comment"> 
+                <img class="img-circle img-sm" src="{{ comment.getUser.getImage }}" alt="User Image">
+                <div class="comment-text">
+                  <span class="username">
+                  {{ comment.getUser.getFullName }}
+                    <span class="text-muted pull-right">
+                    {{ comment.getDate }}
+                    </span>
+                  </span>
+                  {{ comment }}
+                </div>
+              </div>
+
+
+            {% endfor %}
+
+          </div>
+
+        </div>
+
+      </div>
+{% endif %}
+
+      {% comment %} input -> class  input-sm {% endcomment %}
+      <div class="box-footer" style="display: block;">
+        <form action="{% url 'Compt:comment' post.id %}" method="post" onsubmit='postComment(event)' >
+        {% csrf_token %}
+          <img class="img-responsive img-circle img-sm" src="{{ request.user.getImage }}" alt="User">
+          <div class="img-push">
+            <input name = 'text' type="text" class="form-control" placeholder="Appuyez sur Entrée pour publier un commentaire">
+          </div>
+        </form>
+      </div>
+
+
+
+
+    </div>
+
+
+  </div>
+  </div>
+
+
+  {% endfor %}

@@ -24,6 +24,7 @@ urlpatterns = [
     path('', include('Account.urls')),
 
     path('bib/', include('Biblio.urls')),
+    path('post/', include('Compt.urls')),
 ]
 
 from django.conf.urls.static import static
