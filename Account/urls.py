@@ -4,7 +4,6 @@ from django.urls import path
 
 
 from .views import (
-    TestView,
     LoginView,
     MemberManagement,
     LogoutView,
@@ -17,7 +16,7 @@ from .views import (
 app_name = 'Account'
 
 urlpatterns = [
-    path('', TestView.as_view(), name = 'test'),
+    path('', HomeView.as_view()),
     path('login/', LoginView.as_view(), name = 'login'),
     path('members/', MemberManagement.as_view(), name = 'addMember'),
     path('members/<theType>/', MemberManagement.as_view(), name = 'memberInfo'),

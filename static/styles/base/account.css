@@ -1,0 +1,48 @@
+body{
+    margin: 10px 0;
+}
+.btn_post{
+    margin: 19px 0px;
+    width: 100%;
+}
+
+.post_form{
+    position: absolute;
+    left: 50%;
+    background-color: white;
+    padding:40px;
+    margin-bottom: 20px;
+    width: 80%;
+    border-radius: 15px;
+    transform: translate(-50%, 0%);
+}
+
+/*===========================*/
+
+label.filebutton {
+    overflow:hidden;
+    cursor: pointer;
+    border-radius: 50%;
+    width: 200px;
+    height: 200px;
+    border: none;
+    position: relative;
+    left: 50%;
+    transform: translate(-50%, 0%);
+}
+
+.filebutton span input {
+    z-index: 999;
+    line-height: 0;
+    font-size: 50px;
+    position: absolute;
+    top: -2px;
+    left: -700px;
+    opacity: 0;
+    filter: alpha(opacity = 0);
+    -ms-filter: "alpha(opacity=0)";
+    cursor: pointer;
+    _cursor: hand;
+    margin: 0;
+    padding:0;
+}

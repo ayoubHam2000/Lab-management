@@ -103,6 +103,12 @@ class EncadrantModelForm(ModelForm):
 
 # Update
 class UserUpdateForm(forms.ModelForm):
+    profile_image = forms.ImageField(
+        label='Profile Image',
+        required=False, 
+        error_messages = {'invalid':"Image files only"}, 
+        widget=forms.FileInput)
+
     class Meta:
         model = UserAccount
         fields = [

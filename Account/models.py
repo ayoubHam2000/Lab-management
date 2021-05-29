@@ -9,7 +9,7 @@ from django.core.files.storage import FileSystemStorage
 
 #region User Account
 def get_default_profile_image():
-    return "profile_images/default/default_profile_image.png"
+    return "/static/resources/default/default_profile_image.png"
 
 def get_profile_image_filepath(self, filename):
     return f'profile_images/{self.pk}/profile_image.png'
@@ -76,7 +76,14 @@ class UserAccount(AbstractBaseUser, PermissionsMixin):
     is_staff = models.BooleanField(default=False)
     is_superuser = models.BooleanField(default=False)
     is_active = models.BooleanField(default=True)
-    profile_image = models.ImageField(max_length=255, storage=OverwriteStorage(), upload_to = get_profile_image_filepath, null = True, blank = True, default = get_default_profile_image)
+    profile_image = models.ImageField(
+        max_length=255, 
+        storage=OverwriteStorage(), 
+        upload_to = get_profile_image_filepath, 
+        null = True, 
+        blank = True, 
+        default = get_default_profile_image
+        )
 
     user_type = models.IntegerField()
 
@@ -107,6 +114,9 @@ class UserAccount(AbstractBaseUser, PermissionsMixin):
     def isEncadrant(self):
         return self.groups.filter(name='encadrant').exists() or self.isAdmin()
     
+    def getFullName(self):
+        return f'{self.first_name} {self.last_name}'
+
     def save(self, *args, **kwargs):
         newWidth = 400
         # reduce quality image
@@ -132,7 +142,7 @@ class DoctorantModel(models.Model):
     university = models.CharField(max_length=MAXCHAR)
     apogee = models.CharField(max_length=APOGEE_MAX)
     cin = models.CharField(max_length=CIN_MAX)
-    these = models.CharField(max_length=MAXCHAR_XXX, blank=True)
+    these = models.TextField(blank=True)
 
     def __str__(self):
         return self.user.email
@@ -170,7 +180,7 @@ class MemberModel(models.Model):
         user = UserAccount.objects.filter(email = self.email)
         if user.exists():
             return '/media/' + user[0].profile_image.name
-        return '/media/' + get_default_profile_image()
+        return get_default_profile_image()
 
     def getStatus(self):
         if not self.signed:

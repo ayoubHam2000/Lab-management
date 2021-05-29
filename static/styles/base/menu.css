@@ -17,16 +17,20 @@
     box-sizing: border-box
 }
 
-.btn-group:hover .dropdown-menu {
-    display: block;
-    left:-150px;
-    top:9px;
-}
-
-.drop_airrow{
+.my_btn_group_menu_bar{
     left: 40px;
     margin: 0px 40px 2px 0px;
 }
+/* .btn-group:hover .dropdown-menu {
+    display: block;
+    left:-150px;
+    top:9px;
+} */
+
+/*.drop_airrow{
+    left: 40px;
+    margin: 0px 40px 2px 0px;
+}*/
 
 
 body {
@@ -200,9 +204,7 @@ a {
         padding: 1rem 1rem 0 0
     }
 
-    .show {
-        width: calc(var(--nav-width) + 156px)
-    }
+
 
     .body-pd {
         padding-left: calc(var(--nav-width) + 188px)

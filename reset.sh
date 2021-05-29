@@ -1,6 +1,7 @@
 
 rm -r Account/migrations
 rm -r Biblio/migrations
+rm -r Compt/migrations
 rm db.sqlite3
 
 

@@ -64,13 +64,6 @@ def decorator_user(allowed_roles):
 
 # region Register
 
-class TestView(View):
-    #template_name = 'Registration/test.html'
-
-    def get(self, request):
-        return myredirect('Account:login')
-        #context = {}
-        #return render(request, self.template_name, context)
 
 # if already log in go to home page
 @method_decorator(decorator_auth, name = 'dispatch')
@@ -105,7 +98,7 @@ class LoginView(View):
                 messages.info(request, 'votre compte a eté retirer ')
             else:
                 login(request, user)
-                return myredirect( 'Account:test' )
+                return myredirect( 'Account:home' )
         else:
             messages.info(request, 'E-mail ou le mot de passe est incorrect')
 
@@ -121,13 +114,14 @@ class LogoutView(View):
 
 @method_decorator(decorator_login, name='dispatch')
 class HomeView(View):
-    template_name = 'Registration/home.html'
+    #template_name = 'Registration/home.html'
     def get(self, request):
-        context = {
-            "home_active" : "active",
-            "title_section" : "Home"
-        }
-        return render(request, self.template_name, context)
+        # context = {
+        #     "home_active" : "active",
+        #     "title_section" : "Home"
+        # }
+        # return render(request, self.template_name, context)
+        return myredirect('Compt:posts')
 
         
 #endregion

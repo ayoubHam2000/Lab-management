@@ -5,6 +5,8 @@ from django.contrib.auth.tokens import PasswordResetTokenGenerator
 from six import text_type
 import os
 
+from .const import *
+
 def myredirect(url):
     return redirect(reverse(url))
 
@@ -14,6 +16,9 @@ def current_milli_time():
 
 def getFileName(path):
     return os.path.basename(path)
+
+def getTimeFormat(date):
+    return date.strftime(DATE_FORMAT)
 
 class AppTokenGenerator(PasswordResetTokenGenerator):
     def _make_hash_value(self, member, timestamp):
