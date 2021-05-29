@@ -5,7 +5,7 @@
 	display: inline-block;
 	width: 75%;
   box-shadow: 6px 5px rgba(167, 165, 170, 0.3);
-  margin : 50px 100px;
+  margin : 50px 115px;
 }
 
 #title_pub{
@@ -17,11 +17,18 @@
 	float: right;
 	margin: 10px;
 }
+#myBtn4 {
+	float: right;
+	margin: 10px;
+  margin-top: 4px;
+  margin-right: 190px;
+}
 #myBtn1 {
 	margin: 10px;
 }
 #myBtn3 {
 	margin: 10px;
+  float: left;
 }
 #myBtn2{
     background-color: #f7f5f8;
@@ -32,6 +39,17 @@
     display: inline-block;
     font-size: 14px;
     font-family: Verdana;
+}
+#myBtn4{
+  background-color: #310866;
+  color: #f2eff7;
+  padding: 9px 15px;
+  text-align: center;
+  text-decoration: none;
+  display: inline-block;
+  font-size: 14px;
+  font: bold 14px Helvetica;
+  width: 12%;
 }
 
 #myBtn3{
@@ -63,7 +81,11 @@
     background-color: rgb(224, 22, 22);
     color: azure;
   }
-  #myBtn2:hover {
+#myBtn2:hover {
+    background-color: rgb(37, 4, 75);
+    color: azure;
+  }
+#myBtn4:hover {
     background-color: rgb(37, 4, 75);
     color: azure;
   }
@@ -94,14 +116,14 @@ li{
 
 
 /*partie barre de recherche*/
-
+/*
 #searchbox {
 
   padding-left: 100px;
  padding-bottom: 45px;
-  padding-top: 40px;
+  padding-top: 100px;
 }
-
+/*
 #searchbox input {
     outline: none;
     }
@@ -116,27 +138,5 @@ li{
     width: 67%;
     padding: 8px 15px 8px 30px;
     }
-    
-    #button-submit {
-    background: #310866;
-    border-width: 0px;
-    padding: 11px 0px;
-    width: 15%;
-    cursor: pointer;
-    font: bold 13px Helvetica;
-    color: #fff;
-   
-    }
-    
-    #button-submit:hover {
-    background: rgb(37, 4, 75);
-    }
-    
-    #button-submit:active {
-    background: #5b5d60;
-    outline: none;
-    }
-     
-    #button-submit::-moz-focus-inner {
-    border: 0;
-    }
+    */
+  
