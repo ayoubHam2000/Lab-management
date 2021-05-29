@@ -8,12 +8,10 @@
 
 {% block content %}
 <link rel="stylesheet" href="{% static  'styles/bib/page_biblio.css' %}">
-<link rel="stylesheet" href="{% static  'styles/bib/page_biblio.css' %}">
 <link rel="stylesheet" href="{% static  'styles/bib/sugestion.css' %}">
 
-<!--Make sure the form has the autocomplete function switched off:-->
 <form autocomplete="off" action="./info">
-    <select name="searchType" onchange="setSearchType(event)">
+    <select name="searchType" onchange="setSearchType(event)" class="type-F">
         <option value="auteur">Auteur</option>
         <option value="titre">Titre</option>
         <option value="journal">Journal</option>
@@ -21,10 +19,9 @@
     <div class="autocomplete">
         <input id="myInput" type="text" name="mySearch" placeholder="search">
     </div>
-    <input type="submit">
+    <input id = "button-submit" type="submit" value="recherche">
+    <button class='butt-aj'><a href="{% url 'Biblio:formulaire' %}" > Ajouter </a></button>
 </form>
-
-
 
 
 <!--Make sure the form has the autocomplete function switched off:-->
@@ -78,5 +75,4 @@
 <script src="{% static 'scriptes/bib/formulaire.js' %}"></script>
 <script src="{% static 'scriptes/bib/sugestion.js' %}"></script>
 {% endblock script %}
-
 
