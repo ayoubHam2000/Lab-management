@@ -1,3 +1,4 @@
+
 * {
     box-sizing: border-box;
 }
@@ -8,25 +9,22 @@
 .autocomplete {
     position: relative;
     display: inline-block;
-    width:300px;
+    width:62%;
+    padding-top: 30px;
+    padding-left: 20px;
+    outline: none;
 }
 
 .autocomplete input {
     border: 1px solid transparent;
     background-color: #f1f1f1;
     padding: 10px;
-    font-size: 16px;
+    font-size: 15px;
 }
 
 .autocomplete input[type=text] {
     background-color: #f1f1f1;
     width: 100%;
-}
-
-.autocomplete input[type=submit] {
-    background-color: DodgerBlue;
-    color: #fff;
-    cursor: pointer;
 }
 
 .autocomplete-items {
@@ -58,3 +56,41 @@
     background-color: DodgerBlue !important;
     color: #ffffff;
 }
+
+
+#button-submit{
+    background-color: rgb(42, 7, 75);
+    font-size: 15px;
+    padding: 10px ;
+    color: white;
+    border: none;
+    width: 14%;
+}
+
+#button-submit:hover{
+    background-color: #310866;
+}
+
+.type-F{
+    background-color: rgb(42, 7, 75);
+    padding: 8PX;
+    color: rgb(222, 222, 226);
+}
+
+.butt-aj{
+    background-color: rgb(42, 7, 75);
+    padding: 9px;
+    border: none;
+    width: 10%;
+    font-size: 16px;
+    margin-left: 30px;
+}
+
+.butt-aj :hover{
+    color:#c8b6dd ;
+}
+
+.butt-aj a{
+    color: white;
+}
+
