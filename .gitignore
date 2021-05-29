@@ -5,6 +5,7 @@ __pycache__/
 
 # me me
 .djan
+static/media/**
 
 # C extensions
 *.so
