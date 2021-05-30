@@ -48,6 +48,7 @@ from .models import (
     DoctorantModel,
     EncadrantModel,
     UserAccount,
+    DoctorantRelation,
 )
 
 # region decorator
@@ -244,6 +245,30 @@ class MemberManagement(View):
             return HttpResponseBadRequest()
         return HttpResponse() 
 
+    def associerMember(self, request):
+        print("--------------------Accocier")
+        id = request.POST.get('id')
+        relationType = int(request.POST.get('relationType'))
+        encadrantEmail = str(request.POST.get('encadrantEmail')).strip()
+
+
+        doctorantMember = MemberModel.objects.get(id= int(id))
+        doctorant = UserAccount.objects.get(email = doctorantMember.email)
+        encadrant = UserAccount.objects.filter(email = encadrantEmail)
+        
+        if not encadrant.exists():
+            return HttpResponseBadRequest('L\'e-mail n\'existe pas')
+        encadrant = encadrant[0]
+
+        isValide = DoctorantRelation.isValide(doctorant, encadrant, relationType)
+        if not isValide[0]:
+            return HttpResponseBadRequest(isValide[1])
+        
+        relation = DoctorantRelation(doctorant = doctorant, encadrant = encadrant.email, userType = relationType)
+        relation.save()
+        return HttpResponse('Relation Created Successfully')
+
+
     def post(self, request, theType = None):
         if theType == 'add':
             return self.addMember(request)
@@ -251,6 +276,8 @@ class MemberManagement(View):
             return self.deleteMember(request)
         elif theType == 'deactivate':
             return self.deactivateMember(request)
+        elif theType == 'associer':
+            return self.associerMember(request)
 
 @method_decorator(decorator_auth, name = 'dispatch')
 class CheckEmailView(View):

@@ -9,7 +9,7 @@ from django.core.files.storage import FileSystemStorage
 
 #region User Account
 def get_default_profile_image():
-    return "/static/resources/default/default_profile_image.png"
+    return "default/default_profile_image.png"
 
 def get_profile_image_filepath(self, filename):
     return f'profile_images/{self.pk}/profile_image.png'
@@ -117,6 +117,13 @@ class UserAccount(AbstractBaseUser, PermissionsMixin):
     def getFullName(self):
         return f'{self.first_name} {self.last_name}'
 
+    def getUserType(self):
+        if self.user_type == 0 or self.user_type == 2:
+            return 'encadrant'
+        elif self.user_type == 1:
+            return 'doctorant'
+        return ''
+
     def save(self, *args, **kwargs):
         newWidth = 400
         # reduce quality image
@@ -180,7 +187,7 @@ class MemberModel(models.Model):
         user = UserAccount.objects.filter(email = self.email)
         if user.exists():
             return '/media/' + user[0].profile_image.name
-        return get_default_profile_image()
+        return '/media/' + get_default_profile_image()
 
     def getStatus(self):
         if not self.signed:
@@ -204,11 +211,32 @@ class DoctorantRelation(models.Model):
         (ENCADRANT, 'ENCADRANT'),
         (CO_ENCADRANT, 'CO.ENCADRANT')
     )
-    doctorant = models.OneToOneField(UserAccount, on_delete=models.CASCADE)
-    #encadrant = models.EmailField()
+    doctorant = models.ForeignKey(UserAccount, on_delete=models.CASCADE)
+    encadrant = models.EmailField()
     userType = models.IntegerField(choices= TYPES, default = 0)
 
     def __str__(self):
         return self.doctorant.email
+    
+    def getEncadrant(self):
+        return UserAccount.objects.get(email = self.encadrant)
+
+    def isValide(doctorant, encadrant, relationType):
+        if encadrant.user_type == MemberModel.DOCTORANT:
+            return False, 'impossible d\'ajouter doctorant comme Co.encadrant'
+        encadrant = encadrant.email
+        
+        sameRelation = DoctorantRelation.objects.filter(doctorant = doctorant, encadrant = encadrant)
+        if sameRelation.exists():
+            return False, 'La relation existe déjà'
+        
+        hasEncadrant = DoctorantRelation.objects.filter(doctorant = doctorant, userType = 0)
+        if hasEncadrant.exists() and relationType == 0:
+            return False, 'A déjà un encadrant'
+        
+        return True,''
+        
+    
+
 
 #endregion

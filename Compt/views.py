@@ -24,6 +24,7 @@ def decorator_user(allowed_roles):
 from .forms import PostModelForm
 
 from .models import PostModel, PostCommentModel
+from Account.models import DoctorantRelation, UserAccount
 
 @method_decorator(decorator_login, name='dispatch')
 class PostsView(View):
@@ -36,11 +37,27 @@ class PostsView(View):
         }
         return context
 
+    def getEquipe(self, request):
+        encadrant = request.user.email
+        mesDoctorants = DoctorantRelation.objects.filter(encadrant = encadrant, userType = 0)
+        c_mesDoctorant = DoctorantRelation.objects.filter(encadrant = encadrant, userType = 1)
+        print(mesDoctorants)
+
+        test = [x.doctorant for x in mesDoctorants]
+        co_encadrant_equipe = DoctorantRelation.objects.filter(doctorant__in = test, userType = 1)
+        print(co_encadrant_equipe)
+        return mesDoctorants, c_mesDoctorant, co_encadrant_equipe
+        
+
     def getPage(self, request):
         form = PostModelForm()
 
         context = self.getContext()
         context['form'] = form
+        data = self.getEquipe(request)
+        context['mesDoctorants'] = data[0]
+        context['c_mesDoctorant'] = data[1]
+        context['co_encadrant_equipe'] = data[2]
         return render(request, self.temp_post, context)
 
     def getPosts(self, request):

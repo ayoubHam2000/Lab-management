@@ -6,16 +6,14 @@ from .models import Formulaire
 
 
 class FormulaireForm(ModelForm):
+	volume = forms.CharField(max_length=50)
+	pr_page = forms.CharField(max_length=50)
+	der_page = forms.CharField(max_length=50)
+	citation = forms.CharField(max_length=50)
 	class Meta:
 		model = Formulaire
-		fields = [
-			'pr_auteur','titre','co_auteur','type_pub','doi','volume','citation','pr_page','der_page','date','journal','issn',
-			'publisher','fichier'
-		]
-	def __init__(self, *args, **kwargs):
-		super(FormulaireForm , self).__init__(*args, **kwargs)
-		self.fields['co_auteur'].widget.attrs.update({
-			'id': 'co_auteur_input',})
+		fields = '__all__'
+        #exclude = ['user']
 
 	# clean_issn nous permet de controler issn
 	def clean_issn(self):

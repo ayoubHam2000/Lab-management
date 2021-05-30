@@ -30,7 +30,7 @@ def Ajouter(request):
 		"title_section" : "Bibliotheque"
 	 }
 		 
-	return render(request,'Biblio/telechargement.html', context)
+	return render(request,'Biblio/ajouter.html', context)
 
 
 #la fonction sert a modifier un block d'informations (une formulaire precise)
@@ -53,7 +53,7 @@ def update(request, f_id):
 		"title_section" : "Bibliotheque"
 	 }
 		 
-	return render(request,'Biblio/telechargement.html', context)
+	return render(request,'Biblio/ajouter.html', context)
 
 def searchAuteur(auteur):
 	listAuteurs = []
@@ -77,6 +77,11 @@ def pagebib(request):
 			formulaires = Formulaire.objects.filter(titre = search)
 		if searchType == 'journal':
 			formulaires = Formulaire.objects.filter(journal = search)
+		if searchType == 'doi':
+			formulaires = Formulaire.objects.filter(doi = search)
+		if searchType == 'issn':
+			formulaires = Formulaire.objects.filter(issn = search)
+
 			
 	context ={
 		

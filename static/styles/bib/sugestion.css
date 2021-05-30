@@ -1,29 +1,20 @@
-
-* {
-    box-sizing: border-box;
+.type-F{
+    width: 250px;
+    height: 100%;
 }
+  
+/*====================================*/
 
-
-
-/*the container must be positioned relative:*/
 .autocomplete {
     position: relative;
     display: inline-block;
-    width:62%;
-    padding-top: 30px;
-    padding-left: 20px;
-    outline: none;
+    height: 100%;
+    width: 100%;
+    margin: 0 15px;
 }
-
-.autocomplete input {
-    border: 1px solid transparent;
-    background-color: #f1f1f1;
-    padding: 10px;
-    font-size: 15px;
-}
-
-.autocomplete input[type=text] {
-    background-color: #f1f1f1;
+  
+.autocomplete input{
+    height: 100%;
     width: 100%;
 }
 
@@ -57,40 +48,38 @@
     color: #ffffff;
 }
 
+/*====================================*/
 
-#button-submit{
+.button_submit, .butt-aj{
     background-color: rgb(42, 7, 75);
-    font-size: 15px;
     padding: 10px ;
     color: white;
     border: none;
-    width: 14%;
+    width: 150px;
+    margin: 0 10px;
 }
 
-#button-submit:hover{
+.button_submit:hover, .butt-aj:hover{
     background-color: #310866;
 }
 
-.type-F{
-    background-color: rgb(42, 7, 75);
-    padding: 8PX;
-    color: rgb(222, 222, 226);
-}
-
 .butt-aj{
-    background-color: rgb(42, 7, 75);
-    padding: 9px;
-    border: none;
-    width: 10%;
-    font-size: 16px;
-    margin-left: 30px;
-}
-
-.butt-aj :hover{
-    color:#c8b6dd ;
+    padding: 0;
+    display: flex;
 }
 
 .butt-aj a{
+    justify-content: center;
+    width: 100%;
+    height: 100%;
+    display: flex;
+    justify-content: center;
+    align-content: center;
+    flex-direction: column;
     color: white;
 }
 
+
+
+  
+  

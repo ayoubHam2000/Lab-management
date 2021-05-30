@@ -1,0 +1,57 @@
+
+/* Card =================================================*/
+
+
+.the_card{
+    width: 400px;
+    padding-bottom: 30px;
+    border-radius: 8px;
+    margin: 0px 0 50px 15px;
+}
+
+.card_title{
+    margin-bottom: 10px;
+    font-weight: bold;
+    font-size: 25px;
+    width: 100%;
+    /*justify-content: center;
+    display: flex;*/
+
+}
+
+/*====================================*/
+
+.member_item{
+    margin-top: 20px;
+}
+
+.member_item_child{
+    display: flex;
+    height: 70px;
+    border: none;
+}
+
+.member_image img{
+    width: 55px;
+    height: 55px;
+}
+/*====================================*/
+
+.member_info{
+    display: flex;
+    flex-flow: row wrap;
+    justify-content: center;
+    margin: 0 0 0 30px;
+}
+
+.member_info p{
+    font-size: 22px;
+    line-height: 1;
+    font-weight: 800;
+    color: black;
+}
+
+.member_info span{
+    line-height: 0;
+    font-size: 12px;
+}
