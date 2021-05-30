@@ -6,73 +6,151 @@
     bibliotheque
 {% endblock title %}
 
-{% block content %}
-<link rel="stylesheet" href="{% static  'styles/bib/page_biblio.css' %}">
-<link rel="stylesheet" href="{% static  'styles/bib/sugestion.css' %}">
 
-<form autocomplete="off" action="./info">
-    <select name="searchType" onchange="setSearchType(event)" class="type-F">
-        <option value="auteur">Auteur</option>
-        <option value="titre">Titre</option>
-        <option value="journal">Journal</option>
-    </select>
-    <div class="autocomplete">
-        <input id="myInput" type="text" name="mySearch" placeholder="search">
+{% block styles %}
+
+    <link rel="stylesheet" href="{% static  'styles/bib/page_biblio.css' %}">
+    <link rel="stylesheet" href="{% static  'styles/bib/sugestion.css' %}">
+    <link rel="stylesheet" href="{% static  'styles/bib/bib.css' %}">
+
+{% endblock styles %}
+
+
+
+{% block content %}
+
+<div class="d-flex justify-content-between" >
+
+
+<form autocomplete="off" action="{% url 'Biblio:information' %}">
+    <div class="form-group search_form">
+
+        <select name="searchType" onchange="setSearchType(event)" class="form-control type-F">
+            <option value="auteur">Auteur</option>
+            <option value="titre">Titre</option>
+            <option value="journal">Journal</option>
+            <option value="doi">DOI</option>
+            <option value="issn">ISSN</option>
+        </select>
+        <div class="autocomplete">
+            <input class="form-control" id="myInput" type="text" name="mySearch" placeholder="search">
+        </div>
+        <button class="form-control button_submit" id = "button-submit" type="submit">Recherche</button>
+
+        
     </div>
-    <input id = "button-submit" type="submit" value="recherche">
-    <button class='butt-aj'><a href="{% url 'Biblio:formulaire' %}" > Ajouter </a></button>
 </form>
 
+<div>
+
+</div>
+{% if request.user.isAdmin or request.user.isEncadrant %}
+    <button class='form-control butt-aj' >
+    
+        <a href="{% url 'Biblio:formulaire' %}" > Ajouter </a>
+    </button>
+  
+{% endif %}
+
+</div>
 
 <!--Make sure the form has the autocomplete function switched off:-->
+
+
     {% for i in formulaires %}
 
 
+<div id="accordion">
 
-<div class='bib_item'>
-    <ul class="tp">
-        <li><b> {{ i.type_pub }}</b></li>
-    </ul>
+    <div class="card bib_item ">
+    
+        <div class="card-header" id="headingOne">
 
-    <ul class="jrnl">
-        <li><b><u>{{ i.journal }}</u></b></li>
-        <li class="issn"><b>ISSN : {{i.issn}}</b></li>
-    </ul>
-    <br>
-    <p id="title_pub">{{ i.titre }}</p>
-    <span id="dots" class="c_dots">...</span>
+            <div class = "mt-3 float-left" >
+            
+                <button width="100%" class="btn btn-link title_btn" data-toggle="collapse" data-target="#collapseOne_{{i.id}}" aria-expanded="false" aria-controls="collapseOne_{{i.id}}">
+                    <h3> 
+                        {{ i.titre }} 
+                        <small class="form-text text-muted type_pub">
+                        ({{ i.type_pub }})
+                        </small> 
+                    </h3>    
 
-    <span id="more" class="c_more">
-        <ul>
-            <li><b>Auteurs : {{i.pr_auteur}} , {{i.get_coAuteur}}</b></li>
-            <li><b> DOI : {{i.doi}}</b></li>
-            <li><b>Volume : {{i.volume}}</b></li>
-            <li><b>Pages : {{i.pr_page}}-{{i.der_page}}</b></li>
-            <li><b>Publisher : {{i.publisher}}</b></li>
-            <li><b>Telecharger l'article : </b><a href="{{i.getLien}}">{{ i.getName }}</a> <br></li>
-        </ul>
+                    <a class="pull-right" href="{{i.getLien}}">
+                        <i class="fa fa-download" aria-hidden="true"></i>
+                    </a>  
+                </button>
+
+                
+
+            </div>
+
+            <div class="float-right" >
+                          
+            </div>
 
 
-        <form id="deleteform" method="POST" action="{% url 'Biblio:deleteFormulaire' i.id %}">
-            {% csrf_token %}
-            <button type="submit" id="myBtn3"> supprimer </button>
-        </form>
-        <button id="myBtn1"><a href="{% url 'Biblio:update' i.id %}">modifier</a></button>
+        
+        </div>
 
-    </span>
+        <div id="collapseOne_{{i.id}}" class="collapse show" aria-labelledby="headingOne" data-parent="#accordion">
+            <div class="card-body">
 
-    <button onclick="myFunction(event)" id="myBtn2">Read more</button>
+                
+                <ul class="list-group" >
+                    <li class="list-group-item" >Journal : {{ i.journal }}</li>
+                    <li class="list-group-item" >Auteurs : {{i.pr_auteur}} , {{i.get_coAuteur}}</li>
+                    <li class="list-group-item" > DOI : {{i.doi}}</li>
+                    <li class="list-group-item" >Volume : {{i.volume}}</li>
+                    <li class="list-group-item" >Pages : {{i.pr_page}}-{{i.der_page}}</li>
+                    <li class="list-group-item" >Publisher : {{i.publisher}}</li>
+                    <li class="list-group-item" >ISSN : {{i.issn}}</li>
+                
+                </ul>
+
+                {% if request.user.isAdmin or request.user.isEncadrant %}
+                
+
+                <div class="buttons_detail" >
+                
+                    <form id="deleteform" method="POST" action="{% url 'Biblio:deleteFormulaire' i.id %}">
+                        {% csrf_token %}
+                        <button type="submit" class="btn btn-danger" id="myBtn3"> supprimer </button>
+                    </form>
+                    
+                    <button class="btn btn-dark" id="myBtn1"><a href="{% url 'Biblio:update' i.id %}">modifier</a></button>
+               
+                </div>
+
+                {% endif %}
+            </div>
+        </div>
+
+
+    </div>
+
 </div>
 
-    {% endfor %}
+
+
+
+
+
+
+
+
+
+ 
+
+{% endfor %}
 
 
 
 {% endblock content %}
 
 
-{% block script %}
+{% block scripts %}
 <script src="{% static 'scriptes/bib/formulaire.js' %}"></script>
 <script src="{% static 'scriptes/bib/sugestion.js' %}"></script>
-{% endblock script %}
+{% endblock scripts %}
 

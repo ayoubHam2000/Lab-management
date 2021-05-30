@@ -1,142 +1,26 @@
-#more {display: none;
-}
-.bib_item{
-	border: 1px solid rgb(189, 183, 183);
-	display: inline-block;
-	width: 75%;
-  box-shadow: 6px 5px rgba(167, 165, 170, 0.3);
-  margin : 50px 115px;
-}
-
-#title_pub{
+#myBtn3, #myBtn1{
+  background-color: #f7f5f8;
+  color: rgb(0, 0, 0);
+  padding: 10px 10px;
+  text-align: center;
+  text-decoration: none;
+  display: inline-block;
   color: black;
-  text-align: center;
-  margin: 0px 15px;
-}
-#myBtn2 {
-	float: right;
-	margin: 10px;
-}
-#myBtn4 {
-	float: right;
-	margin: 10px;
-  margin-top: 4px;
-  margin-right: 190px;
-}
-#myBtn1 {
-	margin: 10px;
-}
-#myBtn3 {
-	margin: 10px;
-  float: left;
-}
-#myBtn2{
-    background-color: #f7f5f8;
-    color: rgb(0, 0, 0);
-    padding: 10px 10px;
-    text-align: center;
-    text-decoration: none;
-    display: inline-block;
-    font-size: 14px;
-    font-family: Verdana;
-}
-#myBtn4{
-  background-color: #310866;
-  color: #f2eff7;
-  padding: 9px 15px;
-  text-align: center;
-  text-decoration: none;
-  display: inline-block;
-  font-size: 14px;
-  font: bold 14px Helvetica;
-  width: 12%;
 }
 
-#myBtn3{
-  background-color: #f7f5f8;
-  color: rgb(0, 0, 0);
-  padding: 10px 10px;
-  text-align: center;
-  text-decoration: none;
-  display: inline-block;
-  font-size: 14px;
-  font-family: Verdana;
-}
 
-#myBtn1{
-  background-color: #f7f5f8;
-  color: rgb(0, 0, 0);
-  padding: 10px 10px;
-  text-align: center;
-  text-decoration: none;
-  display: inline-block;
-  font-size: 14px;
-  font-family: Verdana;
-}
 .bib_item button {
-    transition-duration: 0.3s;
-  }
-  
-#myBtn3:hover {
-    background-color: rgb(224, 22, 22);
-    color: azure;
-  }
-#myBtn2:hover {
-    background-color: rgb(37, 4, 75);
-    color: azure;
-  }
-#myBtn4:hover {
-    background-color: rgb(37, 4, 75);
-    color: azure;
-  }
-#myBtn1:hover {
-    background-color: rgb(37, 4, 75); 
-    color: azure;
+transition-duration: 0.3s;
 }
-#myBtn1 a{
-  color: black;
-  font-size: 14px;
+
+#myBtn3:hover {
+  background-color: rgb(224, 22, 22);
+  color: azure;
+}
+#myBtn1:hover {
+  background-color: rgb(37, 4, 75); 
+  color: azure;
 }
 #myBtn1 a:hover{
-  color: white;
+color: white;
 }
-
-li{
-    list-style: none;
-  }
-
-.jrnl li{
-    float: left;
-  }
-
-.issn{
-    margin-left: 110px;
-  }
-
-
-
-/*partie barre de recherche*/
-/*
-#searchbox {
-
-  padding-left: 100px;
- padding-bottom: 45px;
-  padding-top: 100px;
-}
-/*
-#searchbox input {
-    outline: none;
-    }
-    
-    #searchbox input[type= "text"] {
-    background: url(http://2.bp.blogspot.com/-xpzxYc77ack/VDpdOE5tzMI/AAAAAAAAAeQ/TyXhIfEIUy4/s1600/search-dark.png) no-repeat 10px 6px #fff;
-    border-width: 1px;
-    border-style: solid;
-    border-color: rgb(168, 163, 163);
-    font: bold 15px Arial,Helvetica,Sans-serif;
-    color:black;
-    width: 67%;
-    padding: 8px 15px 8px 30px;
-    }
-    */
-  

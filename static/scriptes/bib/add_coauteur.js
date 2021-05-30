@@ -1,6 +1,6 @@
 function refreshInput(parent){
 	var result = ""
-	var input = document.getElementById("co_auteur_input")
+	var input = document.getElementById("co_auteur")
 
 	console.log('ADD')
 
@@ -10,7 +10,10 @@ function refreshInput(parent){
 	for(i = 0; i < liElements.length; i++){
 		value = liElements[i].getElementsByTagName("div")[0].innerHTML
 		//console.log(value)
-		result += value + ","
+		if(i != liElements.length - 1)
+			result += value + ","
+		else
+			result += value
 	}
 	//console.log(result)
 	input.value = result
@@ -35,11 +38,12 @@ function addLi(inputValue) {
 	var valueDiv = document.createElement("div");
 	valueDiv.innerHTML = inputValue;
 	li.appendChild(valueDiv);
+	li.className = 'list-group-item form-control'
 	parent.appendChild(li);
 	
 		var span = document.createElement("SPAN");
 	var txt = document.createTextNode("\u00D7");
-	span.className = "close";
+	span.className = "list-group-item close";
 	span.onclick = removeElement;
 	span.appendChild(txt);
 	li.appendChild(span);
@@ -64,7 +68,7 @@ function newElement() {
 function init()     {
 	var parent = document.getElementById("myUL")
 
-	var input = document.getElementById("co_auteur_input");
+	var input = document.getElementById("co_auteur");
 	var auteurs = input.value.split(",")
 	for (i = 0; i < auteurs.length; i++) {
 		

@@ -35,7 +35,29 @@ function createComment(data){
     return comment
 }
 
-function postComment(e){
+function buildCommentComponent(post, id){
+    console.log("Not Comment component building one")
+    var commentFather = $(post).find('#comment_component')[0]
+    commentFather.innerHTML = `
+    <div class="box-footer box-comments" style="display: block;">
+        <p>
+        <a class='cmment_collapse' data-toggle="collapse" href="#collapseExample_${id}" role="button" aria-expanded="false" aria-controls="collapseExample">
+            Commentaires 
+        </a>
+        </p>
+        <div class="collapse" id="collapseExample_${id}" >
+        
+        <div id="post_comments" class="card card-body">
+
+
+        </div>
+
+        </div>
+    </div>`
+    return $(post).find('#post_comments')[0]
+}
+
+function postComment(e, id){
     form = $(e.target)
     $.ajax({
         url: form.attr('action'),
@@ -45,10 +67,13 @@ function postComment(e){
             console.log("success post comment");
             post = form[0].parentElement.parentElement
             comments = $(post).find('#post_comments')[0]
-            console.log(post)
-            console.log(comments)
-            console.log(data)
-            console.log(createComment(data))
+            if (!comments){
+                comments = buildCommentComponent(post, id)
+            }
+            //console.log(post)
+            //console.log(comments)
+            //console.log(data)
+            //console.log(createComment(data))
             comments.innerHTML += (createComment(data))
             $(form)[0].reset();
         },

@@ -1,5 +1,5 @@
 body{
-    margin: 0;
+    margin: 15px 0;
 }
 
 .dropdown-menu{
@@ -170,6 +170,10 @@ object-fit: cover;
 .my_menu_btn{
     font-size: 19px;
 }
+
+/*=================================================*/
+
+
 
 
 

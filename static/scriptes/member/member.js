@@ -1,5 +1,5 @@
 //get deactivate delete addMember search
-
+doctorant_id = null;
 
 function getMemberData() {
     console.log("getMemberData")
@@ -147,6 +147,50 @@ function member_Account(e, id){
     closeMenu(e)
 }
 
+function member_associate(e, id, encadrantEmail, type){
+    console.log('Associer Encadrant')
+
+    data = getPostDict()
+    data['id'] = id
+    data['encadrantEmail'] = encadrantEmail
+    data['relationType'] = type
+
+    $.ajax({ 
+        data: data, 
+        type: 'POST',
+        url: URL_MEMBER_ASSOCIER, 
+        success: function(response) { 
+            console.log("Accoier success")
+            successAlert(response)
+            getMemberData()
+            closeModel()
+        },
+        error: function(e, x, r) {
+            showError(e)
+            console.log(e.responseText)
+        }
+    });
+    return false;
+}
+
+function member_associerte_encadrant(e, id){
+    member_associate(e, id, USER_EMAIL, 0)
+}
+
+function member_associerte_co_encadrant_after_modal(e){
+    the_doctorant_id = doctorant_id;
+    co_encadrant_email = $('#co_encadrant_email')[0].value
+    console.log(the_doctorant_id)
+    console.log(co_encadrant_email)
+    member_associate(e, the_doctorant_id, co_encadrant_email, 1)
+    the_doctorant_id = null;
+}
+
+function member_associerte_co_encadrant(e, id){
+    doctorant_id = id;
+    openModel(e, 'co_encadrant')
+}
+
 $(document).ready(function() {
     //to define functions
     searchMember()
@@ -155,3 +199,7 @@ $(document).ready(function() {
     //to init
     getMemberData()
 });
+
+$('#myModal').on('shown.bs.modal', function () {
+    $('#myInput').trigger('focus')
+  })

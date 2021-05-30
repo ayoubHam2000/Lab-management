@@ -75,6 +75,25 @@
   
 </div>
 
+<!-- The Modal -->
+<div id="co_encadrant" class="modal">
+
+    <!-- Modal content -->
+    <div class="modal-content">
+      <span class="close" onclick="closeModel()" >&times;</span>
+      
+        <input id='co_encadrant_email' type="text" class="form-control" placeholder="Email">
+
+        <div class = "ajouter">
+            <button  onclick='member_associerte_co_encadrant_after_modal(event)'> Ok </button>
+          </div>
+
+    </div>
+  
+</div>
+
+
+
 </form>
 
 <div class="row">
@@ -127,10 +146,12 @@
 
 {% block scripts %}
 <script>
+    USER_EMAIL = "{{ request.user.email }} ";
     URL_MEMBER_DATA = "{% url 'Account:memberInfo' 'memberList' %}"
     URL_MEMBER_DEACTIVATE = "{% url 'Account:memberInfo' 'deactivate' %}"
     URL_MEMBER_DELETE = "{% url 'Account:memberInfo' 'delete' %}"
     URL_MEMBER_ACCOUNT = "{% url 'Account:memberInfo' 'account' %}"
+    URL_MEMBER_ASSOCIER = "{% url 'Account:memberInfo' 'associer' %}"
 </script>
 <script src="{% static 'scriptes/member/modal.js' %}" > </script>
 <script src="{% static 'scriptes/member/imageclick.js' %}" > </script>
