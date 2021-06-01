@@ -44,13 +44,13 @@
 <div>
 
 </div>
-{% if request.user.isAdmin or request.user.isEncadrant %}
+
     <button class='form-control butt-aj' >
     
         <a href="{% url 'Biblio:formulaire' %}" > Ajouter </a>
     </button>
   
-{% endif %}
+
 
 </div>
 
@@ -108,21 +108,21 @@
                 
                 </ul>
 
-                {% if request.user.isAdmin or request.user.isEncadrant %}
                 
 
                 <div class="buttons_detail" >
                 
+                {% if request.user.isAdmin or request.user.isEncadrant %}
                     <form id="deleteform" method="POST" action="{% url 'Biblio:deleteFormulaire' i.id %}">
                         {% csrf_token %}
                         <button type="submit" class="btn btn-danger" id="myBtn3"> supprimer </button>
                     </form>
+                {% endif %}
                     
                     <button class="btn btn-dark" id="myBtn1"><a href="{% url 'Biblio:update' i.id %}">modifier</a></button>
                
                 </div>
 
-                {% endif %}
             </div>
         </div>
 

@@ -73,9 +73,18 @@
 
 
 
-    {% if request.user.id == userId %}
+    {% if request.user.id == userId  or request.user.isSuperAdmin %}
     
-    <a href="{% url 'Account:changePassword' userId %}" class="link-primary float-right"> Change Password </a>
+
+    <a href="{% url 'Account:changePassword' userId %}" class="link-primary float-right"> Changer le mot de passe  </a>
+    
+    {% else %}
+        
+        {% if request.user.isAdmin and not form1.instance.isAdmin %}
+    
+            <a href="{% url 'Account:changePassword' userId %}" class="link-primary float-right"> Changer le mot de passe  </a>
+    
+        {% endif %}
 
     {% endif %}
 

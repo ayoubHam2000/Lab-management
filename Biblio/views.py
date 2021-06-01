@@ -1,8 +1,8 @@
+#region import 
 from django.shortcuts import render, HttpResponse
 from django.views import View
 from django.views.generic import TemplateView
 from django.core.files.storage import FileSystemStorage
-
 from django.db.models import Q
 
 
@@ -12,6 +12,19 @@ from .forms import FormulaireForm
 
 from Utils.functions import myredirect
 
+import json  
+
+from Account.authenticate import allowed_users
+from django.contrib.auth.decorators import login_required
+from django.utils.decorators import method_decorator
+decorator_login = [login_required(login_url='/login/')]
+
+
+#endregion
+
+
+
+@login_required(login_url='/login/')
 def Ajouter(request):
 	form = FormulaireForm() 
 	if request.POST :
@@ -20,10 +33,6 @@ def Ajouter(request):
 			form.save()
 			return myredirect('Biblio:information')
 			
-	
-	
-	#form = FormulaireForm() 
-
 	context ={
 		"biblio_active" : "active",
 		"form" : form,
@@ -32,9 +41,9 @@ def Ajouter(request):
 		 
 	return render(request,'Biblio/ajouter.html', context)
 
-
 #la fonction sert a modifier un block d'informations (une formulaire precise)
 #le parametre id sert a definir une formulaire precise chaque formulaire a un identificateurs precise definie par django
+@login_required(login_url='/login/')
 def update(request, f_id):
 	#get
 	formulaire = Formulaire.objects.get(id = f_id)
@@ -55,6 +64,7 @@ def update(request, f_id):
 		 
 	return render(request,'Biblio/ajouter.html', context)
 
+@login_required(login_url='/login/')
 def searchAuteur(auteur):
 	listAuteurs = []
 	formulaires = Formulaire.objects.all()
@@ -64,12 +74,13 @@ def searchAuteur(auteur):
 	return listAuteurs
 			
 #cette fonction sert a la recherche (a partir de la barre de recherche )
+@login_required(login_url='/login/')
 def pagebib(request):
 	searchType = request.GET.get("searchType")
 	search = request.GET.get("mySearch")
 
-	if search == None:            
-		formulaires = Formulaire.objects.all()
+	if search == None or search == "":            
+		formulaires = Formulaire.objects.filter()
 	else:
 		if searchType == 'auteur':
 			formulaires = searchAuteur(search)
@@ -82,29 +93,34 @@ def pagebib(request):
 		if searchType == 'issn':
 			formulaires = Formulaire.objects.filter(issn = search)
 
-			
+	arr = []
+	length = len(formulaires)
+	for i in range(0, length):
+		arr.append(formulaires[length - 1 - i])
+	print(arr)
+
+	#formulaires = formulaires.order_by('-date')
 	context ={
-		
 		"biblio_active" : "active",
-		"formulaires" : formulaires,
+		"formulaires" : arr,
 		"title_section" : "Bibliotheque"
 	}
 
-	if len(formulaires) == 0:   # cette partie si on n'a aucune formulaire 
+	if len(Formulaire.objects.all()) == 0:   # cette partie si on n'a aucune formulaire 
 		return render(request,'Biblio/empty_bib.html',context)
-	
+
 
 	return render(request,'Biblio/page_biblio.html', context)
 
 
-
+@allowed_users(allowed_roles=['admin', 'superadmin', 'encadrant'])
 def deleteF(request, id_F):
 	if request.POST:
 		formulaire = Formulaire.objects.filter(id = id_F)
 		formulaire.delete()
 		return myredirect('Biblio:information')
 
-import json     
+@method_decorator(decorator_login, name='dispatch')
 class searchbib(View):   #c'est la nouvelle version de la partie de recherche 
 	template = 'Biblio/searchbar.html'
 
@@ -153,7 +169,7 @@ class searchbib(View):   #c'est la nouvelle version de la partie de recherche
 		return render(request, self.template, context)
 
 	def get(self, request, type = None):
-		print(type)
+		#print(type)
 		if type == None:
 			return self.pageRecherche(request)
 		else:

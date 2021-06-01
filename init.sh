@@ -8,13 +8,13 @@ superUser+="group1 = Group.objects.get(name = 'doctorant');"
 superUser+="group2 = Group.objects.get(name = 'admin');"
 
 # user 1
-superUser+="ayoub = UserAccount.objects.create_user(email='ayoub@gmail.com', username='user_1', first_name='ayoub', last_name='ben hamou', user_type=1, password='ase123@$');"
+superUser+="ayoub = UserAccount.objects.create_user(email='ayoub@gmail.com', username='user_1', first_name='ayoub', last_name='ben hamou', password='ase123@$');"
 
-superUser+="rachid = UserAccount.objects.create_user(email='rachid@gmail.com', username='user_2', first_name='rachid', last_name='ben hamou', user_type=1, password='ase123@$');"
+superUser+="rachid = UserAccount.objects.create_user(email='rachid@gmail.com', username='user_2', first_name='rachid', last_name='ben hamou', password='ase123@$');"
 
-superUser+="sara = UserAccount.objects.create_user(email='sara@gmail.com', username='user_3', first_name='sara', last_name='Hsaini', user_type=1, password='ase123@$');"
+superUser+="sara = UserAccount.objects.create_user(email='sara@gmail.com', username='user_3', first_name='sara', last_name='Hsaini', password='ase123@$');"
 
-superUser+="salma = UserAccount.objects.create_user(email='salma@gmail.com', username='user_4', first_name='salma', last_name='Azzouzi', user_type=1, password='ase123@$');"
+superUser+="salma = UserAccount.objects.create_user(email='salma@gmail.com', username='user_4', first_name='salma', last_name='Azzouzi', password='ase123@$');"
 
 superUser+="ayoub.save();"
 superUser+="rachid.save();"

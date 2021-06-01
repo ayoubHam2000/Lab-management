@@ -29,7 +29,29 @@ token_generator = AppTokenGenerator()
 
 
 def deleteUser(user):
-    email = user.email
-    doctorantRelation = Account.models.DoctorantRelation.objects.filter(email = 'email')
-    doctorantRelation.delete()
+    #email = user.email
+    #doctorantRelation = Account.models.DoctorantRelation.objects.filter(email = 'email')
+    #doctorantRelation.delete()
     user.delete()
+
+def getUserTypeName(t):
+    if t == 0:
+        return 'Encadrant'
+    if t == 1:
+        return 'Doctorant'
+    if t == 2:
+        return 'Admin'
+    if t == 3:
+        return 'Admin'
+
+def getUserTypeFromGroup(user):
+    group = user.groups.all()[0].name
+    if group == 'admin':
+        return 2
+    if group == 'superadmin':
+        return 2
+    if group == 'doctorant':
+        return 1
+    if group == 'encadrant':
+        return 0
+    return 1

@@ -1,5 +1,5 @@
 #region import
-from django.shortcuts import render,HttpResponse
+from django.shortcuts import render,HttpResponse, redirect
 from django.urls import reverse
 from django.views import View
 from django.contrib.auth.models import Group
@@ -12,9 +12,10 @@ from django.utils.decorators import method_decorator
 from django.contrib.auth.decorators import login_required
 
 #Custom
-from .authenticate import unauthenticated_user, allowed_users, dedicated
+from .authenticate import unauthenticated_user, allowed_users
 from Utils.functions import myredirect, current_milli_time
 from Utils.const import *
+import re 
 
 
 from django.contrib import messages
@@ -56,7 +57,6 @@ from .models import (
 
 decorator_login = [login_required(login_url='/login/')]
 decorator_auth = [unauthenticated_user]
-decorator_dedicated = [dedicated]
 def decorator_user(allowed_roles):
     return [allowed_users(allowed_roles=allowed_roles)]
 
@@ -67,7 +67,7 @@ def decorator_user(allowed_roles):
 # region Register
 
 
-# if already log in go to home page
+# if already login go to home page
 @method_decorator(decorator_auth, name = 'dispatch')
 class LoginView(View):
     template_name = 'Registration/login.html'
@@ -79,7 +79,7 @@ class LoginView(View):
         }
         return render(request, self.template_name, context)
 
-    def checkMemberValide(self, email):
+    def isMemberActive(self, email):
         member = MemberModel.objects.filter(email = email)
         if not member.exists():
             return False
@@ -95,9 +95,8 @@ class LoginView(View):
         user = authenticate(request, email = email, password = password)
 
         if user is not None:
-            isAdmin = user.groups.all()[0].name == 'admin'
-            if not self.checkMemberValide(email) and not isAdmin:
-                messages.info(request, 'votre compte a eté retirer ')
+            if not self.isMemberActive(email):
+                messages.info(request, 'votre compte est désactivé')
             else:
                 login(request, user)
                 return myredirect( 'Account:home' )
@@ -114,7 +113,6 @@ class LogoutView(View):
         logout(request)
         return myredirect( 'Account:login' )
 
-@method_decorator(decorator_login, name='dispatch')
 class HomeView(View):
     def get(self, request):
         return myredirect('Compt:posts')
@@ -125,7 +123,7 @@ class HomeView(View):
 # region Member Management
 
 @method_decorator(decorator_login, name='dispatch')
-@method_decorator(decorator_user(['admin']), name = 'dispatch')
+@method_decorator(decorator_user(['admin', 'superadmin']), name = 'dispatch')
 class MemberManagement(View):
     template_name = 'Registration/addmember.html'
     template_memebers_list = 'Registration\jsPages\members.html'
@@ -134,10 +132,9 @@ class MemberManagement(View):
     def getContext(self):
         context = {
             "addMember_active" : "active",
-            "title_section" : "Add Member "
+            "title_section" : "Add Member"
         }
         return context
-
 
     def searshFilter(self, members, search):
         filterMember = []
@@ -148,26 +145,21 @@ class MemberManagement(View):
 
     def getOrderedListMember(self, datafor):
         dataform = json.loads(datafor)
-        print(dataform)
         search = dataform['search']
         sortType = dataform['sortType']
         order = dataform['order']
 
         reverse = '-' if  order == 'Descendant' else ''
-        #__contains is Django ORM's equivalent to SQL's LIKE keyword.
-        #email__contains=f'%{searsh}%'
         filterMember = MemberModel.objects.all()
-        print(f'------{sortType}')
-        if sortType == 'status ':
+        if sortType == 'status':
             filterMember = filterMember.order_by(f'{reverse}signed', f'{reverse}active')
         else:
             filterMember = filterMember.order_by(f'{reverse}{sortType}')
         
         return self.searshFilter(filterMember, search)
-        #return self.getMemberData(filterMember)
 
     def getDefaultPage(self, request):
-        form = AddMemberModelForm()
+        form = AddMemberModelForm(True) if request.user.isSuperAdmin() else AddMemberModelForm(False)
         context = self.getContext()
         context["form"] = form
         return render(request, self.template_name, context)
@@ -178,24 +170,13 @@ class MemberManagement(View):
         }
         return render(request, self.template_memebers_list, context)
     
-    def getAccount(self, request):
-        id = request.GET.get('id')
-        member = MemberModel.objects.get(id= int(id))
-        user = UserAccount.objects.get(email = member.email)
-        lien = ""
-        if member.userType == MemberModel.ENCADRANT:
-            lien = reverse('Account:updateAccount', kwargs={'userType':'encadrant', 'accountId' : user.id})
-        else:
-            lien = reverse('Account:updateAccount', kwargs={'userType':'doctorant', 'accountId' : user.id})
-        return HttpResponse(lien)
-
     def getRelations(self, request):
         id = request.GET.get('id')
         try:
             member = MemberModel.objects.get(id= int(id))
-            user = UserAccount.objects.get(email = member.email)
+            user = member.user
             f_relations = []
-            if member.userType == MemberModel.ENCADRANT:
+            if member.isEncadrant():
                 relations = DoctorantRelation.objects.filter(encadrant = user)
                 for item in relations:
                     r = {}
@@ -203,7 +184,7 @@ class MemberManagement(View):
                     r["email"] = item.doctorant.email
                     r["getRelationType"] = item.getRelationName()
                     f_relations.append(r)
-            elif member.userType == MemberModel.DOCTORANT:
+            elif member.isDoctorant():
                 relations = DoctorantRelation.objects.filter(doctorant = user)
                 for item in relations:
                     r = {}
@@ -220,24 +201,23 @@ class MemberManagement(View):
             return HttpResponseBadRequest()
 
     def get(self, request, theType = None):
-        print(f'-->{theType}')
+        #print(f'-->{theType}')
         if theType == None:
             return self.getDefaultPage(request)
         
         elif theType == 'memberList':
+            #js member.js
             return self.getMemberList(request)
         
-        elif theType == 'account':
-            return self.getAccount(request)
-        
         elif theType == 'relations':
+            #js member.js
             return self.getRelations(request)
 
     #POST ======================================
     #POST ======================================
 
     def addMember(self, request):
-        form = AddMemberModelForm(request.POST)
+        form = AddMemberModelForm(True, request.POST) if request.user.isSuperAdmin() else AddMemberModelForm(False, request.POST)
      
         email = request.POST.get('email')
         if request.user.email == email:
@@ -249,24 +229,22 @@ class MemberManagement(View):
         return HttpResponse()
 
     def deleteMember(self, request):
-        print("---> delete")
-        id = request.POST.get('id')
-        print(f"---> {id}")
-
-        member = MemberModel.objects.get(id= int(id))
-        user = UserAccount.objects.filter(email = member.email)
-        if user.exists():
-            deleteUser(user)
-        member.delete()
-        return HttpResponse()
-    
-    def deactivateMember(self, request):
-        print("--------------------deactivateMember")
         id = request.POST.get('id')
 
         try:
             member = MemberModel.objects.get(id= int(id))
-            print(member)
+            if member.hasAccount():
+                deleteUser(member.user)
+            member.delete()
+            return HttpResponse()
+        except:
+            return HttpResponseBadRequest()
+    
+    def deactivateMember(self, request):
+        id = request.POST.get('id')
+
+        try:
+            member = MemberModel.objects.get(id= int(id))
             member.active = not member.active
             member.save()
         except Exception as e:
@@ -275,17 +253,12 @@ class MemberManagement(View):
 
     def associerMember(self, request):
         try:
-            print("--------------------Accocier")
             id = request.POST.get('id')
-            email = str(request.POST.get('memberEmail')).strip()
+            email = str(request.POST.get('memberEmail')).strip().lower()
             relationType = int(request.POST.get('relationType'))
 
-            print(f'-->{id}-')
-            print(f'-->{relationType}-')
-            print(f'-->{email}-')
-
             targetMember = MemberModel.objects.get(id = id)
-            targetUser = UserAccount.objects.get(email = targetMember.email) 
+            targetUser = targetMember.user
             userAsscociated = UserAccount.objects.get(email = email)
 
             relation = None
@@ -311,11 +284,33 @@ class MemberManagement(View):
             return HttpResponseBadRequest()
 
     def deleteRelation(self, request):
-        print("--------------------Delete relation")
-        id = request.POST.get('id')
-        relation = DoctorantRelation.objects.get(id = int(id))
-        relation.delete()
-        return HttpResponse('suppression réussie de la relation ')
+        try:
+            id = request.POST.get('id')
+            relation = DoctorantRelation.objects.get(id = int(id))
+            relation.delete()
+            return HttpResponse('suppression réussie de la relation ')
+        except:
+            return HttpResponseBadRequest()
+
+    def encadrant_switch_admin(self, request):
+        try:
+            id = request.POST.get('id')
+            member = MemberModel.objects.get(id = int(id))
+            user = member.user
+            groupAdmin = Group.objects.get(name = 'admin')
+            groupEncadrant = Group.objects.get(name = 'encadrant')
+            if user.isAdmin():
+                user.groups.clear()
+                user.groups.add(groupEncadrant)
+                member.userType = ENCADRANT
+            else:
+                user.groups.clear()
+                user.groups.add(groupAdmin)
+                member.userType = ADMIN
+            member.save()
+            return HttpResponse()
+        except:
+            return HttpResponseBadRequest()
 
     def post(self, request, theType = None):
         if theType == 'add':
@@ -326,6 +321,8 @@ class MemberManagement(View):
             return self.deactivateMember(request)
         elif theType == 'associate':
             return self.associerMember(request)
+        elif theType == 'encadrant_switch_admin':
+            return self.encadrant_switch_admin(request)
         elif theType == 'deleteRelation':
             return self.deleteRelation(request)
 
@@ -339,7 +336,10 @@ class CheckEmailView(View):
             "form" : form
         }
         return render(request, self.template_name, context)
-    
+
+    #POST ======================================
+    #POST ======================================
+
     def sendEmail(self, request, member):
         #transform the email to encoded text for safe url
         uidb64 = urlsafe_base64_encode(force_bytes(member.email))
@@ -357,14 +357,15 @@ class CheckEmailView(View):
             [member.email],
             fail_silently=True,
         )
-        print(activate_url)
+        #print(activate_url)
+        #return redirect(activate_url)
 
     def post(self, request):
         form = CheckEmailForm(request.POST)
         if form.is_valid():
             email = form.cleaned_data.get('email')
             member = MemberModel.objects.filter(email = email)[0]
-            alreadySigned = member.signed
+            alreadySigned = member.hasAccount()
             if alreadySigned:
                 return myredirect('Account:login')
             else:
@@ -379,8 +380,9 @@ class MemberRegister(View):
     encadrant_register_template = 'Registration/registerEncadrant.html'
     doctorant_register_template = 'Registration/registerDoctorant.html'
 
-    def saveMember(self, member):
+    def saveMember(self, member, user):
         member.signed = True
+        member.user = user
         member.save()
 
     def doctorant(self, request, member):
@@ -392,7 +394,7 @@ class MemberRegister(View):
             if form1.is_valid() and form2.is_valid():
                 user = form1.saveUser(member)
                 form2.saveDoctorant(user)
-                self.saveMember(member)
+                self.saveMember(member, user)
                 return myredirect('Account:login')
 
         context = {"form1" : form1,"form2" : form2,}
@@ -407,7 +409,7 @@ class MemberRegister(View):
             if form1.is_valid() and form2.is_valid():
                 user = form1.saveUser(member)
                 form2.saveEncadrant(user)
-                self.saveMember(member)
+                self.saveMember(member, user)
                 return myredirect('Account:login')
         
         context = {"form1" : form1,"form2" : form2,}
@@ -415,16 +417,15 @@ class MemberRegister(View):
         
     def successToken(self, request, member):
         # if already has an account
-        userAccount = UserAccount.objects.filter(email = member.email)
-        if userAccount.exists():
+        if member.signed:
             return myredirect('Account:login')
     
         # else create new account for member
-        if member.userType == MemberModel.ENCADRANT:
+        if member.isEncadrant():
             return self.encadrant(request, member)
-        if member.userType == MemberModel.DOCTORANT:
+        if member.isDoctorant():
             return self.doctorant(request, member)
-        return render(request, P_error)
+        return render(request, P_404)
 
     def checkTocken(self, request, uidb64, token):
         try:
@@ -434,9 +435,9 @@ class MemberRegister(View):
             if is_valid_token:
                 return self.successToken(request, member)
         except Exception as e:
-            print("MemberRegister Link Error")
+            #print("MemberRegister Link Error")
             pass
-        return render(request, P_error)
+        return render(request, P_404)
 
     def get(self, request, uidb64, token):
         return self.checkTocken(request, uidb64, token)
@@ -455,7 +456,7 @@ class AccountUpdate(View):
 
     def getContext(self):
         context = {
-            "title_section" : "Account"
+            "title_section" : "Compte"
         }
         return context
 
@@ -512,57 +513,70 @@ class AccountUpdate(View):
         context['userId'] = user.id
         return render(request, self.temp_encadrant, context)
 
-    def getAccount(self, request, userType, id, fromMember):
-        user = None
-        if fromMember:
-            member = MemberModel.objects.get(id = id)  
-            user = member.user
-        else:
-            user = UserAccount.objects.get(id = id)
-        if userType == 0:
+    def getPage(self, request, accountId):
+        # accountId -> by UserAccount 
+        try:
+            user = UserAccount.objects.get(id = accountId)
+        except:
+            return render(request, P_404)
+        if user.isEncadrant():
             return self.encadrant(request, user)
-        else:
+        if user.isDoctorant():
             return self.doctorant(request, user)
-
-
-    def getPage(self, request, userType, accountId):
-        if userType == 'encadrant_member':
-            return self.getAccount(request, 0, accountId, True)
-        if userType == 'doctorant_member':
-            return self.getAccount(request, 1, accountId, True)
-        if userType == 'encadrant_account':
-            return self.getAccount(request, 0, accountId, False)
-        if userType == 'doctorant_account':
-            return self.getAccount(request, 1, accountId, False)
         return render(request, P_404)
         
-
-    def get(self, request, userType, accountId):
-        return self.getPage(request, userType, accountId)
+    def get(self, request, accountId):
+        return self.getPage(request, accountId)
     
-    def post(self, request, userType, accountId):
-        return self.getPage(request, userType, accountId)
+    def post(self, request, accountId):
+        return self.getPage(request, accountId)
 
 class ChangePassword(View):
     tmp_changePasword = 'Registration/account/change_password.html'
 
-    def page(self, request, userId):
-        form = UpdatePasswordModelFrom()
-        if request.POST:
-            user = UserAccount.objects.get(id = userId)
-            form = UpdatePasswordModelFrom(request.POST, instance=user)
-            
-            if form.is_valid:
+    def isPasswordValide(self, password):
+        #password regex
+        r  = r"^(?=.*?[a-z])(?=.*?[0-9]).{8,}$"
+        return re.match(r, password)
+
+    def changePassword(self, request, user):
+        form = UpdatePasswordModelFrom(request.POST, instance=user)
+        
+        if form.is_valid:
+            password = form['password'].value()
+            if self.isPasswordValide(password):
                 messages.info(request, 'Le mot de passe a été changé avec succès ')
-                password = form['password'].value()
                 user.set_password(password)
                 user.save()
                 login(request, user)
+            else:
+                form.add_error('password', STRONG_PASSWORD)
+        return form
 
-        context = {
-            'form' : form
-        }
-        return render(request, self.tmp_changePasword, context)
+    def checkAccess(self, request, user):
+        isTheSameUser = request.user.id == user.id
+        if isTheSameUser:
+            return isTheSameUser
+        isAdmin = request.user.isAdmin() and not user.isAdmin()
+        if isAdmin:
+            return isAdmin
+        return False
+
+    def page(self, request, userId):
+        form = UpdatePasswordModelFrom()
+        try:
+            user = UserAccount.objects.get(id = userId)
+            #if other users try to change the link
+            if not self.checkAccess(request, user):
+                return render(request, P_404)
+            if request.POST:
+                form = self.changePassword(request, user)
+            context = {
+                'form' : form
+            }
+            return render(request, self.tmp_changePasword, context)
+        except:
+            return render(request, P_404)
 
     def get(self, request, userId):
         return self.page(request, userId)

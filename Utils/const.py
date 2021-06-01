@@ -11,6 +11,12 @@ DATE_FORMAT =  "%B %d, %Y, %H:%M %p."
 
 P_404 = 'Error/404.html'
 
+ENCADRANT = 0
+DOCTORANT = 1
+ADMIN = 2
+SUPERADMIN = 3
+CO_ENCADRANT = 1
+
 
 UNIVERSITIES = (
     (0, 'Iben tofail'),
@@ -30,4 +36,8 @@ THEME = (
     ('informatique')
 )
 
+
+#############################
+
+STRONG_PASSWORD="Vous devez saisir un mot de passe fort: au moins huit caractères, au moins une lettre et un chiffre"
 

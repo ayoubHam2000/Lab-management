@@ -35,8 +35,8 @@ function errorAlert(message){
 }
 
 function showError(e){
-    console.log(e.responseText)
-    if(e.responseText.length < 100 || e.responseText.length == 0){
+    //console.log(e.responseText)
+    if(e.responseText.length < 100 && e.responseText.length > 1){
         errorAlert(e.responseText)
     }else{
         errorAlert("quelque chose s'est mal passé ")
@@ -54,7 +54,7 @@ function showDefaultError(){
 
 function ft_confirm(message = ""){
     if(message == ""){
-        return confirm("Are you sure ??")
+        return confirm("Êtes-vous sûr ??")
     }
     return confirm(message)
 }

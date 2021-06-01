@@ -24,7 +24,7 @@
         
         <div class = 'error_box'>
         
-            {% for key, value in form1.errors.items  %}
+            {% for key, value in form.errors.items  %}
                 <div>{{value}}</div>
             {% endfor %}
             {% for key, value in form2.errors.items  %}
@@ -71,9 +71,18 @@
 
     <button type="submit" class="btn btn-primary btn_post">Submit</button>
 
-    {% if request.user.id == userId %}
+    {% if request.user.id == userId  or request.user.isSuperAdmin %}
     
-    <a href="{% url 'Account:changePassword' userId %}" class="link-primary float-right"> Change Password </a>
+
+    <a href="{% url 'Account:changePassword' userId %}" class="link-primary float-right"> Changer le mot de passe  </a>
+    
+    {% else %}
+        
+        {% if request.user.isAdmin and not form1.instance.isAdmin %}
+    
+            <a href="{% url 'Account:changePassword' userId %}" class="link-primary float-right"> Changer le mot de passe  </a>
+    
+        {% endif %}
 
     {% endif %}
 

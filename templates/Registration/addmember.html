@@ -51,12 +51,12 @@
     <div class="modal-content">
       <span class="close" onclick="closeModel()" >&times;</span>
       
-        <label> Sort By </label>
+        <label> Trier par </label>
         <select class='member_select' name="cars" id="cars">
             <option value="date">Date</option>
             <option value="email">E-mail</option>
             <option value="userType">Type d'utilisateur </option>
-            <option value="status ">Statut</option>
+            <option value="status">Statut</option>
         </select>
         
         <label> Order </label>
@@ -177,10 +177,12 @@
     URL_MEMBER_DATA = "{% url 'Account:memberInfo' 'memberList' %}"
     URL_MEMBER_DEACTIVATE = "{% url 'Account:memberInfo' 'deactivate' %}"
     URL_MEMBER_DELETE = "{% url 'Account:memberInfo' 'delete' %}"
-    URL_MEMBER_ACCOUNT = "{% url 'Account:memberInfo' 'account' %}"
     URL_MEMBER_GET_RELATION = "{% url 'Account:memberInfo' 'relations' %}"
     URL_MEMBER_ASSOCIER = "{% url 'Account:memberInfo' 'associate' %}"
+    URL_MEMBER_SWITCH_ADMIN = "{% url 'Account:memberInfo' 'encadrant_switch_admin' %}"
     URL_MEMBER_DELETE_RELATION = "{% url 'Account:memberInfo' 'deleteRelation' %}"
+
+    
 </script>
 <script src="{% static 'scriptes/member/modal.js' %}" > </script>
 <script src="{% static 'scriptes/member/imageclick.js' %}" > </script>
