@@ -1,1 +1,0 @@
-* when member becoome not active => user also
