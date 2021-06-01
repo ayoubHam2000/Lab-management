@@ -28,6 +28,7 @@ copy and past these lines to .env
 # les configuration de serveur d'email
 export EMAIL_HOST=smtp.gmail.com
 export EMAIL_HOST_USER=gmail
+
 export EMAIL_HOST_PASSWORD=gmail_password
 
 
@@ -53,5 +54,6 @@ et libérez ces lignes
 # DEFAULT_FROM_EMAIL = config['EMAIL_HOST_USER']
 
 sinon l'e-mail sera affiché dans le terminal 
+
 
 
