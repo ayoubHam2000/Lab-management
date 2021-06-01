@@ -41,6 +41,7 @@ from .forms import (
     DoctorantUpdateModelForm,
     UserUpdateForm,
     EncadrantUpdateModelForm,
+    UpdatePasswordModelFrom,
 )
 
 from .models import (
@@ -115,13 +116,7 @@ class LogoutView(View):
 
 @method_decorator(decorator_login, name='dispatch')
 class HomeView(View):
-    #template_name = 'Registration/home.html'
     def get(self, request):
-        # context = {
-        #     "home_active" : "active",
-        #     "title_section" : "Home"
-        # }
-        # return render(request, self.template_name, context)
         return myredirect('Compt:posts')
 
         
@@ -130,10 +125,11 @@ class HomeView(View):
 # region Member Management
 
 @method_decorator(decorator_login, name='dispatch')
-@method_decorator(decorator_user(['admin', 'encadrant']), name = 'dispatch')
+@method_decorator(decorator_user(['admin']), name = 'dispatch')
 class MemberManagement(View):
     template_name = 'Registration/addmember.html'
     template_memebers_list = 'Registration\jsPages\members.html'
+    template_relations = 'Registration\include\list_relations.html'
 
     def getContext(self):
         context = {
@@ -180,8 +176,8 @@ class MemberManagement(View):
         context = {
             "members" : self.getOrderedListMember(request.GET.get('dataform'))
         }
-        return render(request, self.template_memebers_list, context)       
-
+        return render(request, self.template_memebers_list, context)
+    
     def getAccount(self, request):
         id = request.GET.get('id')
         member = MemberModel.objects.get(id= int(id))
@@ -193,6 +189,35 @@ class MemberManagement(View):
             lien = reverse('Account:updateAccount', kwargs={'userType':'doctorant', 'accountId' : user.id})
         return HttpResponse(lien)
 
+    def getRelations(self, request):
+        id = request.GET.get('id')
+        try:
+            member = MemberModel.objects.get(id= int(id))
+            user = UserAccount.objects.get(email = member.email)
+            f_relations = []
+            if member.userType == MemberModel.ENCADRANT:
+                relations = DoctorantRelation.objects.filter(encadrant = user)
+                for item in relations:
+                    r = {}
+                    r["id"] = item.id
+                    r["email"] = item.doctorant.email
+                    r["getRelationType"] = item.getRelationName()
+                    f_relations.append(r)
+            elif member.userType == MemberModel.DOCTORANT:
+                relations = DoctorantRelation.objects.filter(doctorant = user)
+                for item in relations:
+                    r = {}
+                    r["id"] = item.id
+                    r["email"] = item.encadrant.email
+                    r["getRelationType"] = item.getRelationName()
+                    f_relations.append(r)
+            
+            context = {
+                "relations" : f_relations
+            }
+            return render(request, self.template_relations, context)
+        except Exception as e:
+            return HttpResponseBadRequest()
 
     def get(self, request, theType = None):
         print(f'-->{theType}')
@@ -204,6 +229,9 @@ class MemberManagement(View):
         
         elif theType == 'account':
             return self.getAccount(request)
+        
+        elif theType == 'relations':
+            return self.getRelations(request)
 
     #POST ======================================
     #POST ======================================
@@ -246,28 +274,48 @@ class MemberManagement(View):
         return HttpResponse() 
 
     def associerMember(self, request):
-        print("--------------------Accocier")
+        try:
+            print("--------------------Accocier")
+            id = request.POST.get('id')
+            email = str(request.POST.get('memberEmail')).strip()
+            relationType = int(request.POST.get('relationType'))
+
+            print(f'-->{id}-')
+            print(f'-->{relationType}-')
+            print(f'-->{email}-')
+
+            targetMember = MemberModel.objects.get(id = id)
+            targetUser = UserAccount.objects.get(email = targetMember.email) 
+            userAsscociated = UserAccount.objects.get(email = email)
+
+            relation = None
+            if targetMember.isEncadrant():
+                relation = DoctorantRelation(
+                    doctorant = userAsscociated, 
+                    encadrant = targetUser, 
+                    relationType = relationType)
+            
+            if targetMember.isDoctorant():
+                relation = DoctorantRelation(
+                    doctorant = targetUser, 
+                    encadrant = userAsscociated, 
+                    relationType = relationType)
+            
+            
+            if not relation.isValide()[0]:
+                return HttpResponseBadRequest(relation.isValide()[1])
+            
+            relation.save()
+            return HttpResponse('La relation a été créée avec succès')
+        except Exception as e:
+            return HttpResponseBadRequest()
+
+    def deleteRelation(self, request):
+        print("--------------------Delete relation")
         id = request.POST.get('id')
-        relationType = int(request.POST.get('relationType'))
-        encadrantEmail = str(request.POST.get('encadrantEmail')).strip()
-
-
-        doctorantMember = MemberModel.objects.get(id= int(id))
-        doctorant = UserAccount.objects.get(email = doctorantMember.email)
-        encadrant = UserAccount.objects.filter(email = encadrantEmail)
-        
-        if not encadrant.exists():
-            return HttpResponseBadRequest('L\'e-mail n\'existe pas')
-        encadrant = encadrant[0]
-
-        isValide = DoctorantRelation.isValide(doctorant, encadrant, relationType)
-        if not isValide[0]:
-            return HttpResponseBadRequest(isValide[1])
-        
-        relation = DoctorantRelation(doctorant = doctorant, encadrant = encadrant.email, userType = relationType)
-        relation.save()
-        return HttpResponse('Relation Created Successfully')
-
+        relation = DoctorantRelation.objects.get(id = int(id))
+        relation.delete()
+        return HttpResponse('suppression réussie de la relation ')
 
     def post(self, request, theType = None):
         if theType == 'add':
@@ -276,8 +324,10 @@ class MemberManagement(View):
             return self.deleteMember(request)
         elif theType == 'deactivate':
             return self.deactivateMember(request)
-        elif theType == 'associer':
+        elif theType == 'associate':
             return self.associerMember(request)
+        elif theType == 'deleteRelation':
+            return self.deleteRelation(request)
 
 @method_decorator(decorator_auth, name = 'dispatch')
 class CheckEmailView(View):
@@ -409,30 +459,42 @@ class AccountUpdate(View):
         }
         return context
 
-    def doctorant(self, request, accountId):
+    def getDoctorantForm(self, doctorant, request, post):
+        allowed = request.user.isAdmin() or DoctorantRelation.objects.filter(encadrant = request.user, relationType = 0).exists()
+        if not post:
+            if allowed:
+                return DoctorantUpdateModelForm(False, instance = doctorant)
+            else:
+                return DoctorantUpdateModelForm(True, instance = doctorant)
+        else:
+            if allowed:
+                return DoctorantUpdateModelForm(False, request.POST, instance = doctorant)
+            else:
+                return DoctorantUpdateModelForm(True, request.POST, instance = doctorant)    
+
+    def doctorant(self, request, user):
         context = self.getContext()
         
-        user = UserAccount.objects.get(id = accountId)
         doctorant = DoctorantModel.objects.get(user = user)
 
         form1 = UserUpdateForm(instance = user)
-        form2 = DoctorantUpdateModelForm(instance = doctorant)
+        form2 = self.getDoctorantForm(doctorant, request, False)
         
         if request.method == "POST":
             form1 = UserUpdateForm(request.POST, request.FILES, instance = user)
-            form2 = DoctorantUpdateModelForm(request.POST, instance = doctorant)
+            form2 = self.getDoctorantForm(doctorant, request, True)
             if form1.is_valid() and form2.is_valid():
                 form1.save()
                 form2.save()
         
         context["form1"] = form1
         context["form2"] = form2
+        context['userId'] = user.id
         return render(request, self.temp_doctorant, context)
 
-    def encadrant(self, request, accountId):
+    def encadrant(self, request, user):
         context = self.getContext()
         
-        user = UserAccount.objects.get(id = accountId)
         encadrant = EncadrantModel.objects.get(user = user)
 
         form1 = UserUpdateForm(instance = user)
@@ -447,13 +509,33 @@ class AccountUpdate(View):
         
         context["form1"] = form1
         context["form2"] = form2
+        context['userId'] = user.id
         return render(request, self.temp_encadrant, context)
 
+    def getAccount(self, request, userType, id, fromMember):
+        user = None
+        if fromMember:
+            member = MemberModel.objects.get(id = id)  
+            user = member.user
+        else:
+            user = UserAccount.objects.get(id = id)
+        if userType == 0:
+            return self.encadrant(request, user)
+        else:
+            return self.doctorant(request, user)
+
+
     def getPage(self, request, userType, accountId):
-        if userType == 'encadrant':
-            return self.encadrant(request, accountId)
-        if userType == 'doctorant':
-            return self.doctorant(request, accountId)
+        if userType == 'encadrant_member':
+            return self.getAccount(request, 0, accountId, True)
+        if userType == 'doctorant_member':
+            return self.getAccount(request, 1, accountId, True)
+        if userType == 'encadrant_account':
+            return self.getAccount(request, 0, accountId, False)
+        if userType == 'doctorant_account':
+            return self.getAccount(request, 1, accountId, False)
+        return render(request, P_404)
+        
 
     def get(self, request, userType, accountId):
         return self.getPage(request, userType, accountId)
@@ -461,6 +543,31 @@ class AccountUpdate(View):
     def post(self, request, userType, accountId):
         return self.getPage(request, userType, accountId)
 
+class ChangePassword(View):
+    tmp_changePasword = 'Registration/account/change_password.html'
 
+    def page(self, request, userId):
+        form = UpdatePasswordModelFrom()
+        if request.POST:
+            user = UserAccount.objects.get(id = userId)
+            form = UpdatePasswordModelFrom(request.POST, instance=user)
+            
+            if form.is_valid:
+                messages.info(request, 'Le mot de passe a été changé avec succès ')
+                password = form['password'].value()
+                user.set_password(password)
+                user.save()
+                login(request, user)
+
+        context = {
+            'form' : form
+        }
+        return render(request, self.tmp_changePasword, context)
+
+    def get(self, request, userId):
+        return self.page(request, userId)
+    
+    def post(self, request, userId):
+        return self.page(request, userId)
 
 # endregion

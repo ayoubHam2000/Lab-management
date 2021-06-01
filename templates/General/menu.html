@@ -47,7 +47,7 @@
             </button>
 
             <div class="dropdown-menu dropdown-menu-right">
-              <a class="dropdown-item" href="{% url 'Account:updateAccount' request.user.getUserType request.user.id %}">Account</a>
+              <a class="dropdown-item" href="{% url 'Account:updateAccount' request.user.getAccountLinkType request.user.id %}">Account</a>
               <a class="dropdown-item" href="{% url 'Account:logout' %}">Logout</a>
             </div>
 

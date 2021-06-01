@@ -10,12 +10,11 @@ VOLUME_MAX=30
 DATE_FORMAT =  "%B %d, %Y, %H:%M %p."
 
 P_404 = 'Error/404.html'
-P_error = 'Error/error.html'
 
 
 UNIVERSITIES = (
-    ('Iben tofail', 'Iben tofail'),
-    ('other', 'other')
+    (0, 'Iben tofail'),
+    (1, 'other')
 )
 
 TYPE_PUB = (

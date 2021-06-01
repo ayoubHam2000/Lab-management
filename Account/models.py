@@ -6,6 +6,8 @@ from PIL import Image
 import os
 from django.core.files.storage import FileSystemStorage
 
+# from django import template
+# register = template.Library()
 
 #region User Account
 def get_default_profile_image():
@@ -25,7 +27,7 @@ class MyUserManager(BaseUserManager):
             raise ValueError("L'utilisateur doit avoir un prenom")
         if not last_name:
             raise ValueError("L'utilisateur doit avoir un nom")
-        if not user_type:
+        if user_type == None:
             raise ValueError("L'utilisateur doit avoir un user type")
         
         user = self.model(
@@ -114,6 +116,10 @@ class UserAccount(AbstractBaseUser, PermissionsMixin):
     def isEncadrant(self):
         return self.groups.filter(name='encadrant').exists() or self.isAdmin()
     
+    def isDoctorant(self):
+        return self.groups.filter(name='doctorant').exists()
+
+
     def getFullName(self):
         return f'{self.first_name} {self.last_name}'
 
@@ -122,6 +128,13 @@ class UserAccount(AbstractBaseUser, PermissionsMixin):
             return 'encadrant'
         elif self.user_type == 1:
             return 'doctorant'
+        return ''
+
+    def getAccountLinkType(self):
+        if self.isEncadrant():
+            return 'encadrant_account'
+        if self.isDoctorant():
+            return 'doctorant_account'
         return ''
 
     def save(self, *args, **kwargs):
@@ -146,23 +159,24 @@ class UserAccount(AbstractBaseUser, PermissionsMixin):
 
 class DoctorantModel(models.Model):
     user = models.OneToOneField(UserAccount, on_delete=models.CASCADE)
-    university = models.CharField(max_length=MAXCHAR)
+    university = models.IntegerField(choices=UNIVERSITIES, default=0)
     apogee = models.CharField(max_length=APOGEE_MAX)
     cin = models.CharField(max_length=CIN_MAX)
     these = models.TextField(blank=True)
-
     def __str__(self):
         return self.user.email
 
 class EncadrantModel(models.Model):
     user = models.OneToOneField(UserAccount, on_delete=models.CASCADE)
-    university = models.CharField(max_length=MAXCHAR)
+    university = models.IntegerField(choices=UNIVERSITIES, default=0)
 
     def __str__(self):
         return self.user.email
 
-from django import template
-register = template.Library()
+class SuperAdminModel(models.Model):
+    user = models.OneToOneField(UserAccount, on_delete=models.CASCADE)
+    def __str__(self):
+        return self.user.getFullName()
 
 class MemberModel(models.Model):
     ENCADRANT = 0
@@ -171,14 +185,18 @@ class MemberModel(models.Model):
 
     TYPES = (
         (ENCADRANT, 'ENCADRANT'),
-        (DOCTORANT, 'DOCTORANT')
+        (DOCTORANT, 'DOCTORANT'),
+        (ADMIN, 'ADMIN'),
     )
 
     email = models.EmailField(unique=True)
     userType = models.IntegerField(choices= TYPES, default = 1)
     date = models.DateTimeField(auto_now_add=True)
-    signed = models.BooleanField(default= False)
     active = models.BooleanField(default=True)
+    user = models.OneToOneField(UserAccount, null=True, related_name='user_member', on_delete=models.SET_NULL) 
+
+    def signed(self):
+        return self.user != None
 
     def __str__(self):
         return str(self.email)
@@ -189,17 +207,38 @@ class MemberModel(models.Model):
             return '/media/' + user[0].profile_image.name
         return '/media/' + get_default_profile_image()
 
-    def getStatus(self):
-        if not self.signed:
-            return 2
-        else:
-            if self.active:
-                return 1
-            else:
-                return 0
+    def hasAccount(self):
+        user = UserAccount.objects.filter(email = self.email)
+        return user.exists()
     
+    def getUser(self):
+        user = UserAccount.objects.filter(email = self.email)
+        if user.exists():
+            return user[0]
+        
+    def isEncadrant(self):
+        return self.userType in [MemberModel.ADMIN, MemberModel.ENCADRANT]
+    
+    def isDoctorant(self):
+        return self.userType == MemberModel.DOCTORANT
+
     def getUserType(self):
-        return MemberModel.TYPES[self.userType][1]
+        if self.isEncadrant():
+            return 'Encadrant'
+        if self.isDoctorant():
+            return 'Doctorant'
+        return ''   
+
+    def getAccountLinkType(self):
+        if self.isEncadrant():
+            return 'encadrant_member'
+        if self.isDoctorant():
+            return 'doctorant_member'
+        return ''
+    
+    def isSuperAdmin(self):
+        isSuperAdmin = SuperAdminModel.objects.filter(user = self.user)
+        return isSuperAdmin.exists()
     
 
 
@@ -212,8 +251,8 @@ class DoctorantRelation(models.Model):
         (CO_ENCADRANT, 'CO.ENCADRANT')
     )
     doctorant = models.ForeignKey(UserAccount, on_delete=models.CASCADE)
-    encadrant = models.EmailField()
-    userType = models.IntegerField(choices= TYPES, default = 0)
+    encadrant = models.ForeignKey(UserAccount, null=False, related_name='doctorant_encadrant', on_delete=models.CASCADE) 
+    relationType = models.IntegerField(choices= TYPES, default = 0)
 
     def __str__(self):
         return self.doctorant.email
@@ -221,22 +260,33 @@ class DoctorantRelation(models.Model):
     def getEncadrant(self):
         return UserAccount.objects.get(email = self.encadrant)
 
-    def isValide(doctorant, encadrant, relationType):
-        if encadrant.user_type == MemberModel.DOCTORANT:
-            return False, 'impossible d\'ajouter doctorant comme Co.encadrant'
-        encadrant = encadrant.email
-        
+    def getRelationName(self):
+        return self.TYPES[self.relationType][1]
+
+    def isValide(self):
+        doctorant = self.doctorant
+        encadrant = self.encadrant
+        relationType = self.relationType
+
+        if doctorant.email == encadrant.email:
+            return False, 'même email'
+        if not doctorant.isDoctorant():
+            return False, 'impossible d\'associer encadrant à encadrant'
+        if not encadrant.isEncadrant():
+            return False, 'impossible d\'associer doctorant à doctorant'
+
         sameRelation = DoctorantRelation.objects.filter(doctorant = doctorant, encadrant = encadrant)
         if sameRelation.exists():
             return False, 'La relation existe déjà'
-        
-        hasEncadrant = DoctorantRelation.objects.filter(doctorant = doctorant, userType = 0)
-        if hasEncadrant.exists() and relationType == 0:
-            return False, 'A déjà un encadrant'
+
+        if relationType == 0:
+            hasEncadrant = DoctorantRelation.objects.filter(doctorant = doctorant, relationType = 0)
+            if hasEncadrant.exists():
+                return False, 'A déjà un encadrant'
         
         return True,''
         
-    
+
 
 
 #endregion

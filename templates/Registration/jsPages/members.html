@@ -1,14 +1,81 @@
 
 {% for member in members %}
 
-{% if member.email != request.user.email %}
 
 <tr class="alert" role="alert">
     
     <td class="d-flex align-items-center">
 
-        <div class="img" onclick='openMenu(event, {{member.id}}, {{member.getStatus}})' style='background-image: url( "{{member.getImage}}" );' ></div>
         
+        
+        <div class="btn-group drop_airrow box-tools my_menu_post">
+        
+            <div class="dropdown">
+
+
+
+{% if not member.hasAccount %}
+    <div class="img " onclick="noAccount()" style='background-image: url( "{{member.getImage}}" );' ></div>
+{% else %}
+
+    <div class="img " data-toggle="dropdown"  style='background-image: url( "{{member.getImage}}" );' ></div>
+            
+    {% if not member.isSuperAdmin %}
+
+        <div class="dropdown-menu dropdown-menu-left">
+    
+            <a class="dropdown-item" 
+            href="{% url 'Account:updateAccount' member.getAccountLinkType member.id %}">Account</a>
+
+            <a class="dropdown-item" 
+            onclick="member_relations_mg(event, {{ member.id }})">Relations</a>
+            
+            {% if member.active %}
+                
+                <a class="dropdown-item" 
+                    onclick="deactivate_activate_member(event, {{ member.id }})">Désactiver  Account</a>
+                </div>
+
+            {% else %}
+
+                <a class="dropdown-item" 
+                    onclick="deactivate_activate_member(event, {{ member.id }})">Activer Account</a>
+            
+            {% endif %}
+
+        </div>
+                
+    {% else %}
+
+
+        {% if member.email == request.user.email %}
+        
+            <div class="dropdown-menu dropdown-menu-left">
+                    
+                <a class="dropdown-item" 
+                href="{% url 'Account:updateAccount' member.getAccountLinkType member.id %}">Account</a>
+
+                <a class="dropdown-item" 
+                onclick="member_relations_mg(event, {{ member.id }})">Relations</a>
+                        
+            </div>               
+                
+        {% endif %}
+    
+    {% endif %}   
+
+{% endif %}   
+
+
+
+           
+
+                
+            </div>
+        
+        </div>
+
+
         <div class="pl-3 email">
             <span>{{ member.email }}</span>
             <span class='detail_member' >Added: {{ member.date }}</span>
@@ -37,14 +104,16 @@
     
 
     <td>
-        <button class="close" onclick="delete_member(event, {{member.id}})" >
-            <span><i class="fa fa-close"></i></span>
-        </button>
+        {% if not member.isSuperAdmin %}
+            <button class="close" onclick="delete_member(event, {{member.id}})" >
+                <span><i class="fa fa-close"></i></span>
+            </button>
+        {% endif %}
     </td>
+
 </tr>
 
 
-{% endif %}
 
 
 {% endfor %}

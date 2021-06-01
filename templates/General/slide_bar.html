@@ -29,7 +29,7 @@
                 </a>
 
 
-                {% if request.user.isEncadrant %}
+                {% if request.user.isAdmin %}
                     <a href="{% url 'Account:addMember' %}"  class="nav_link {{ addMember_active }}"> 
                         <i class="fa fa-address-book nav_icon" aria-hidden="true"></i>
                         <span class="nav_name">Ajouter Membre</span> 
