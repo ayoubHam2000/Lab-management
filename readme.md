@@ -15,5 +15,5 @@ create .env file for email server
 copy and past these lines to .env
 
 export EMAIL_HOST=smtp.gmail.com
-export EMAIL_HOST_USER=ayoub93527152@gmail.com
-export EMAIL_HOST_PASSWORD=aqwpmnfgh14785
+export EMAIL_HOST_USER=gmail
+export EMAIL_HOST_PASSWORD=password
