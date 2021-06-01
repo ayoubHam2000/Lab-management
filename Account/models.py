@@ -1,13 +1,13 @@
 from django.db import models
 from django.contrib.auth.models import AbstractBaseUser, BaseUserManager, PermissionsMixin
-from Utils.const import *
-from Utils.functions import current_milli_time, getFileName
-from PIL import Image
-import os
 from django.core.files.storage import FileSystemStorage
 
-# from django import template
-# register = template.Library()
+from Utils.const import *
+from Utils.functions import current_milli_time, getFileName, getUserTypeName, getUserTypeFromGroup
+
+from PIL import Image
+import os
+
 
 #region User Account
 def get_default_profile_image():
@@ -18,36 +18,32 @@ def get_profile_image_filepath(self, filename):
 
 
 class MyUserManager(BaseUserManager):
-    def create_user(self, email, username, first_name, last_name, user_type, password = None):
-        if not email:
+    def create_user(self, email, username, first_name, last_name, password = None):
+        if email == None:
             raise ValueError("L'utilisateur doit avoir une adresse e-mail")
-        if not username:
+        if username == None:
             username = first_name + '_' + str(current_milli_time())
-        if not first_name:
+        if first_name == None:
             raise ValueError("L'utilisateur doit avoir un prenom")
-        if not last_name:
+        if last_name == None:
             raise ValueError("L'utilisateur doit avoir un nom")
-        if user_type == None:
-            raise ValueError("L'utilisateur doit avoir un user type")
         
         user = self.model(
             email = self.normalize_email(email),
             username = username,
             first_name =  first_name.lower(),
-            last_name = last_name.lower(),
-            user_type = user_type,
+            last_name = last_name.lower()
         )
         user.set_password(password)
         user.save(using = self._db)
         return user
     
-    def create_superuser(self, email, username, first_name, last_name, user_type, password):
+    def create_superuser(self, email, username, first_name, last_name, password):
         user = self.create_user(
             email = self.normalize_email(email),
             username = username,
             first_name =  first_name.lower(),
             last_name = last_name.lower(),
-            user_type = user_type,
             password = password,
         )
         user.is_admin = True
@@ -56,7 +52,7 @@ class MyUserManager(BaseUserManager):
         user.save(using = self._db)
         return user
 
-# keep one image in the saerver
+# keep one image in the server
 class OverwriteStorage(FileSystemStorage):
     def _save(self, name, content):
         if self.exists(name):
@@ -87,10 +83,9 @@ class UserAccount(AbstractBaseUser, PermissionsMixin):
         default = get_default_profile_image
         )
 
-    user_type = models.IntegerField()
 
     USERNAME_FIELD = 'email'
-    REQUIRED_FIELDS = ['username', 'user_type', 'first_name', 'last_name']
+    REQUIRED_FIELDS = ['username', 'first_name', 'last_name']
 
     objects = MyUserManager()
 
@@ -107,35 +102,30 @@ class UserAccount(AbstractBaseUser, PermissionsMixin):
     def has_module_perms(self, app_label):
         return True
     
+    # Me ===============================================
+    # Me ===============================================
+
     def getImage(self):
         return f'/media/{self.profile_image}'
 
     def isAdmin(self):
-        return self.groups.filter(name='admin').exists()
+        return self.groups.filter(name__in = ['admin', 'superadmin']).exists()
+
+    def isSuperAdmin(self):
+        return self.groups.filter(name='superadmin').exists()
     
     def isEncadrant(self):
-        return self.groups.filter(name='encadrant').exists() or self.isAdmin()
+        return self.groups.filter(name__in = ['encadrant', 'admin', 'superadmin']).exists()
     
     def isDoctorant(self):
-        return self.groups.filter(name='doctorant').exists()
-
+        return self.groups.filter(name = 'doctorant').exists()
 
     def getFullName(self):
         return f'{self.first_name} {self.last_name}'
 
     def getUserType(self):
-        if self.user_type == 0 or self.user_type == 2:
-            return 'encadrant'
-        elif self.user_type == 1:
-            return 'doctorant'
-        return ''
+        return getUserTypeFromGroup(self)
 
-    def getAccountLinkType(self):
-        if self.isEncadrant():
-            return 'encadrant_account'
-        if self.isDoctorant():
-            return 'doctorant_account'
-        return ''
 
     def save(self, *args, **kwargs):
         newWidth = 400
@@ -151,7 +141,6 @@ class UserAccount(AbstractBaseUser, PermissionsMixin):
             image.thumbnail(output_size)
             image.save(self.profile_image.path)
 
-    
 
 #endregion
 
@@ -163,6 +152,7 @@ class DoctorantModel(models.Model):
     apogee = models.CharField(max_length=APOGEE_MAX)
     cin = models.CharField(max_length=CIN_MAX)
     these = models.TextField(blank=True)
+    
     def __str__(self):
         return self.user.email
 
@@ -173,16 +163,7 @@ class EncadrantModel(models.Model):
     def __str__(self):
         return self.user.email
 
-class SuperAdminModel(models.Model):
-    user = models.OneToOneField(UserAccount, on_delete=models.CASCADE)
-    def __str__(self):
-        return self.user.getFullName()
-
 class MemberModel(models.Model):
-    ENCADRANT = 0
-    DOCTORANT = 1
-    ADMIN = 2
-
     TYPES = (
         (ENCADRANT, 'ENCADRANT'),
         (DOCTORANT, 'DOCTORANT'),
@@ -194,58 +175,31 @@ class MemberModel(models.Model):
     date = models.DateTimeField(auto_now_add=True)
     active = models.BooleanField(default=True)
     user = models.OneToOneField(UserAccount, null=True, related_name='user_member', on_delete=models.SET_NULL) 
-
-    def signed(self):
-        return self.user != None
+    signed = models.BooleanField(default=False)
 
     def __str__(self):
         return str(self.email)
     
-    def getImage(self):
-        user = UserAccount.objects.filter(email = self.email)
-        if user.exists():
-            return '/media/' + user[0].profile_image.name
-        return '/media/' + get_default_profile_image()
-
     def hasAccount(self):
-        user = UserAccount.objects.filter(email = self.email)
-        return user.exists()
-    
-    def getUser(self):
-        user = UserAccount.objects.filter(email = self.email)
-        if user.exists():
-            return user[0]
-        
+        return self.user != None
+  
     def isEncadrant(self):
-        return self.userType in [MemberModel.ADMIN, MemberModel.ENCADRANT]
+        return self.userType in [ADMIN, ENCADRANT, SUPERADMIN]
     
     def isDoctorant(self):
-        return self.userType == MemberModel.DOCTORANT
+        return self.userType == DOCTORANT
+
+    def isAdmin(self):
+        return self.userType == ADMIN
 
     def getUserType(self):
-        if self.isEncadrant():
-            return 'Encadrant'
-        if self.isDoctorant():
-            return 'Doctorant'
-        return ''   
-
-    def getAccountLinkType(self):
-        if self.isEncadrant():
-            return 'encadrant_member'
-        if self.isDoctorant():
-            return 'doctorant_member'
-        return ''
+        return getUserTypeName(self.userType)
     
-    def isSuperAdmin(self):
-        isSuperAdmin = SuperAdminModel.objects.filter(user = self.user)
-        return isSuperAdmin.exists()
-    
-
-
+    def save(self, *args, **kwargs):
+        self.email = self.email.lower()
+        super().save(*args, **kwargs)
+     
 class DoctorantRelation(models.Model):
-    ENCADRANT = 0
-    CO_ENCADRANT = 1
-
     TYPES = (
         (ENCADRANT, 'ENCADRANT'),
         (CO_ENCADRANT, 'CO.ENCADRANT')
@@ -257,9 +211,6 @@ class DoctorantRelation(models.Model):
     def __str__(self):
         return self.doctorant.email
     
-    def getEncadrant(self):
-        return UserAccount.objects.get(email = self.encadrant)
-
     def getRelationName(self):
         return self.TYPES[self.relationType][1]
 
@@ -286,7 +237,6 @@ class DoctorantRelation(models.Model):
         
         return True,''
         
-
 
 
 #endregion

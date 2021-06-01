@@ -102,10 +102,10 @@ function getListAuteur(type, data) {
 	auteurs = []
 	auteurs = auteurs.concat(data[type]['pr_auteurs'])  
 	auteurs = auteurs.concat(data[type]['co_auteurs'])  
-	console.log(data)
-	console.log(data[type]['pr_auteurs'])
-	console.log(data[type]['co_auteurs'])
-	console.log(auteurs)
+	//console.log(data)
+	//console.log(data[type]['pr_auteurs'])
+	//console.log(data[type]['co_auteurs'])
+	//console.log(auteurs)
 	return auteurs
 }
 
@@ -118,7 +118,7 @@ function getTheList(type, data) {
 }
 
 function getData(type) {
-	console.log("GET")
+	//console.log("GET")
 	$.ajax({
 		type: 'GET',
 		contentType: 'application/json',
@@ -131,7 +131,7 @@ function getData(type) {
 		success: function (data) {
 			theList = getTheList(type, data)
 			autocomplete(document.getElementById("myInput"), theList);
-			console.log(theList)
+			//console.log(theList)
 			//$('#output-box').html(data);
 		}
 	});

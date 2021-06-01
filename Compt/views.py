@@ -7,7 +7,7 @@ from django.views import View
 import json
 
 #Custom
-from Account.authenticate import unauthenticated_user, allowed_users, dedicated
+from Account.authenticate import unauthenticated_user, allowed_users
 from Utils.functions import myredirect, current_milli_time
 from Utils.const import *
 
@@ -16,7 +16,6 @@ from django.utils.decorators import method_decorator
 from django.contrib.auth.decorators import login_required
 decorator_login = [login_required(login_url='/login/')]
 decorator_auth = [unauthenticated_user]
-decorator_dedicated = [dedicated]
 def decorator_user(allowed_roles):
     return [allowed_users(allowed_roles=allowed_roles)]
 
@@ -86,7 +85,7 @@ class PostsView(View):
     def post(self, request, theType = None):
         form = PostModelForm(user = request.user, data = request.POST, files = request.FILES)
         if form.is_valid:
-            print('Is Valide')
+            #print('Is Valide')
             form.save()
         return self.get(request)
 

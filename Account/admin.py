@@ -1,7 +1,7 @@
 from django.contrib import admin
 from django.contrib.auth.admin import UserAdmin
 
-from .models import MemberModel,SuperAdminModel, DoctorantModel,UserAccount, EncadrantModel, DoctorantRelation
+from .models import MemberModel, DoctorantModel,UserAccount, EncadrantModel, DoctorantRelation
 
 class AccountAdmin(UserAdmin):
     list_displayed = ('email', 'username', 'date_joined', 'last_login', 'is_admin')
@@ -17,5 +17,4 @@ admin.site.register(MemberModel)
 admin.site.register(DoctorantModel)
 admin.site.register(EncadrantModel)
 admin.site.register(DoctorantRelation)
-admin.site.register(SuperAdminModel)
 admin.site.register(UserAccount, AccountAdmin)

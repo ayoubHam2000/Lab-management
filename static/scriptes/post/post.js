@@ -4,13 +4,13 @@ function getPosts(){
         url:URL_POST_DATA,
         type:'GET',
         success: function(data){
-            console.log("success get_posts")
+            //console.log("success get_posts")
             $('#post_list').html(data);
         },
         error: function(e, x, r){
-            console.log('error get posts')
+            //console.log('error get posts')
             $('#post_list').html("Something went wrong");
-            console.log(e.responseText)
+            //console.log(e.responseText)
         }
     });
 }
@@ -36,7 +36,7 @@ function createComment(data){
 }
 
 function buildCommentComponent(post, id){
-    console.log("Not Comment component building one")
+    //console.log("Not Comment component building one")
     var commentFather = $(post).find('#comment_component')[0]
     commentFather.innerHTML = `
     <div class="box-footer box-comments" style="display: block;">
@@ -64,7 +64,7 @@ function postComment(e, id){
         type: form.attr('method'),
         data: form.serialize(),
         success: function(data) {
-            console.log("success post comment");
+            //console.log("success post comment");
             post = form[0].parentElement.parentElement
             comments = $(post).find('#post_comments')[0]
             if (!comments){

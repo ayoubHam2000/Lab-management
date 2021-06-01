@@ -19,15 +19,11 @@
           
 
         <span class="nav_logo-name user_name">
-        {{ request.user.first_name }} {{ request.user.last_name }}
+        {{ request.user.getFullName }}
         </span>
         
         <div class="header_img"> 
-        {% if request.user.profile_image %}
-            <img src="{{ request.user.getImage }}" alt="">
-        {% else %}
-            <img src="/media/profile_images/default/default_profile_image.png" alt="">
-        {% endif %}
+        <img src="{{ request.user.getImage }}" alt="">
             
         </div> 
         
@@ -47,8 +43,8 @@
             </button>
 
             <div class="dropdown-menu dropdown-menu-right">
-              <a class="dropdown-item" href="{% url 'Account:updateAccount' request.user.getAccountLinkType request.user.id %}">Account</a>
-              <a class="dropdown-item" href="{% url 'Account:logout' %}">Logout</a>
+              <a class="dropdown-item" href="{% url 'Account:updateAccount' request.user.id %}">Account</a>
+              <a class="dropdown-item" href="{% url 'Account:logout' %}">Se déconnecter </a>
             </div>
 
           </div>

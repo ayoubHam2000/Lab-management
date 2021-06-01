@@ -3,7 +3,7 @@ selected_sort_by_order = $(".member_select")[1].selectedIndex
 
 
 function openModel(e, type){
-    console.log(type)
+    //console.log(type)
     modal = document.getElementById(type);
     modal.style.display = "block";
 }

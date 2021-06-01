@@ -27,18 +27,3 @@ def allowed_users(allowed_roles = []):
                 return render(request, P_404)
         return wrapper_func
     return decorator
-
-
-def dedicated(view_func):
-    def wrapper_func(request, *args, **kwargs):
-        group = None
-        if request.user.groups.exists():
-            group = request.user.groups.all()[0].name  
-        if group == 'admin':
-            return redirect(reverse('Account:home'))
-        if group == 'encadrant':
-            return redirect(reverse('Account:home'))
-        if group == 'doctorant':
-            return redirect(reverse('Account:home'))
-        return redirect(reverse('Account:home'))
-    return wrapper_func

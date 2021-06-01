@@ -2,7 +2,7 @@ function refreshInput(parent){
 	var result = ""
 	var input = document.getElementById("co_auteur")
 
-	console.log('ADD')
+	//console.log('ADD')
 
 	var liElements = parent.getElementsByTagName("li");
 	//console.log(parent)
@@ -73,7 +73,7 @@ function init()     {
 	for (i = 0; i < auteurs.length; i++) {
 		
 		if (!(auteurs[i].length === 0 )) {
-			console.log(auteurs[i])
+			//console.log(auteurs[i])
             addLi(auteurs[i])
 		}
 			

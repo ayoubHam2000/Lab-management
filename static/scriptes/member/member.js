@@ -20,13 +20,13 @@ function getMemberData() {
             'dataform' : JSON.stringify(dataform)
         },
         success: function(data){
-            console.log("success get_member")
+            //console.log("success get_member")
             $('#member_content').html(data);
             closeModel()
         },
         error: function(e, x, r){
             $('#member_content').html("Something went wrong");
-            console.log(e.responseText)
+            //console.log(e.responseText)
         }
     });
 }
@@ -36,14 +36,14 @@ function searchMember(){
         var key = e.which;
         if(key == 13)  // the enter key code
         {
-            console.log("Search")
+            //console.log("Search")
             getMemberData()
         }
     }); 
 }
 
 function orderButton(e){
-    console.log('sort')
+    //console.log('sort')
     getMemberData()
     //defined in member/modal.js
     selected_sort_by = $(".member_select")[0].selectedIndex 
@@ -54,7 +54,7 @@ function orderButton(e){
 
 function addMember(){
     $('#ajouter_member_form').submit(function() { // On form submit event
-        console.log('submit_member')
+        //console.log('submit_member')
         $.ajax({ // create an AJAX call...
             data: $(this).serialize(), // get the form data
             type: $(this).attr('method'), // GET or POST
@@ -73,7 +73,7 @@ function addMember(){
 }
 
 function deactivate_activate_member(e, id){
-    console.log("deactivate_member")
+    //console.log("deactivate_member")
     //console.log(id)
 
     var a = ft_confirm()
@@ -86,22 +86,48 @@ function deactivate_activate_member(e, id){
             type: 'POST',
             url: URL_MEMBER_DEACTIVATE, 
             success: function(response) { 
-                console.log("deactivate success")
+                //console.log("deactivate success")
                 getMemberData()
             },
             error: function(e, x, r) {
                 showDefaultError()
-                console.log(e.responseText)
+                //console.log(e.responseText)
+            }
+        });
+    }
+}
+
+function encadrant_switch_admin(e, id){
+    //("encadrant_switch_admin")
+    //console.log(id)
+
+    var a = ft_confirm()
+    if(a){
+        data = getPostDict()
+        data['id'] = id
+
+        $.ajax({ 
+            data: data, 
+            type: 'POST',
+            url: URL_MEMBER_SWITCH_ADMIN, 
+            success: function(response) { 
+                //console.log("encadrant_switch_admin success")
+                successAlert("Succès")
+                getMemberData()
+            },
+            error: function(e, x, r) {
+                showDefaultError()
+                //console.log(e.responseText)
             }
         });
     }
 }
 
 function delete_member(e, id){
-    console.log('ask delete_member')
+    //console.log('ask delete_member')
     var a = ft_confirm("Are you sure ?? (if account exist it will be also deleted)")
     if(a){
-        console.log('delete_member')
+        //console.log('delete_member')
         data = getPostDict()
         data['id'] = id
 
@@ -127,35 +153,13 @@ function noAccount(){
     infoAlert('le membre n\'a pas encore de compte')
 }
 
-function member_Account(e, id){
-    console.log("member_Account")
-    console.log(id)
 
-    data = {
-        'id' : id
-    }
-    $.ajax({ 
-        data: data, 
-        type: 'GET',
-        url: URL_MEMBER_ACCOUNT, 
-        success: function(response) { 
-            console.log(response)
-            $(location).attr('href', response)           
-        },
-        error: function(e, x, r) {
-            showError(e)
-            //console.log(e.responseText)
-        }
-    });
-    
-    closeMenu(e)
-}
 
 //=================================================
 //Member associate
 
 function getAndsetRelations(id){
-    console.log(`getAndsetRelations for ${id}`)
+    //console.log(`getAndsetRelations for ${id}`)
     data = {
         'id' : id
     }
@@ -165,18 +169,18 @@ function getAndsetRelations(id){
         type:'GET',
         data: data,
         success: function(data){
-            console.log("success get relations")
+            //console.log("success get relations")
             $('#list_relation_section').html(data);
         },
         error: function(e, x, r){
-            $('#list_relation_section').html("Something went wrong");
-            console.log(e.responseText)
+            $('#list_relation_section').html("Un problème est survenu");
+            //console.log(e.responseText)
         }
     });
 }
 
 function member_associate(e){
-    console.log('Associer Encadrant')
+    //console.log('Associer Encadrant')
 
     data = getPostDict()
     data['id'] = doctorant_id
@@ -188,13 +192,13 @@ function member_associate(e){
         type: 'POST',
         url: URL_MEMBER_ASSOCIER, 
         success: function(response) { 
-            console.log("Accoier success")
+            //console.log("Accoier success")
             successAlert(response)
             getAndsetRelations(doctorant_id)
         },
         error: function(e, x, r) {
             showError(e)
-            console.log(e.responseText)
+            //console.log(e.responseText)
         }
     });
     return false;
@@ -202,7 +206,7 @@ function member_associate(e){
 
 
 function deleteAssociation(e, id){
-    console.log('delete relation')
+    //console.log('delete relation')
 
     data = getPostDict()
     data['id'] = id
@@ -212,13 +216,13 @@ function deleteAssociation(e, id){
         type: 'POST',
         url: URL_MEMBER_DELETE_RELATION, 
         success: function(response) { 
-            console.log("delete relation success")
+            //console.log("delete relation success")
             successAlert(response)
             getAndsetRelations(doctorant_id)
         },
         error: function(e, x, r) {
             showError(e)
-            console.log(e.responseText)
+            //console.log(e.responseText)
         }
     });
     return false;
