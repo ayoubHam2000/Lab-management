@@ -15,14 +15,17 @@ py manage.py shell -c "from django.contrib.auth.models import Group; Group.objec
 
 
 echo 'Create SuperUSer'
-superUser="from Account.models import UserAccount;"
+superUser="from Account.models import UserAccount, MemberModel, SuperAdminModel;"
 superUser+="user = UserAccount.objects.create_superuser"
 superUser+="('omar@gmail.com', 'omar', 'omar', 'jed', 2, 'omarjed');"
 superUser+="from django.contrib.auth.models import Group;"
 superUser+="from Account.models import EncadrantModel;"
-superUser+="EncadrantModel(user = user, university = 'Iben tofail').save();"
 superUser+="group = Group.objects.get(name = 'admin');"
 superUser+="user.groups.add(group);"
+
+superUser+="MemberModel(user = user, email = user.email, userType = 2).save();"
+superUser+="EncadrantModel(user = user).save();"
+superUser+="SuperAdminModel(user = user).save();"
 
 py manage.py shell -c "$superUser"
 

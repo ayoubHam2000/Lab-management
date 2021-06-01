@@ -102,7 +102,7 @@ class EncadrantModelForm(ModelForm):
         return encadrant
 
 # Update
-class UserUpdateForm(forms.ModelForm):
+class UserUpdateForm(ModelForm):
     profile_image = forms.ImageField(
         label='Profile Image',
         required=False, 
@@ -118,8 +118,14 @@ class UserUpdateForm(forms.ModelForm):
             
         ]
 
-class DoctorantUpdateModelForm(ModelForm):
-    university = forms.ChoiceField(choices = UNIVERSITIES)
+class DoctorantUpdateModelForm(ModelForm):    
+    #university = forms.ChoiceField(choices = UNIVERSITIES)
+    
+    def __init__(self, readOnly = True, *args, **kwargs):
+        super(DoctorantUpdateModelForm, self).__init__(*args, **kwargs)
+        self.fields['these'].widget.attrs['readonly'] = readOnly
+
+    these = forms.TextInput(attrs={'readonly':'readonly'})
     class Meta:
         model = DoctorantModel
         fields = [
@@ -130,9 +136,17 @@ class DoctorantUpdateModelForm(ModelForm):
         ]
 
 class EncadrantUpdateModelForm(ModelForm):
-    university = forms.ChoiceField(choices = UNIVERSITIES)
+    #university = forms.ChoiceField(choices = UNIVERSITIES)
     class Meta:
         model = EncadrantModel
         fields = [
             'university'
+        ]
+
+class UpdatePasswordModelFrom(ModelForm):
+    password = forms.CharField(widget=forms.PasswordInput(), required=True)     
+    class Meta:
+        model = UserAccount
+        fields = [
+            'password'
         ]

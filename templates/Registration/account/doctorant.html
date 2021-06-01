@@ -70,6 +70,15 @@
     {% endfor %}
 
     <button type="submit" class="btn btn-primary btn_post">Submit</button>
+
+
+
+    {% if request.user.id == userId %}
+    
+    <a href="{% url 'Account:changePassword' userId %}" class="link-primary float-right"> Change Password </a>
+
+    {% endif %}
+
     </form>
 
 

@@ -37,16 +37,24 @@ class PostsView(View):
         }
         return context
 
-    def getEquipe(self, request):
-        encadrant = request.user.email
-        mesDoctorants = DoctorantRelation.objects.filter(encadrant = encadrant, userType = 0)
-        c_mesDoctorant = DoctorantRelation.objects.filter(encadrant = encadrant, userType = 1)
-        print(mesDoctorants)
 
-        test = [x.doctorant for x in mesDoctorants]
-        co_encadrant_equipe = DoctorantRelation.objects.filter(doctorant__in = test, userType = 1)
-        print(co_encadrant_equipe)
-        return mesDoctorants, c_mesDoctorant, co_encadrant_equipe
+    def getEquipe(self, request):
+        user = request.user
+        if user.isEncadrant():
+            mesDoctorants = DoctorantRelation.objects.filter(encadrant = user, relationType = 0)
+            c_mesDoctorant = DoctorantRelation.objects.filter(encadrant = user, relationType = 1)
+
+            doctorants = [x.doctorant for x in mesDoctorants]
+            co_encadrant_equipe = DoctorantRelation.objects.filter(doctorant__in = doctorants, relationType = 1)
+            return mesDoctorants, c_mesDoctorant, co_encadrant_equipe, 'encadrant'
+        
+        if user.isDoctorant():
+            monEncadrant = DoctorantRelation.objects.filter(doctorant = user, relationType = 0)
+            mes_co_encadrants = DoctorantRelation.objects.filter(doctorant = user, relationType = 1)
+            doctorants = [] if not monEncadrant.exists() else DoctorantRelation.objects.filter(encadrant = monEncadrant[0].encadrant, relationType = 0)
+            return monEncadrant, mes_co_encadrants, doctorants, 'doctorant'
+        
+        return [], [], [], 0
         
 
     def getPage(self, request):
@@ -55,9 +63,10 @@ class PostsView(View):
         context = self.getContext()
         context['form'] = form
         data = self.getEquipe(request)
-        context['mesDoctorants'] = data[0]
-        context['c_mesDoctorant'] = data[1]
-        context['co_encadrant_equipe'] = data[2]
+        context['list1'] = data[0]
+        context['list2'] = data[1]
+        context['list3'] = data[2]
+        context['relationType'] = data[3]
         return render(request, self.temp_post, context)
 
     def getPosts(self, request):

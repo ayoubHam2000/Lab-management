@@ -2,6 +2,11 @@ body{
     margin: 15px 0;
 }
 
+.post_section{
+    width: 100%;
+}
+
+
 .dropdown-menu{
     position: absolute;
     left: -800px;

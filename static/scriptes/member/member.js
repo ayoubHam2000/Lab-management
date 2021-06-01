@@ -123,6 +123,10 @@ function delete_member(e, id){
     return false;
 }
 
+function noAccount(){
+    infoAlert('le membre n\'a pas encore de compte')
+}
+
 function member_Account(e, id){
     console.log("member_Account")
     console.log(id)
@@ -147,13 +151,37 @@ function member_Account(e, id){
     closeMenu(e)
 }
 
-function member_associate(e, id, encadrantEmail, type){
+//=================================================
+//Member associate
+
+function getAndsetRelations(id){
+    console.log(`getAndsetRelations for ${id}`)
+    data = {
+        'id' : id
+    }
+
+    $.ajax({
+        url:URL_MEMBER_GET_RELATION,
+        type:'GET',
+        data: data,
+        success: function(data){
+            console.log("success get relations")
+            $('#list_relation_section').html(data);
+        },
+        error: function(e, x, r){
+            $('#list_relation_section').html("Something went wrong");
+            console.log(e.responseText)
+        }
+    });
+}
+
+function member_associate(e){
     console.log('Associer Encadrant')
 
     data = getPostDict()
-    data['id'] = id
-    data['encadrantEmail'] = encadrantEmail
-    data['relationType'] = type
+    data['id'] = doctorant_id
+    data['memberEmail'] = $('#memberEmail_email')[0].value
+    data['relationType'] = $('#relationtype_input')[0].value
 
     $.ajax({ 
         data: data, 
@@ -162,8 +190,7 @@ function member_associate(e, id, encadrantEmail, type){
         success: function(response) { 
             console.log("Accoier success")
             successAlert(response)
-            getMemberData()
-            closeModel()
+            getAndsetRelations(doctorant_id)
         },
         error: function(e, x, r) {
             showError(e)
@@ -173,23 +200,39 @@ function member_associate(e, id, encadrantEmail, type){
     return false;
 }
 
-function member_associerte_encadrant(e, id){
-    member_associate(e, id, USER_EMAIL, 0)
+
+function deleteAssociation(e, id){
+    console.log('delete relation')
+
+    data = getPostDict()
+    data['id'] = id
+
+    $.ajax({ 
+        data: data, 
+        type: 'POST',
+        url: URL_MEMBER_DELETE_RELATION, 
+        success: function(response) { 
+            console.log("delete relation success")
+            successAlert(response)
+            getAndsetRelations(doctorant_id)
+        },
+        error: function(e, x, r) {
+            showError(e)
+            console.log(e.responseText)
+        }
+    });
+    return false;
 }
 
-function member_associerte_co_encadrant_after_modal(e){
-    the_doctorant_id = doctorant_id;
-    co_encadrant_email = $('#co_encadrant_email')[0].value
-    console.log(the_doctorant_id)
-    console.log(co_encadrant_email)
-    member_associate(e, the_doctorant_id, co_encadrant_email, 1)
-    the_doctorant_id = null;
-}
-
-function member_associerte_co_encadrant(e, id){
-    doctorant_id = id;
+function member_relations_mg(e, id){
+    doctorant_id = id
     openModel(e, 'co_encadrant')
+    getAndsetRelations(id)
 }
+
+//=================================================
+//Document
+
 
 $(document).ready(function() {
     //to define functions

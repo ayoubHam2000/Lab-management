@@ -17,7 +17,12 @@
         <div class='para'>
               <pre>Espace Bibliothéque</pre> 
         </div>
+
+    {% if user.isEncadrant %}
         <a class="primiry_btn" href="{% url 'Biblio:formulaire' %}" > Ajouter </a>
+
+    {% endif %}
+
 
     </div>
 

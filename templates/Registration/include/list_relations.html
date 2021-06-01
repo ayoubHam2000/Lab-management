@@ -1,0 +1,18 @@
+{% for item in relations %}
+
+    <div class="relation_item"> 
+        {% comment %} <img class="img-circle img-sm" src="{{ comment.getUser.getImage }}" alt="User Image"> {% endcomment %}
+        <div>
+        <span class="username">
+        {{ item.email }} ({{ item.getRelationType }})
+            <span class="text-muted pull-right">
+                <button type="button" class="close" onclick = "deleteAssociation(event, {{ item.id }})">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </span>
+        </span>
+        </div>
+    </div>
+
+
+{% endfor %}

@@ -1,0 +1,186 @@
+<div class="member_section" >
+
+    <div class="card the_card">
+        <div class="card-body">
+            <h5 class="card-title card_title">  Mon Encadrant  </h5>
+            
+            <div class='list-group' >
+
+                {% for item in list1 %}
+                
+
+                <div class="d-flex justify-content-between member_item" >
+
+
+                    <div class='d-flex align-items-center list-group-item  member_item_child ' >
+                    
+                    
+                    <div class = 'member_image' >
+                        
+                        <img class='img-responsive rounded-circle' src="{{ item.encadrant.getImage }}" alt="photo">
+                        
+                    </div>
+                    
+                    <div class = 'member_info' >
+                        <div>
+                        <p> {{ item.encadrant.getFullName }} </p>
+                        <span class = "text-muted text-sm h-1x" > {{ item.encadrant.email }} </span>
+                        </div>
+                        
+                    </div>
+                    
+                    
+                    
+                    </div>    
+                    
+                    {% comment %} <div class="btn-group drop_airrow box-tools my_menu_post">
+                    
+                        <div class="dropdown">
+                            
+                            <button type="button" class="btn btn-box-tool my_menu_btn" data-toggle="dropdown">
+                            <i class="fa fa-ellipsis-v" aria-hidden="true"></i>
+                            </button>
+                            
+                            <div class="dropdown-menu dropdown-menu-right">
+                            
+                            <a class="dropdown-item" href="{% url 'Account:updateAccount' 'doctorant' item.doctorant.id %}">Account</a>
+                            </div>
+                            
+                        </div>
+                    
+                    </div> {% endcomment %}
+                    
+                    
+                
+                </div>
+                            
+                {% endfor %}
+
+            </div>
+
+        </div>
+    </div>
+
+
+    <div class="card the_card">
+        <div class="card-body">
+            <h5 class="card-title card_title"> Mes Co.Encadrants </h5>
+            
+            <div class='list-group' >
+                
+                {% for item in list2 %}
+                
+                
+
+                <div class="d-flex justify-content-between member_item" >
+
+
+                    <div class='d-flex align-items-center list-group-item  member_item_child ' >
+                    
+                    
+                    <div class = 'member_image' >
+                        
+                        <img class='img-responsive rounded-circle' src="{{ item.encadrant.getImage }}" alt="photo">
+                        
+                    </div>
+                    
+                    <div class = 'member_info' >
+                        <div>
+                        <p> {{ item.encadrant.getFullName }} </p>
+                        <span class = "text-muted text-sm h-1x" > {{ item.encadrant.email }} </span>
+                        </div>
+                        
+                    </div>
+                    
+                    
+                    
+                    </div>    
+                    
+                    <div class="btn-group drop_airrow box-tools my_menu_post">
+                    
+                    {% comment %} <div class="dropdown">
+                        
+                        <button type="button" class="btn btn-box-tool my_menu_btn" data-toggle="dropdown">
+                        <i class="fa fa-ellipsis-v" aria-hidden="true"></i>
+                        </button>
+                        
+                        <div class="dropdown-menu dropdown-menu-right">
+                        <a class="dropdown-item" href="#">Delete</a>
+                        </div>
+                        
+                    </div> {% endcomment %}
+                    
+                    </div>
+                    
+                    
+                </div>
+
+                {% endfor %}
+
+            </div>
+
+        </div>
+    </div>
+
+    <div class="card the_card">
+        <div class="card-body">
+            <h5 class="card-title card_title"> Equipe(Doctorants) </h5>
+            
+            <div class='list-group' >
+                
+                {% for item in list3 %}
+                
+                
+
+                <div class="d-flex justify-content-between member_item" >
+
+
+                    <div class='d-flex align-items-center list-group-item  member_item_child ' >
+                    
+                    
+                    <div class = 'member_image' >
+                        
+                        <img class='img-responsive rounded-circle' src="{{ item.doctorant.getImage }}" alt="photo">
+                        
+                    </div>
+                    
+                    <div class = 'member_info' >
+                        <div>
+                        <p> {{ item.doctorant.getFullName }} </p>
+                        <span class = "text-muted text-sm h-1x" > {{ item.doctorant.email }} </span>
+                        </div>
+                        
+                    </div>
+                    
+                    
+                    
+                    </div>    
+                    
+                    <div class="btn-group drop_airrow box-tools my_menu_post">
+                    
+                    {% comment %} <div class="dropdown">
+                        
+                        <button type="button" class="btn btn-box-tool my_menu_btn" data-toggle="dropdown">
+                        <i class="fa fa-ellipsis-v" aria-hidden="true"></i>
+                        </button>
+                        
+                        <div class="dropdown-menu dropdown-menu-right">
+                        <a class="dropdown-item" href="#">Delete</a>
+                        </div>
+                        
+                    </div> {% endcomment %}
+                    
+                    </div>
+                    
+                    
+                </div>
+
+                {% endfor %}
+
+            </div>
+
+        </div>
+    </div>
+
+
+</div>

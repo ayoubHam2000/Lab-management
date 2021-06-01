@@ -24,7 +24,7 @@ function toggleNotifi(){
     if(toggle && nav && bodypd && headerpd){
     toggle.addEventListener('click', ()=>{
     // show navbar
-    nav.classList.toggle('show')
+    nav.classList.toggle('show_slide_bar')
     // change icon
     toggle.classList.toggle('bx-x')
     // add padding to body

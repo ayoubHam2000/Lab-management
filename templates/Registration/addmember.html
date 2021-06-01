@@ -31,10 +31,8 @@
             {{ form.email.label }}
             {{ form.email }}
             
-            {% if request.user.isAdmin %}
-                {{ form.userType.label }}
-                {{ form.userType }}
-            {% endif %}
+            {{ form.userType.label }}
+            {{ form.userType }}
 
             <div class = "ajouter"   >
                 <button type = 'submit' > Ajouter </button>
@@ -81,12 +79,41 @@
     <!-- Modal content -->
     <div class="modal-content">
       <span class="close" onclick="closeModel()" >&times;</span>
+
       
-        <input id='co_encadrant_email' type="text" class="form-control" placeholder="Email">
+        <label for="memberEmail_email"> Email </label>
+        <input id='memberEmail_email' type="text" class="form-control" placeholder="Email">
+
+        <div class="form-group">
+            <label for="relationtype_input"> type de relation  </label>
+            <select class="form-control" id="relationtype_input">
+                <option value = '0' >Encadrant</option>
+                <option value = '1' >Co.Encadrant</option>
+            </select>
+        </div>
+
 
         <div class = "ajouter">
-            <button  onclick='member_associerte_co_encadrant_after_modal(event)'> Ok </button>
-          </div>
+            <button  onclick='member_associate(event)'> Ajouter Relation </button>
+        </div>
+
+        <div class="box-footer box-comments" style="display: block;">
+            <p>
+                <a class='cmment_collapse' data-toggle="collapse" href="#collapseExample_{{ post.id }}" role="button" aria-expanded="false" aria-controls="collapseExample">
+                Liste des relations 
+                </a>
+            </p>
+                <div class="collapse" id="collapseExample_{{ post.id }}" >
+                
+                    <div id="list_relation_section" class="card card-body">
+
+                        {% include "Registration/include/list_relations.html" with relations=relations %}
+                    
+                    </div>
+
+                </div>
+
+        </div>
 
     </div>
   
@@ -151,7 +178,9 @@
     URL_MEMBER_DEACTIVATE = "{% url 'Account:memberInfo' 'deactivate' %}"
     URL_MEMBER_DELETE = "{% url 'Account:memberInfo' 'delete' %}"
     URL_MEMBER_ACCOUNT = "{% url 'Account:memberInfo' 'account' %}"
-    URL_MEMBER_ASSOCIER = "{% url 'Account:memberInfo' 'associer' %}"
+    URL_MEMBER_GET_RELATION = "{% url 'Account:memberInfo' 'relations' %}"
+    URL_MEMBER_ASSOCIER = "{% url 'Account:memberInfo' 'associate' %}"
+    URL_MEMBER_DELETE_RELATION = "{% url 'Account:memberInfo' 'deleteRelation' %}"
 </script>
 <script src="{% static 'scriptes/member/modal.js' %}" > </script>
 <script src="{% static 'scriptes/member/imageclick.js' %}" > </script>

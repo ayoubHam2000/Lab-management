@@ -2,6 +2,8 @@ from django.shortcuts import render, redirect
 
 from django.urls import reverse
 
+from Utils.const import P_404
+
 
 def unauthenticated_user(view_func):
     def wrapper_func(request, *args, **kwargs):
@@ -22,7 +24,7 @@ def allowed_users(allowed_roles = []):
             if group in allowed_roles: 
                 return view_func(request, *args, **kwargs)
             else:
-                return render(request, 'Error/unauthorized.html')
+                return render(request, P_404)
         return wrapper_func
     return decorator
 
