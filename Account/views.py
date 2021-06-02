@@ -88,7 +88,7 @@ class LoginView(View):
 
     def post(self, request):
         form = UserLogin()
-        email = request.POST.get('email')
+        email = request.POST.get('email').lower()
         password = request.POST.get('password')
 
         
@@ -557,7 +557,7 @@ class ChangePassword(View):
         isTheSameUser = request.user.id == user.id
         if isTheSameUser:
             return isTheSameUser
-        isAdmin = request.user.isAdmin() and not user.isAdmin()
+        isAdmin = (request.user.isAdmin() and not user.isAdmin()) or request.user.isSuperAdmin()
         if isAdmin:
             return isAdmin
         return False

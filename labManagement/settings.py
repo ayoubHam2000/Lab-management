@@ -156,15 +156,15 @@ DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 AUTH_USER_MODEL = 'Account.UserAccount'
 LOGIN_REDIRECT_URL = '/'
 
-EMAIL_BACKEND = 'django.core.mail.backends.console.EmailBackend'
+# EMAIL_BACKEND = 'django.core.mail.backends.console.EmailBackend'
 
-# config = dotenv_values(".env")
-# EMAIL_HOST = config['EMAIL_HOST']
-# EMAIL_HOST_USER = config['EMAIL_HOST_USER']
-# EMAIL_USE_TLS = True
-# EMAIL_PORT = 587
-# EMAIL_HOST_PASSWORD = config['EMAIL_HOST_PASSWORD']
-# DEFAULT_FROM_EMAIL = config['EMAIL_HOST_USER']
+config = dotenv_values(".env")
+EMAIL_HOST = config['EMAIL_HOST']
+EMAIL_HOST_USER = config['EMAIL_HOST_USER']
+EMAIL_USE_TLS = True
+EMAIL_PORT = 587
+EMAIL_HOST_PASSWORD = config['EMAIL_HOST_PASSWORD']
+DEFAULT_FROM_EMAIL = config['EMAIL_HOST_USER']
 
 
 #----------------------------- Token
