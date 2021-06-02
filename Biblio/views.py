@@ -64,7 +64,7 @@ def update(request, f_id):
 		 
 	return render(request,'Biblio/ajouter.html', context)
 
-@login_required(login_url='/login/')
+
 def searchAuteur(auteur):
 	listAuteurs = []
 	formulaires = Formulaire.objects.all()
@@ -155,7 +155,7 @@ class searchbib(View):   #c'est la nouvelle version de la partie de recherche
 		for item in co_auteurs:
 			#it has to be at least one co_auteur
 			theList = item.get(s_type[1]).split(",")
-			data2 = data2 + theList[:len(theList) - 1]
+			data2 = data2 + theList
 
 		data = {
 			'pr_auteurs' : data1,

@@ -131,7 +131,7 @@ function getData(type) {
 		success: function (data) {
 			theList = getTheList(type, data)
 			autocomplete(document.getElementById("myInput"), theList);
-			//console.log(theList)
+			console.log(theList)
 			//$('#output-box').html(data);
 		}
 	});

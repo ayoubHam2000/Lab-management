@@ -110,3 +110,14 @@ class CommentView(View):
         except Exception as e:
             return HttpResponseBadRequest(e)
 
+class DeletePostView(View):
+    
+    def post(self, request, id):
+        try:
+            post = PostModel.objects.get(id = id)
+            if request.user.id != post.user.id:
+                return HttpResponseBadRequest()
+            post.delete()
+            return HttpResponse('delete success')
+        except:
+            return HttpResponse()
