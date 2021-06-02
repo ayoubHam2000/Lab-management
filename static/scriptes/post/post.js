@@ -87,6 +87,28 @@ function postComment(e, id){
 }
 
 
+function deletePost(e, url){
+    console.log("delete Post")
+    console.log(url)
+
+    data = getPostDict()
+
+    $.ajax({ 
+        data: data, 
+        type: 'POST',
+        url: url, 
+        success: function(response) { 
+            successAlert(response)
+            getPosts()
+        },
+        error: function(e, x, r) {
+            showError(e)
+            console.log(e.responseText)
+        }
+    });
+    return false;
+}
+
 $(document).ready(function() {
     //to init
     getPosts()

@@ -23,17 +23,22 @@
 
         <div class="btn-group drop_airrow box-tools my_menu_post">
 
+            {% if request.user.id == post.user.id %}
           <div class="dropdown">
             
             <button type="button" class="btn btn-box-tool my_menu_btn" data-toggle="dropdown">
               <i class="fa fa-ellipsis-v" aria-hidden="true"></i>
             </button>
 
-            {% comment %} <div class="dropdown-menu dropdown-menu-right">
-              <a class="dropdown-item" href="#">Delete</a>
-            </div> {% endcomment %}
+            
+            <div class="dropdown-menu dropdown-menu-right">
+              <button class="dropdown-item" onclick="deletePost(event, '{% url 'Compt:deletePost' post.id %}' )" >Delete</a>
+            </div>
+         
+
 
           </div>
+            {% endif %}
          
         </div>
 

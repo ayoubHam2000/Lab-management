@@ -39,7 +39,7 @@ class Formulaire(models.Model):
 		return f'/media/{self.fichier.name}'
 
 	def get_coAuteur(self):
-		a = self.co_auteur[:len(self.co_auteur) - 1]
+		a = self.co_auteur
 		return a.replace(",", " , ")
 
 # class Co_auteur(models.Model):
