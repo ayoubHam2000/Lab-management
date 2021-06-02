@@ -5,7 +5,10 @@ ouvrir un **bash** terminal
 utilisez **cmder** ou n'importe quel terminal bash 
 to download cmder : https://cmder.net/
 
-## bien sûr, vous devez installer python v3 >
+**bien sûr, vous devez installer python v3**
+**use vs code editor**
+
+
 
 ## utilisez git ou téléchargez simplement le projet depuis  https://github.com/ayoubHam2000/Lab-management.git
 
@@ -22,13 +25,13 @@ py -m pip install -r requirement.txt <br/>
 pip install -U python-dotenv <br/>
 py -m pip install django-widget-tweaks <br/>
 
+## les configuration de serveur d'email
+
 create .env file for email server <br/>
 copy and past these lines to .env <br/>
 
-## les configuration de serveur d'email
 export EMAIL_HOST=smtp.gmail.com <br/>
 export EMAIL_HOST_USER=gmail <br/>
-
 export EMAIL_HOST_PASSWORD=gmail_password <br/>
 
 
@@ -42,18 +45,23 @@ py manage.py runserver <br/>
 
 pour utiliser le vrai serveur de email, vous devez commenter cette ligne sur  labManagement/settings.py <br/>
 
-## EMAIL_BACKEND = 'django.core.mail.backends.console.EmailBackend'
+EMAIL_BACKEND = 'django.core.mail.backends.console.EmailBackend'
 
 et libérez ces lignes <br/>
-### config = dotenv_values(".env")
-### EMAIL_HOST = config['EMAIL_HOST'] 
-### EMAIL_HOST_USER = config['EMAIL_HOST_USER']
-### EMAIL_USE_TLS = True
-### EMAIL_PORT = 587
-### EMAIL_HOST_PASSWORD = config['EMAIL_HOST_PASSWORD']
-### DEFAULT_FROM_EMAIL = config['EMAIL_HOST_USER']
+
+config = dotenv_values(".env")
+EMAIL_HOST = config['EMAIL_HOST'] 
+EMAIL_HOST_USER = config['EMAIL_HOST_USER']
+EMAIL_USE_TLS = True
+EMAIL_PORT = 587
+EMAIL_HOST_PASSWORD = config['EMAIL_HOST_PASSWORD']
+DEFAULT_FROM_EMAIL = config['EMAIL_HOST_USER']
 
 sinon l'e-mail sera affiché dans le terminal <br/>
+
+
+
+
 
 
 
