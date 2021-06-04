@@ -111,7 +111,7 @@
       <div class="box-footer" style="display: block;">
         <form action="{% url 'Compt:comment' post.id %}" method="post" onsubmit='postComment(event, {{ post.id }})' >
         {% csrf_token %}
-          <img class="img-responsive img-circle img-sm" src="{{ request.user.getImage }}" alt="User">
+          <img class="img-responsive img-circle img-sm" src="{{ request.user.getImage }}">
           <div class="img-push">
             <input name = 'text' type="text" class="form-control" placeholder="Appuyez sur Entrée pour publier un commentaire">
           </div>

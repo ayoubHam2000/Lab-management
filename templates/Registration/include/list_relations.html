@@ -4,7 +4,7 @@
         {% comment %} <img class="img-circle img-sm" src="{{ comment.getUser.getImage }}" alt="User Image"> {% endcomment %}
         <div>
         <span class="username">
-        {{ item.email }} ({{ item.getRelationType }})
+        {{ item.user2.email }} ({{ item.getRelationName }})
             <span class="text-muted pull-right">
                 <button type="button" class="close" onclick = "deleteAssociation(event, {{ item.id }})">
                     <span aria-hidden="true">&times;</span>

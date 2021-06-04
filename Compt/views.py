@@ -23,7 +23,7 @@ def decorator_user(allowed_roles):
 from .forms import PostModelForm
 
 from .models import PostModel, PostCommentModel
-from Account.models import DoctorantRelation, UserAccount
+from Account.models import RelationModel, UserAccount
 
 @method_decorator(decorator_login, name='dispatch')
 class PostsView(View):
@@ -40,17 +40,18 @@ class PostsView(View):
     def getEquipe(self, request):
         user = request.user
         if user.isEncadrant():
-            mesDoctorants = DoctorantRelation.objects.filter(encadrant = user, relationType = 0)
-            c_mesDoctorant = DoctorantRelation.objects.filter(encadrant = user, relationType = 1)
+            mesDoctorants = RelationModel.objects.filter(user1=user, relationType=0)
+            c_mesDoctorant = RelationModel.objects.filter(user1=user, relationType=1)
 
-            doctorants = [x.doctorant for x in mesDoctorants]
-            co_encadrant_equipe = DoctorantRelation.objects.filter(doctorant__in = doctorants, relationType = 1)
+            doctorants = [x.user2 for x in mesDoctorants]
+            co_encadrant_equipe = RelationModel.objects.filter(user1__in=doctorants, relationType=1)
             return mesDoctorants, c_mesDoctorant, co_encadrant_equipe, 'encadrant'
         
         if user.isDoctorant():
-            monEncadrant = DoctorantRelation.objects.filter(doctorant = user, relationType = 0)
-            mes_co_encadrants = DoctorantRelation.objects.filter(doctorant = user, relationType = 1)
-            doctorants = [] if not monEncadrant.exists() else DoctorantRelation.objects.filter(encadrant = monEncadrant[0].encadrant, relationType = 0)
+            monEncadrant = RelationModel.objects.filter(user1 = user, relationType = 0)
+            mes_co_encadrants = RelationModel.objects.filter(user1 = user, relationType = 1)
+            doctorants = [] if not monEncadrant.exists() else \
+                RelationModel.objects.filter(user1 = monEncadrant[0].user2, relationType = 0)
             return monEncadrant, mes_co_encadrants, doctorants, 'doctorant'
         
         return [], [], [], 0

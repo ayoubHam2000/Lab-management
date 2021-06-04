@@ -1,4 +1,4 @@
-from django.shortcuts import redirect
+from django.shortcuts import redirect, Http404
 from django.urls import reverse
 import time
 from django.contrib.auth.tokens import PasswordResetTokenGenerator
@@ -21,16 +21,16 @@ def getTimeFormat(date):
     return date.strftime(DATE_FORMAT)
 
 class AppTokenGenerator(PasswordResetTokenGenerator):
-    def _make_hash_value(self, member, timestamp):
+    def _make_hash_value(self, user, timestamp):
         return (
-            text_type(member.email) + text_type(timestamp)
+            text_type(user.email) + text_type(timestamp)
         )
 token_generator = AppTokenGenerator()
 
 
 def deleteUser(user):
     #email = user.email
-    #doctorantRelation = Account.models.DoctorantRelation.objects.filter(email = 'email')
+    #doctorantRelation = Account.models.RelationModel.objects.filter(email = 'email')
     #doctorantRelation.delete()
     user.delete()
 
@@ -55,3 +55,24 @@ def getUserTypeFromGroup(user):
     if group == 'encadrant':
         return 0
     return 1
+
+
+def getUserTypeNameFromGroup(user):
+    group = user.groups.all()[0].name
+    if group == 'admin':
+        return 'Responsable'
+    if group == 'superadmin':
+        return 'Administrateur'
+    if group == 'doctorant':
+        return 'Doctorant'
+    if group == 'encadrant':
+        return 'Encadrant'
+    return 1
+
+def get_object_or_404(Model, id):
+    try:
+        instance = Model.objects.get(id = id)
+        return instance
+    except Model.DoesNotExist:
+        raise Http404("No MyModel matches the given query.")
+        #return render_to_response(P_404)

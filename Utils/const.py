@@ -11,11 +11,11 @@ DATE_FORMAT =  "%B %d, %Y, %H:%M %p."
 
 P_404 = 'Error/404.html'
 
-ENCADRANT = 0
-DOCTORANT = 1
-ADMIN = 2
-SUPERADMIN = 3
-CO_ENCADRANT = 1
+ENCADRANT = 'encadrant'
+DOCTORANT = 'doctorant'
+ADMIN = 'admin'
+SUPERADMIN = 'superadmin'
+CO_ENCADRANT = 'co.encadrant'
 
 
 UNIVERSITIES = (

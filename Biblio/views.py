@@ -6,7 +6,7 @@ from django.core.files.storage import FileSystemStorage
 from django.db.models import Q
 
 
-from .models import Formulaire
+from .models import PublicationModel
 
 from .forms import FormulaireForm
 
@@ -46,7 +46,7 @@ def Ajouter(request):
 @login_required(login_url='/login/')
 def update(request, f_id):
 	#get
-	formulaire = Formulaire.objects.get(id = f_id)
+	formulaire = PublicationModel.objects.get(id = f_id)
 	form = FormulaireForm(instance = formulaire)
 
 	if request.POST:
@@ -67,7 +67,7 @@ def update(request, f_id):
 
 def searchAuteur(auteur):
 	listAuteurs = []
-	formulaires = Formulaire.objects.all()
+	formulaires = PublicationModel.objects.all()
 	for item in formulaires:
 		if item.pr_auteur == auteur or auteur in item.co_auteur.split(","):
 			listAuteurs.append(item)
@@ -80,18 +80,18 @@ def pagebib(request):
 	search = request.GET.get("mySearch")
 
 	if search == None or search == "":            
-		formulaires = Formulaire.objects.filter()
+		formulaires = PublicationModel.objects.filter()
 	else:
 		if searchType == 'auteur':
 			formulaires = searchAuteur(search)
 		if searchType == 'titre':
-			formulaires = Formulaire.objects.filter(titre = search)
+			formulaires = PublicationModel.objects.filter(titre = search)
 		if searchType == 'journal':
-			formulaires = Formulaire.objects.filter(journal = search)
+			formulaires = PublicationModel.objects.filter(journal = search)
 		if searchType == 'doi':
-			formulaires = Formulaire.objects.filter(doi = search)
+			formulaires = PublicationModel.objects.filter(doi = search)
 		if searchType == 'issn':
-			formulaires = Formulaire.objects.filter(issn = search)
+			formulaires = PublicationModel.objects.filter(issn = search)
 
 	arr = []
 	length = len(formulaires)
@@ -106,7 +106,7 @@ def pagebib(request):
 		"title_section" : "Bibliotheque"
 	}
 
-	if len(Formulaire.objects.all()) == 0:   # cette partie si on n'a aucune formulaire 
+	if len(PublicationModel.objects.all()) == 0:   # cette partie si on n'a aucune formulaire 
 		return render(request,'Biblio/empty_bib.html',context)
 
 
@@ -116,7 +116,7 @@ def pagebib(request):
 @allowed_users(allowed_roles=['admin', 'superadmin', 'encadrant'])
 def deleteF(request, id_F):
 	if request.POST:
-		formulaire = Formulaire.objects.filter(id = id_F)
+		formulaire = PublicationModel.objects.filter(id = id_F)
 		formulaire.delete()
 		return myredirect('Biblio:information')
 
@@ -134,7 +134,7 @@ class searchbib(View):   #c'est la nouvelle version de la partie de recherche
 		)
 	
 	def getList(self, type):
-		theList = Formulaire.objects.order_by().values(type).distinct()
+		theList = PublicationModel.objects.order_by().values(type).distinct()
 		data = []
 		for item in theList:
 			data = data + [item.get(type)]
@@ -143,8 +143,8 @@ class searchbib(View):   #c'est la nouvelle version de la partie de recherche
 	def getListAuteur(self):
 		s_type = ['pr_auteur', 'co_auteur'] 
 
-		pr_auteurs = Formulaire.objects.order_by().values(s_type[0]).distinct()
-		co_auteurs = Formulaire.objects.order_by().values(s_type[1]).distinct()
+		pr_auteurs = PublicationModel.objects.order_by().values(s_type[0]).distinct()
+		co_auteurs = PublicationModel.objects.order_by().values(s_type[1]).distinct()
 
 		data1 = []
 		for item in pr_auteurs:

@@ -25,7 +25,7 @@
     <div class="modal-content">
       <span class="close" onclick="closeModel()" >&times;</span>
       
-        <form action="{% url 'Account:memberInfo' 'add' %}" method = 'POST' id='ajouter_member_form'>
+        <form action="{% url 'Account:usersManagement_type' 'add' %}" method = 'POST' id='ajouter_member_form'>
         {% csrf_token %}
 
             {{ form.email.label }}
@@ -53,7 +53,7 @@
       
         <label> Trier par </label>
         <select class='member_select' name="cars" id="cars">
-            <option value="date">Date</option>
+            <option value="date_joined">Date</option>
             <option value="email">E-mail</option>
             <option value="userType">Type d'utilisateur </option>
             <option value="status">Statut</option>
@@ -174,13 +174,15 @@
 {% block scripts %}
 <script>
     USER_EMAIL = "{{ request.user.email }} ";
-    URL_MEMBER_DATA = "{% url 'Account:memberInfo' 'memberList' %}"
-    URL_MEMBER_DEACTIVATE = "{% url 'Account:memberInfo' 'deactivate' %}"
-    URL_MEMBER_DELETE = "{% url 'Account:memberInfo' 'delete' %}"
-    URL_MEMBER_GET_RELATION = "{% url 'Account:memberInfo' 'relations' %}"
-    URL_MEMBER_ASSOCIER = "{% url 'Account:memberInfo' 'associate' %}"
-    URL_MEMBER_SWITCH_ADMIN = "{% url 'Account:memberInfo' 'encadrant_switch_admin' %}"
-    URL_MEMBER_DELETE_RELATION = "{% url 'Account:memberInfo' 'deleteRelation' %}"
+    //get
+    URL_MEMBER_DATA = "{% url 'Account:usersManagement_type' 'usersList' %}"
+    URL_MEMBER_GET_RELATION = "{% url 'Account:usersManagement_type' 'relations' %}"
+    //post
+    URL_MEMBER_DELETE = "{% url 'Account:usersManagement_type' 'delete' %}"
+    URL_MEMBER_DEACTIVATE = "{% url 'Account:usersManagement_type' 'deactivate' %}"
+    URL_MEMBER_ASSOCIER = "{% url 'Account:usersManagement_type' 'associate' %}"
+    URL_MEMBER_DELETE_RELATION = "{% url 'Account:usersManagement_type' 'deleteRelation' %}"
+    URL_MEMBER_SWITCH_ADMIN = "{% url 'Account:usersManagement_type' 'encadrant_switch_admin' %}"
 
     
 </script>

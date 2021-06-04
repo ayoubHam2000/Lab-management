@@ -1,8 +1,13 @@
-import re
-
-def isPasswordValide(password):
-    r  = r"^(?=.*?[a-z])(?=.*?[0-9]).{8,}$"
-    return re.match(r, password)
 
 
-print(isPasswordValide('ase12378'))
+class class1():
+    e = "Nice"
+
+    def tt(self):
+        print(class2.r)
+
+class class2():
+    r = "Cool"
+
+a = class1()
+a.tt()

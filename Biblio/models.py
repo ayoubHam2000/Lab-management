@@ -2,13 +2,15 @@ from django.db import models
 
 from Utils.const import *
 
+from Account.models import UserAccount
+
 import os
 
 def get_file_path(self,filename):
 	return f'files/{self.id}/{filename}'
 
 
-class Formulaire(models.Model):
+class PublicationModel(models.Model):
 	pr_auteur = models.CharField(max_length=MAXCHAR)
 	co_auteur = models.CharField(max_length=10000)
 	titre =models.CharField(max_length=MAXCHAR)
@@ -42,12 +44,15 @@ class Formulaire(models.Model):
 		a = self.co_auteur
 		return a.replace(",", " , ")
 
-# class Co_auteur(models.Model):
-# 	formulaire = models.ForeignKey(Formulaire, on_delete = models.CASCADE)
-# 	auteur = models.CharField(max_length=MAXCHAR)
-
-# 	def __str__(self):
-# 		return self.auteur
+class Auteur(models.Model):
+	Types = (
+		(0, "Pr.Auteur"),
+		(1, "Co.Auteur"),
+	)
+	user = models.ForeignKey(UserAccount, null=True, blank=True, on_delete=models.CASCADE)
+	pub = models.ForeignKey(PublicationModel, on_delete=models.CASCADE)
+	auteur_name = models.CharField(max_length=100)
+	auteur_type = models.IntegerField(choices=Types, default=0)
 
 
 
