@@ -1,5 +1,5 @@
 
-{% for member in members %}
+{% for user in users %}
 
 
 <tr class="alert" role="alert">
@@ -14,46 +14,46 @@
 
 
 
-{% if not member.hasAccount %}
-    <div class="img " onclick="noAccount()" style='background-image: url( "{{member.user.getImage}}" );' ></div>
+{% if not user.hasAccount %}
+    <div class="img " onclick="noAccount()" style='background-image: url( "{{user.getImage}}" );' ></div>
 {% else %}
      
-    {% if not member.user.isAdmin or request.user.isSuperAdmin %}
+    {% if request.user.isSuperAdmin %}
 
-        <div class="img " data-toggle="dropdown"  style='background-image: url( "{{member.user.getImage}}" );' ></div>
+        <div class="img " data-toggle="dropdown"  style='background-image: url( "{{user.getImage}}" );' ></div>
 
         <div class="dropdown-menu dropdown-menu-left">
     
             <a class="dropdown-item" 
-            href="{% url 'Account:updateAccount' member.user.id %}">Account</a>
+            href="{% url 'Account:updateAccount' user.id %}">Account</a>
 
             <a class="dropdown-item" 
-            onclick="member_relations_mg(event, {{ member.id }})">Relations</a>
+            onclick="member_relations_mg(event, {{ user.id }})">Relations</a>
 
-            {% if not member.email == request.user.email and request.user.isSuperAdmin and member.user.isEncadrant %}
+            {% if user.email != request.user.email and request.user.isSuperAdmin and user.isEncadrant %}
 
-                {% if member.user.isAdmin %}
+                {% if user.isAdmin %}
                     <a class="dropdown-item" 
-                    onclick="encadrant_switch_admin(event, {{ member.id }})">Désactiver Admin</a>
+                    onclick="encadrant_switch_admin(event, {{ user.id }})">Désactiver Responsable</a>
                 {% else %}
                     <a class="dropdown-item" 
-                    onclick="encadrant_switch_admin(event, {{ member.id }})">Activer Admin</a>
+                    onclick="encadrant_switch_admin(event, {{ user.id }})">Activer Responsable</a>
                 {% endif %}
 
             {% endif %}
             
-            {% if not member.email == request.user.email %}
+            {% if user.email != request.user.email %}
 
-                {% if member.active %}
+                {% if user.is_active %}
                     
                     <a class="dropdown-item" 
-                        onclick="deactivate_activate_member(event, {{ member.id }})">Désactiver  Account</a>
+                        onclick="deactivate_activate_member(event, {{ user.id }})">Désactiver  Compte</a>
                     </div>
 
                 {% else %}
 
                     <a class="dropdown-item" 
-                        onclick="deactivate_activate_member(event, {{ member.id }})">Activer Account</a>
+                        onclick="deactivate_activate_member(event, {{ user.id }})">Activer Compte</a>
                 
                 {% endif %}
 
@@ -63,23 +63,23 @@
     {% else %}
 
 
-        {% if member.email == request.user.email %}
+        {% if user.email == request.user.email %}
 
-            <div class="img " data-toggle="dropdown"  style='background-image: url( "{{member.user.getImage}}" );' ></div>
+            <div class="img " data-toggle="dropdown"  style='background-image: url( "{{user.getImage}}" );' ></div>
         
             <div class="dropdown-menu dropdown-menu-left">
                     
                 <a class="dropdown-item" 
-                href="{% url 'Account:updateAccount' member.user.id %}">Account</a>
+                href="{% url 'Account:updateAccount' user.id %}">Compte</a>
 
                 <a class="dropdown-item" 
-                onclick="member_relations_mg(event, {{ member.id }})">Relations</a>
+                onclick="member_relations_mg(event, {{ user.id }})">Relations</a>
                         
             </div>               
                 
         {% else %}
     
-            <div class="img "  style='background-image: url( "{{member.user.getImage}}" );' ></div>
+            <div class="img "  style='background-image: url( "{{user.getImage}}" );' ></div>
 
         {% endif %}
     
@@ -98,18 +98,18 @@
 
 
         <div class="pl-3 email">
-            <span>{{ member.email }}</span>
-            <span class='detail_member' >Ajouté à : {{ member.date }}</span>
-            <span class='detail_member' >{{ member.getUserType }}</span>
+            <span>{{ user.email }}</span>
+            <span class='detail_member' >Ajouté à : {{ user.date_joined }}</span>
+            <span class='detail_member' >{{ user.getUserTypeName }}</span>
         </div>
 
     </td>
 
 
     
-    {% if member.hasAccount %}
+    {% if user.hasAccount %}
 
-        {% if member.active %}
+        {% if user.is_active %}
             <td class="status"><span class="active">Actif</span></td>
         {% else %}
             <td class="status"><span class="waiting">Pas Actif </span></td>
@@ -126,20 +126,20 @@
 
     <td>
 
-        {% if request.user != member.user %}
+        {% if request.user != user %}
         
 
             {% if request.user.isSuperAdmin %}
 
 
-                <button class="close" onclick="delete_member(event, {{member.id}})" >
+                <button class="close" onclick="delete_member(event, {{user.id}})" >
                     <span><i class="fa fa-close"></i></span>
                 </button>
                 
             {% else %}
 
-                {% if not member.user.isAdmin %}
-                    <button class="close" onclick="delete_member(event, {{member.id}})" >
+                {% if not user.isAdmin %}
+                    <button class="close" onclick="delete_member(event, {{user.id}})" >
                         <span><i class="fa fa-close"></i></span>
                     </button>
                 {% endif %}

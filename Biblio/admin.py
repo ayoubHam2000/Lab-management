@@ -1,6 +1,6 @@
 from django.contrib import admin
 
-from .models import Formulaire
+from .models import PublicationModel
 
 
-admin.site.register(Formulaire)
+admin.site.register(PublicationModel)

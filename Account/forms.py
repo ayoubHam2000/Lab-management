@@ -1,5 +1,6 @@
 from django import forms
 from django.forms import ModelForm
+from django.db.models import Q
 
 from django.contrib.auth.forms import UserCreationForm
 from django.contrib.auth.models import Group
@@ -7,7 +8,12 @@ from django.contrib.auth.models import Group
 from Utils.const import *
 from Utils.functions import current_milli_time
 
-from .models import MemberModel, DoctorantModel, UserAccount, EncadrantModel
+from .models import (
+    UserAccount, 
+    DoctorantModel, 
+    EncadrantModel, 
+    RelationModel,
+)
 
 #############################################
 #Register
@@ -17,29 +23,35 @@ class UserLogin(forms.Form):
     email = forms.EmailField(required=True)
     password = forms.CharField(widget=forms.PasswordInput(), required=True)    
 
-class AddMemberModelForm(ModelForm):
-    def __init__(self, superAdmin = True, *args, **kwargs):
-        super(AddMemberModelForm, self).__init__(*args, **kwargs)
+class AddUserForm(forms.Form):
+    TYPES = (
+        (ENCADRANT, 'ENCADRANT'),
+        (DOCTORANT, 'DOCTORANT'),
+        (ADMIN, 'ADMIN'),
+    )
+    email = forms.EmailField()
+    userType = forms.ChoiceField(choices= TYPES)
+    
+    def __init__(self, user, *args, **kwargs):
+        super(AddUserForm, self).__init__(*args, **kwargs)
         self.fields['userType'].label = "Type d'utilisateur"
-        if not superAdmin:
+        if not user.isSuperAdmin():
             TYPES = (
                 (ENCADRANT, 'ENCADRANT'),
                 (DOCTORANT, 'DOCTORANT')
             )
             self.fields['userType'].choices = TYPES
-        
-    class Meta():
-        model = MemberModel
-        fields = [
-            'email',
-            'userType'
-        ]
+    
+    def save(self):
+        email = self.cleaned_data['email']
+        group = self.cleaned_data['userType']
+        UserAccount.objects.create_user(email = email, group=group,password='123456789')
 
 class CheckEmailForm(forms.Form):
     email = forms.CharField(max_length=MAXCHAR)
     def clean_email(self):
-        email = self.cleaned_data.get('email')
-        is_email_exist = MemberModel.objects.filter(email = email).exists()
+        email = self.cleaned_data.get('email').lower()
+        is_email_exist = UserAccount.objects.filter(email = email).exists()
         if not is_email_exist:
             raise forms.ValidationError("cet e-mail n'a pas encore été ajouté")
         return email
@@ -59,28 +71,6 @@ class UserForm(UserCreationForm):
             "first_name": "Prénom",
             "last_name": "Nom",
         }
-    
-    def userSetGroup(self, user, member):
-        group = None
-        if member.isAdmin():
-            group = Group.objects.get(name = 'admin')
-        elif member.isEncadrant():
-            group = Group.objects.get(name = 'encadrant')
-        elif member.isDoctorant():
-            group = Group.objects.get(name = 'doctorant')
-        user.groups.clear()
-        user.groups.add(group)
-
-    def saveUser(self, member):
-        user = super(UserForm, self).save(commit=False)
-        first_name = self.cleaned_data['first_name']
-
-        user.email = member.email
-        user.username = first_name + '_' + str(current_milli_time())
-        user.save()
-
-        self.userSetGroup(user, member)
-        return user
     
 class DoctorantModelForm(ModelForm):
     class Meta:
@@ -137,9 +127,13 @@ class UserUpdateForm(ModelForm):
         }
 
 class DoctorantUpdateModelForm(ModelForm):    
-    def __init__(self, readOnly = True, *args, **kwargs):
+    def __init__(self, user, targetUser, *args, **kwargs):
+        assert isinstance(user, UserAccount)
+        assert isinstance(targetUser, UserAccount)
         super(DoctorantUpdateModelForm, self).__init__(*args, **kwargs)
-        self.fields['these'].widget.attrs['readonly'] = readOnly
+        is_my_doctorant = RelationModel.getEncadrant(targetUser) == user
+        if not (user.isAdmin() or is_my_doctorant):
+            self.fields['these'].widget.attrs['readonly'] = readOnly
 
     these = forms.TextInput(attrs={'readonly':'readonly'})
     class Meta:

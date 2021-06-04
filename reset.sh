@@ -5,7 +5,7 @@ rm -r Compt/migrations
 rm db.sqlite3
 
 
-py manage.py migrate
+#py manage.py migrate
 py manage.py migrate --run-syncdb
 
 echo 'Add groups'
@@ -16,16 +16,9 @@ py manage.py shell -c "from django.contrib.auth.models import Group; Group.objec
 
 
 echo 'Create SuperUSer'
-superUser="from Account.models import UserAccount, MemberModel;"
+superUser="from Account.models import UserAccount;"
 superUser+="user = UserAccount.objects.create_superuser"
-superUser+="('ayoub@gmail.com', 'ayoub_1', 'ayoub', 'benhamou', 'ase123@$');"
-superUser+="from django.contrib.auth.models import Group;"
-superUser+="from Account.models import EncadrantModel;"
-superUser+="group = Group.objects.get(name = 'superadmin');"
-superUser+="user.groups.add(group);"
-
-superUser+="MemberModel(user = user, email = user.email, userType = 3).save();"
-superUser+="EncadrantModel(user = user).save();"
+superUser+="('ayoub@gmail.com', 'ayoub', 'ben hamou', 'ase123@$');"
 
 py manage.py shell -c "$superUser"
 

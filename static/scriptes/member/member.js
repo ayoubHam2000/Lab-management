@@ -174,7 +174,7 @@ function getAndsetRelations(id){
         },
         error: function(e, x, r){
             $('#list_relation_section').html("Un problème est survenu");
-            //console.log(e.responseText)
+            console.log(e.responseText)
         }
     });
 }
@@ -222,7 +222,7 @@ function deleteAssociation(e, id){
         },
         error: function(e, x, r) {
             showError(e)
-            //console.log(e.responseText)
+            console.log(e.responseText)
         }
     });
     return false;

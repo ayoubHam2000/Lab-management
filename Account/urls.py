@@ -5,11 +5,11 @@ from django.urls import path
 
 from .views import (
     LoginView,
-    MemberManagement,
     LogoutView,
     HomeView,
+    UsersManagement,
     CheckEmailView,
-    MemberRegister,
+    UserRegister,
     AccountUpdate,
     ChangePassword,
 )
@@ -19,12 +19,12 @@ app_name = 'Account'
 urlpatterns = [
     path('', HomeView.as_view()),
     path('login/', LoginView.as_view(), name = 'login'),
-    path('members/', MemberManagement.as_view(), name = 'addMember'),
-    path('members/<theType>/', MemberManagement.as_view(), name = 'memberInfo'),
+    path('usersManagement/', UsersManagement.as_view(), name = 'usersManagement'),
+    path('usersManagement/<theType>/', UsersManagement.as_view(), name = 'usersManagement_type'),
     path('changePassword/<int:userId>/', ChangePassword.as_view(), name = 'changePassword'),
     path('user/update/<int:accountId>/', AccountUpdate.as_view(), name = 'updateAccount'),
     path('logout/', LogoutView.as_view(), name = 'logout'),
     path('home/', HomeView.as_view(), name = 'home'),
     path('checkEmail/', CheckEmailView.as_view(), name = 'checkEmail'),
-    path('MemberRegister/<uidb64>/<token>/', MemberRegister.as_view(), name = 'memberRegister'),
+    path('userRegister/<uidb64>/<token>/', UserRegister.as_view(), name = 'userRegister'),
 ]

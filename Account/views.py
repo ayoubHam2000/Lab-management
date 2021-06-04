@@ -4,6 +4,7 @@ from django.urls import reverse
 from django.views import View
 from django.contrib.auth.models import Group
 from django.http import HttpResponseBadRequest
+from django.db.models import Q
 import json 
 
 
@@ -21,36 +22,35 @@ import re
 from django.contrib import messages
 from django.contrib.auth import authenticate, login, logout
 
-#member management
+#user management
 from django.utils.http import urlsafe_base64_decode, urlsafe_base64_encode
 from django.utils.encoding import force_bytes, force_text
 
 
 from django.contrib.sites.shortcuts import get_current_site
-from Utils.functions import token_generator, deleteUser
+from Utils.functions import token_generator, deleteUser, get_object_or_404
 
 
 from .forms import (
-    AddMemberModelForm,
     UserLogin,
+    AddUserForm,
     CheckEmailForm,
 
-    DoctorantModelForm,
     UserForm,
+    DoctorantModelForm,
     EncadrantModelForm,
 
-    DoctorantUpdateModelForm,
     UserUpdateForm,
+    DoctorantUpdateModelForm,
     EncadrantUpdateModelForm,
     UpdatePasswordModelFrom,
 )
 
 from .models import (
-    MemberModel,
+    UserAccount,
     DoctorantModel,
     EncadrantModel,
-    UserAccount,
-    DoctorantRelation,
+    RelationModel,
 )
 
 # region decorator
@@ -79,24 +79,19 @@ class LoginView(View):
         }
         return render(request, self.template_name, context)
 
-    def isMemberActive(self, email):
-        member = MemberModel.objects.filter(email = email)
-        if not member.exists():
-            return False
-        return member[0].active
-            
-
+      
     def post(self, request):
         form = UserLogin()
         email = request.POST.get('email').lower()
         password = request.POST.get('password')
 
-        
         user = authenticate(request, email = email, password = password)
 
         if user is not None:
-            if not self.isMemberActive(email):
+            if not user.is_active:
                 messages.info(request, 'votre compte est désactivé')
+            elif not user.is_signed:
+                return myredirect('Account:checkEmail')
             else:
                 login(request, user)
                 return myredirect( 'Account:home' )
@@ -120,11 +115,11 @@ class HomeView(View):
         
 #endregion
 
-# region Member Management
+# region Users Management
 
 @method_decorator(decorator_login, name='dispatch')
 @method_decorator(decorator_user(['admin', 'superadmin']), name = 'dispatch')
-class MemberManagement(View):
+class UsersManagement(View):
     template_name = 'Registration/addmember.html'
     template_memebers_list = 'Registration\jsPages\members.html'
     template_relations = 'Registration\include\list_relations.html'
@@ -132,94 +127,86 @@ class MemberManagement(View):
     def getContext(self):
         context = {
             "addMember_active" : "active",
-            "title_section" : "Add Member"
+            "title_section" : "Ajouter des utilisateurs"
         }
         return context
 
-    def searshFilter(self, members, search):
+    def searshFilter(self, users, search):
         filterMember = []
-        for item in members:
+        for item in users:
             if search in item.email:
                 filterMember.append(item)
         return filterMember
 
-    def getOrderedListMember(self, datafor):
-        dataform = json.loads(datafor)
+    def sortWithUserType(self, users):
+        return users
+
+    def sortWithStatus(self, users):
+        return users
+
+    def getOrderedListUsers(self, data):
+        # sortType : date_joined, email, userType, status -> addmember.html/orderModal
+        dataform = json.loads(data)
         search = dataform['search']
         sortType = dataform['sortType']
         order = dataform['order']
 
         reverse = '-' if  order == 'Descendant' else ''
-        filterMember = MemberModel.objects.all()
+        filterMember = UserAccount.objects.all()
         if sortType == 'status':
-            filterMember = filterMember.order_by(f'{reverse}signed', f'{reverse}active')
+            filterMember = self.sortWithStatus(filterMember)
+        elif sortType == 'userType':
+            filterMember = self.sortWithUserType(filterMember)
         else:
             filterMember = filterMember.order_by(f'{reverse}{sortType}')
         
         return self.searshFilter(filterMember, search)
 
     def getDefaultPage(self, request):
-        form = AddMemberModelForm(True) if request.user.isSuperAdmin() else AddMemberModelForm(False)
+        form = AddUserForm(request.user)
+
         context = self.getContext()
         context["form"] = form
         return render(request, self.template_name, context)
     
-    def getMemberList(self, request):     
+    def getUsersList(self, request):
         context = {
-            "members" : self.getOrderedListMember(request.GET.get('dataform'))
+            "users" : self.getOrderedListUsers(request.GET.get('dataform'))
         }
         return render(request, self.template_memebers_list, context)
     
     def getRelations(self, request):
         id = request.GET.get('id')
-        try:
-            member = MemberModel.objects.get(id= int(id))
-            user = member.user
-            f_relations = []
-            if member.isEncadrant():
-                relations = DoctorantRelation.objects.filter(encadrant = user)
-                for item in relations:
-                    r = {}
-                    r["id"] = item.id
-                    r["email"] = item.doctorant.email
-                    r["getRelationType"] = item.getRelationName()
-                    f_relations.append(r)
-            elif member.isDoctorant():
-                relations = DoctorantRelation.objects.filter(doctorant = user)
-                for item in relations:
-                    r = {}
-                    r["id"] = item.id
-                    r["email"] = item.encadrant.email
-                    r["getRelationType"] = item.getRelationName()
-                    f_relations.append(r)
-            
-            context = {
-                "relations" : f_relations
-            }
-            return render(request, self.template_relations, context)
-        except Exception as e:
-            return HttpResponseBadRequest()
+        #try:
+        user = UserAccount.objects.get(id= int(id))
+        relations = RelationModel.objects.filter(user1 = user)    
+        context = {
+            "relations" : relations
+        }
+        return render(request, self.template_relations, context)
+        #except Exception as e:
+        #    return HttpResponseBadRequest()
 
     def get(self, request, theType = None):
-        #print(f'-->{theType}')
         if theType == None:
             return self.getDefaultPage(request)
         
-        elif theType == 'memberList':
+        elif theType == 'usersList':
             #js member.js
-            return self.getMemberList(request)
+            return self.getUsersList(request)
         
         elif theType == 'relations':
             #js member.js
             return self.getRelations(request)
+        return render(request, P_404)
 
     #POST ======================================
     #POST ======================================
 
-    def addMember(self, request):
-        form = AddMemberModelForm(True, request.POST) if request.user.isSuperAdmin() else AddMemberModelForm(False, request.POST)
+    def addUser(self, request):
+        form = AddUserForm(request.user, request.POST)
      
-        email = request.POST.get('email')
+        email = request.POST.get('email').lower()
         if request.user.email == email:
             return HttpResponseBadRequest("impossible d'ajouter votre e-mail")
         if form.is_valid():
@@ -228,103 +215,84 @@ class MemberManagement(View):
             return HttpResponseBadRequest("l'email existe déjà ")
         return HttpResponse()
 
-    def deleteMember(self, request):
+    def deleteUser(self, request):
         id = request.POST.get('id')
 
         try:
-            member = MemberModel.objects.get(id= int(id))
-            if member.hasAccount():
-                deleteUser(member.user)
-            member.delete()
+            user = UserAccount.objects.get(id= int(id))
+            user.delete()
             return HttpResponse()
         except:
             return HttpResponseBadRequest()
     
-    def deactivateMember(self, request):
+    def deactivateUser(self, request):
         id = request.POST.get('id')
 
         try:
-            member = MemberModel.objects.get(id= int(id))
-            member.active = not member.active
-            member.save()
+            user = UserAccount.objects.get(id= int(id))
+            user.is_active = not user.is_active
+            user.save()
         except Exception as e:
             return HttpResponseBadRequest()
         return HttpResponse() 
 
-    def associerMember(self, request):
-        try:
-            id = request.POST.get('id')
-            email = str(request.POST.get('memberEmail')).strip().lower()
-            relationType = int(request.POST.get('relationType'))
+    def associerRelation(self, request):
+        #try:
+        id = request.POST.get('id')
+        email = str(request.POST.get('memberEmail')).strip().lower()
+        relationType = int(request.POST.get('relationType'))
 
-            targetMember = MemberModel.objects.get(id = id)
-            targetUser = targetMember.user
-            userAsscociated = UserAccount.objects.get(email = email)
+        user1 = UserAccount.objects.get(id = id)
+        user2 = UserAccount.objects.get(email = email)
 
-            relation = None
-            if targetMember.isEncadrant():
-                relation = DoctorantRelation(
-                    doctorant = userAsscociated, 
-                    encadrant = targetUser, 
-                    relationType = relationType)
-            
-            if targetMember.isDoctorant():
-                relation = DoctorantRelation(
-                    doctorant = targetUser, 
-                    encadrant = userAsscociated, 
-                    relationType = relationType)
-            
-            
-            if not relation.isValide()[0]:
-                return HttpResponseBadRequest(relation.isValide()[1])
-            
-            relation.save()
-            return HttpResponse('La relation a été créée avec succès')
-        except Exception as e:
-            return HttpResponseBadRequest()
+        relation1 = RelationModel(user1 = user1, user2 = user2, relationType = relationType)
+        relation2 = RelationModel(user1 = user2, user2 = user1, relationType = relationType)
+
+        if not relation1.isValide()[0]:
+            return HttpResponseBadRequest(relation1.isValide()[1])
+        
+        relation1.save()
+        relation2.save()
+        return HttpResponse('La relation a été créée avec succès')
+        #except Exception as e:
+        #    return HttpResponseBadRequest()
 
     def deleteRelation(self, request):
-        try:
-            id = request.POST.get('id')
-            relation = DoctorantRelation.objects.get(id = int(id))
-            relation.delete()
-            return HttpResponse('suppression réussie de la relation ')
-        except:
-            return HttpResponseBadRequest()
+        #try:
+        id = request.POST.get('id')
+        relation1 = RelationModel.objects.get(id=int(id))
+        relation2 = RelationModel.objects.get(user1=relation1.user2, 
+        user2=relation1.user1, 
+        relationType=relation1.relationType)
+        relation1.delete()
+        relation2.delete()
+        return HttpResponse('suppression réussie de la relation ')
+        #except:
+        #    return HttpResponseBadRequest()
 
     def encadrant_switch_admin(self, request):
-        try:
-            id = request.POST.get('id')
-            member = MemberModel.objects.get(id = int(id))
-            user = member.user
-            groupAdmin = Group.objects.get(name = 'admin')
-            groupEncadrant = Group.objects.get(name = 'encadrant')
-            if user.isAdmin():
-                user.groups.clear()
-                user.groups.add(groupEncadrant)
-                member.userType = ENCADRANT
-            else:
-                user.groups.clear()
-                user.groups.add(groupAdmin)
-                member.userType = ADMIN
-            member.save()
-            return HttpResponse()
-        except:
-            return HttpResponseBadRequest()
+        #try:
+        id = request.POST.get('id')
+        user = UserAccount.objects.get(id = int(id))
+        user.userSwitchAdmin()
+        return HttpResponse()
+        #except:
+        #    return HttpResponseBadRequest()
 
     def post(self, request, theType = None):
         if theType == 'add':
-            return self.addMember(request)
+            return self.addUser(request)
         elif theType == 'delete':
-            return self.deleteMember(request)
+            return self.deleteUser(request)
         elif theType == 'deactivate':
-            return self.deactivateMember(request)
+            return self.deactivateUser(request)
         elif theType == 'associate':
-            return self.associerMember(request)
-        elif theType == 'encadrant_switch_admin':
-            return self.encadrant_switch_admin(request)
+            return self.associerRelation(request)
         elif theType == 'deleteRelation':
             return self.deleteRelation(request)
+        elif theType == 'encadrant_switch_admin':
+            return self.encadrant_switch_admin(request)
+        return render(request, P_404)
 
 @method_decorator(decorator_auth, name = 'dispatch')
 class CheckEmailView(View):
@@ -340,13 +308,13 @@ class CheckEmailView(View):
     #POST ======================================
     #POST ======================================
 
-    def sendEmail(self, request, member):
+    def sendEmail(self, request, user):
         #transform the email to encoded text for safe url
-        uidb64 = urlsafe_base64_encode(force_bytes(member.email))
+        uidb64 = urlsafe_base64_encode(force_bytes(user.email))
         domain = get_current_site(request).domain
-        link = reverse('Account:memberRegister', kwargs={
+        link = reverse('Account:userRegister', kwargs={
             'uidb64' : uidb64,
-            'token' : token_generator.make_token(member),
+            'token' : token_generator.make_token(user),
         })
         activate_url = 'http://' + domain + link
 
@@ -354,90 +322,94 @@ class CheckEmailView(View):
             'Lien de vérification ',
             f'cliquez sur ce lien {activate_url} pour la vérification',
             'noreply@uit.ac.ma',
-            [member.email],
+            [user.email],
             fail_silently=True,
         )
         #print(activate_url)
-        #return redirect(activate_url)
+        return redirect(activate_url)
 
     def post(self, request):
+        #try:
         form = CheckEmailForm(request.POST)
         if form.is_valid():
-            email = form.cleaned_data.get('email')
-            member = MemberModel.objects.filter(email = email)[0]
-            alreadySigned = member.hasAccount()
+            email = form.cleaned_data.get('email').lower()
+            user = UserAccount.objects.get(email = email)
+            alreadySigned = user.hasAccount()
             if alreadySigned:
+                user.is_signed = True
+                user.save()
                 return myredirect('Account:login')
             else:
-                self.sendEmail(request, member)
+                return self.sendEmail(request, user)
         context = {
             "form" : form
         }
         return render(request, self.template_name, context)
+        #except:
+        #    return render(request, P_404)
 
 @method_decorator(decorator_auth, name = 'dispatch')   
-class MemberRegister(View):
+class UserRegister(View):
     encadrant_register_template = 'Registration/registerEncadrant.html'
     doctorant_register_template = 'Registration/registerDoctorant.html'
 
-    def saveMember(self, member, user):
-        member.signed = True
-        member.user = user
-        member.save()
+    def saveUser(self, form):
+        user = form.save(commit=False)
+        user.is_signed = True
+        user.save()
+        return user
 
-    def doctorant(self, request, member):
-        form1 = UserForm()
+    def doctorant(self, request, user):
+        form1 = UserForm(instance = user)
         form2 = DoctorantModelForm()
         if request.method == "POST":
-            form1 = UserForm(request.POST)
+            form1 = UserForm(request.POST, instance = user)
             form2 = DoctorantModelForm(request.POST)
             if form1.is_valid() and form2.is_valid():
-                user = form1.saveUser(member)
+                user = self.saveUser(form1)
                 form2.saveDoctorant(user)
-                self.saveMember(member, user)
                 return myredirect('Account:login')
 
         context = {"form1" : form1,"form2" : form2,}
         return render(request, self.doctorant_register_template, context)
     
-    def encadrant(self, request, member):
-        form1 = UserForm()
+    def encadrant(self, request, user):
+        form1 = UserForm(instance = user)
         form2 = EncadrantModelForm()
         if request.method == "POST":
-            form1 = UserForm(request.POST)
+            form1 = UserForm(request.POST, instance = user)
             form2 = EncadrantModelForm(request.POST)
             if form1.is_valid() and form2.is_valid():
-                user = form1.saveUser(member)
+                user = self.saveUser(form1)
                 form2.saveEncadrant(user)
-                self.saveMember(member, user)
                 return myredirect('Account:login')
         
         context = {"form1" : form1,"form2" : form2,}
         return render(request, self.encadrant_register_template, context)
         
-    def successToken(self, request, member):
+    def successToken(self, request, user):
         # if already has an account
-        if member.signed:
+        if user.is_signed:
             return myredirect('Account:login')
     
         # else create new account for member
-        if member.isEncadrant():
-            return self.encadrant(request, member)
-        if member.isDoctorant():
-            return self.doctorant(request, member)
+        if user.isEncadrant():
+            return self.encadrant(request, user)
+        if user.isDoctorant():
+            return self.doctorant(request, user)
         return render(request, P_404)
 
     def checkTocken(self, request, uidb64, token):
-        try:
-            email = force_text(urlsafe_base64_decode(uidb64) ) 
-            member = MemberModel.objects.get(email = email)
-            is_valid_token = token_generator.check_token(member, token)
-            if is_valid_token:
-                return self.successToken(request, member)
-        except Exception as e:
-            #print("MemberRegister Link Error")
-            pass
-        return render(request, P_404)
+        #try:
+        email = force_text(urlsafe_base64_decode(uidb64) ) 
+        user = UserAccount.objects.get(email = email)
+        is_valid_token = token_generator.check_token(user, token)
+        if is_valid_token:
+            return self.successToken(request, user)
+        #except Exception as e:
+            #print("UserRegister Link Error")
+        #    pass
+        #return render(request, P_404)
 
     def get(self, request, uidb64, token):
         return self.checkTocken(request, uidb64, token)
@@ -460,37 +432,23 @@ class AccountUpdate(View):
         }
         return context
 
-    def getDoctorantForm(self, doctorant, request, post):
-        allowed = request.user.isAdmin() or DoctorantRelation.objects.filter(encadrant = request.user, relationType = 0).exists()
-        if not post:
-            if allowed:
-                return DoctorantUpdateModelForm(False, instance = doctorant)
-            else:
-                return DoctorantUpdateModelForm(True, instance = doctorant)
-        else:
-            if allowed:
-                return DoctorantUpdateModelForm(False, request.POST, instance = doctorant)
-            else:
-                return DoctorantUpdateModelForm(True, request.POST, instance = doctorant)    
-
     def doctorant(self, request, user):
         context = self.getContext()
         
         doctorant = DoctorantModel.objects.get(user = user)
 
         form1 = UserUpdateForm(instance = user)
-        form2 = self.getDoctorantForm(doctorant, request, False)
+        form2 = DoctorantUpdateModelForm(request.user, user, instance = doctorant)
         
         if request.method == "POST":
             form1 = UserUpdateForm(request.POST, request.FILES, instance = user)
-            form2 = self.getDoctorantForm(doctorant, request, True)
+            form2 = DoctorantUpdateModelForm(request.user, user, request.POST, instance = doctorant)
             if form1.is_valid() and form2.is_valid():
                 form1.save()
                 form2.save()
         
         context["form1"] = form1
         context["form2"] = form2
-        context['userId'] = user.id
         return render(request, self.temp_doctorant, context)
 
     def encadrant(self, request, user):
@@ -510,19 +468,17 @@ class AccountUpdate(View):
         
         context["form1"] = form1
         context["form2"] = form2
-        context['userId'] = user.id
         return render(request, self.temp_encadrant, context)
 
     def getPage(self, request, accountId):
-        # accountId -> by UserAccount 
         try:
             user = UserAccount.objects.get(id = accountId)
+            if user.isEncadrant():
+                return self.encadrant(request, user)
+            elif user.isDoctorant():
+                return self.doctorant(request, user)
         except:
-            return render(request, P_404)
-        if user.isEncadrant():
-            return self.encadrant(request, user)
-        if user.isDoctorant():
-            return self.doctorant(request, user)
+            pass
         return render(request, P_404)
         
     def get(self, request, accountId):
@@ -566,7 +522,7 @@ class ChangePassword(View):
         form = UpdatePasswordModelFrom()
         try:
             user = UserAccount.objects.get(id = userId)
-            #if other users try to change the link
+            #if other users try to change the password with link
             if not self.checkAccess(request, user):
                 return render(request, P_404)
             if request.POST:

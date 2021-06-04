@@ -4,7 +4,7 @@
 
 {% block title %}
 
-    Encadrant Account
+    Encadrant Compte
 
 {% endblock title %}
 
@@ -71,16 +71,16 @@
 
     <button type="submit" class="btn btn-primary btn_post">Submit</button>
 
-    {% if request.user.id == userId  or request.user.isSuperAdmin %}
+    {% if request.user.id == form1.instance.id  or request.user.isSuperAdmin %}
     
 
-    <a href="{% url 'Account:changePassword' userId %}" class="link-primary float-right"> Changer le mot de passe  </a>
+    <a href="{% url 'Account:changePassword' form1.instance.id %}" class="link-primary float-right"> Changer le mot de passe  </a>
     
     {% else %}
         
         {% if request.user.isAdmin and not form1.instance.isAdmin %}
     
-            <a href="{% url 'Account:changePassword' userId %}" class="link-primary float-right"> Changer le mot de passe  </a>
+            <a href="{% url 'Account:changePassword' form1.instance.id %}" class="link-primary float-right"> Changer le mot de passe  </a>
     
         {% endif %}
 

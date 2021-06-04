@@ -1,7 +1,5 @@
 ## Fonctionnalité 
-**add member**
-
--> users types (doctorant, encadrant, admin, superadmin)
+**add users**
 
 *usertype*
 doctorant
@@ -26,9 +24,9 @@ can't delete of modify comment
 
 *list members*
     **doctorant**
-    can see mes_encadrant, mes_encadrant, doctorants with the same encadrant
-    **doctorant**
-    can see mes_doctorants, mes_doctorant as co.encadrant, co_encadrand of mesdoctorant
+    can see mon_encadrant, mes co_encadrants, doctorants with the same encadrant
+    **encadrant**
+    can see mes_doctorants, mes_doctorant as co.encadrant, co_encadrand of mes doctorant
 
 *account(menu)*
 can change all info
@@ -56,7 +54,7 @@ can't delete superadmin
 *relation*
 can add encadrant to doctorant
 can add co_encadrant to doctorant
-can add doctorant to encadrant
+can add doctorant to encadrant 
 can add doctorant to co_encadrant
 can't add the same relation (relation between (encadrant, co_encadrant) and doctorant)
     ->                  doctorant   encadrant   relationtype
@@ -74,9 +72,11 @@ can modify profile info
 can post
 can delete his post
 can comment
+can change password
 can't delete formulaire
 can't modify these
 can't access addmember
+
 
 *encadrant*
 can delete formulaire
@@ -92,7 +92,7 @@ can add relation to docorants and encadrant
 can change these (all doctorant)
 can change password (all doctorant and encadrant)
 can delete encadrant doctorant
-can deactivate activate (encadrant, doctorat)
+can deactivate activate account (encadrant, doctorat)
 can't access admin (menu, delete)
 can't add admin
 
@@ -107,7 +107,7 @@ can't add admin
 *super admin*
 can add admin
 can deactivate/activate admin 
-can access account and add relations to any admin
+can add relations to any user
 can change password and profile info to all users
 can access the menu
 basically he can do anything but he can't delete himself
