@@ -18,7 +18,7 @@ py manage.py shell -c "from django.contrib.auth.models import Group; Group.objec
 echo 'Create SuperUSer'
 superUser="from Account.models import UserAccount;"
 superUser+="user = UserAccount.objects.create_superuser"
-superUser+="('ayoub@gmail.com', 'ayoub', 'ben hamou', 'ase123@$');"
+superUser+="('azzouzi.salma@uit.ac.ma', 'salma', 'azzouzi', 'ase123@$');"
 
 py manage.py shell -c "$superUser"
 

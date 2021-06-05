@@ -30,7 +30,7 @@
             <a class="dropdown-item" 
             onclick="member_relations_mg(event, {{ user.id }})">Relations</a>
 
-            {% if user.email != request.user.email and request.user.isSuperAdmin and user.isEncadrant %}
+            {% if user.email != request.user.email and user.isEncadrant %}
 
                 {% if user.isAdmin %}
                     <a class="dropdown-item" 
@@ -63,7 +63,7 @@
     {% else %}
 
 
-        {% if user.email == request.user.email %}
+        {% if user.email == request.user.email or user.isDoctorant or user.isEncadrantPure %}
 
             <div class="img " data-toggle="dropdown"  style='background-image: url( "{{user.getImage}}" );' ></div>
         

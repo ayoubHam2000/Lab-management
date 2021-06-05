@@ -6,7 +6,7 @@ from django.core.files.storage import FileSystemStorage
 from django.db.models import Q
 from Utils.const import *
 
-from .models import PublicationModel, AuteurModel
+from .models import PublicationModel, AuteurModel, UserAccount
 
 from .forms import PublicationModelForm, AddAuteurForm
 
@@ -76,7 +76,7 @@ def searchAuteur(auteur):
 	listAuteurs = []
 	formulaires = PublicationModel.objects.all()
 	for item in formulaires:
-		if item.pr_auteur == auteur or auteur in item.co_auteur.split(","):
+		if item.pr_auteur.user.getFullName() == auteur or auteur in item.co_auteur.split(","):
 			listAuteurs.append(item)
 	return listAuteurs
 			
@@ -153,16 +153,14 @@ class searchbib(View):   #c'est la nouvelle version de la partie de recherche
 		pr_auteurs = PublicationModel.objects.order_by().values(s_type[0]).distinct()
 		co_auteurs = PublicationModel.objects.order_by().values(s_type[1]).distinct()
 
-		data1 = []
-		for item in pr_auteurs:
-			theList = [item.get(s_type[0])]
-			data1 = data1 + theList
-		
+		data1 = [AuteurModel.objects.get(id = x.get('pr_auteur')).name for x in pr_auteurs]
+
 		data2 = []
 		for item in co_auteurs:
-			#it has to be at least one co_auteur
-			theList = item.get(s_type[1]).split(",")
-			data2 = data2 + theList
+			t = item.get(s_type[1])
+			co_auteurs_json = json.loads(t)
+			data2 = data2 + ([x['auteur'] for x in co_auteurs_json])
+
 
 		data = {
 			'pr_auteurs' : data1,

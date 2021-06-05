@@ -44,8 +44,15 @@
         {% for field in form %}
             <div class="form-group">
 
-
-            {% if field.name == 'co_auteur' %}
+            {% if field.name == 'pr_auteur' %}
+                <label for="{{field.name}}">{{field.label}}</label>
+                <select name="co_auteurs" placeholder="Co.Auteurs" class="form-control" id="myInput" required="">
+                    <option value="">---------</option>
+                    {% for auteur in auteurs %}
+                        <option value="{{auteur.id}}">{{auteur.name}} #{{auteur.id}}</option>
+                    {% endfor %}
+                </select>
+            {% elif field.name == 'co_auteur' %}
                 <label for="{{field.name}}">{{field.label}}</label>
                 {% render_field field id=field.name class="form-control" placeholder=field.name %}
                 <div class="container_co">
@@ -65,16 +72,20 @@
                     <ul class='list_item' id="myUL">
                     </ul>
                 </div>
-            {% else %}
-            {% if field.name == 'date' %}
+
+            {% elif field.name == 'date' %}
+
                 <label for="{{field.name}}">{{field.label}}</label>
                 {% render_field field id=field.name class="form-control" placeholder=field.name type='date' %}
+                
             {% else %}
+                
                 <label for="{{field.name}}">{{field.label}}</label>
                 {% render_field field id=field.name class="form-control" placeholder=field.name  %}
-            {% endif %}
                 
             {% endif %}
+                
+
                 
 
             </div>
