@@ -82,16 +82,66 @@ function newElement() {
 }
 
 
-function init(){
-	input = input = document.getElementById("co_auteur")
-	s = input.value
-	if(s === ''){
+
+
+function init(data){
+	data = data['auteurs']
+	pr_auteur = document.getElementById('pr_auteur')
+
+	pr_auteurs_op = pr_auteur.options
+
+	f_co_auteurs = []
+	for(i = 0; i < data.length; i++){
+		id = data[i]['id']
+		auteur = data[i]['auteur']
+		type = data[i]['type']
+
+
+		if(type == 0){
+			for(j = 0; j < pr_auteurs_op.length; j++){
+				if(pr_auteurs_op[j].value == id){
+					console.log(pr_auteurs_op[j].value)
+					pr_auteur.value = pr_auteurs_op[j].value
+					break
+				}
+			}
+		}else{
+			f_co_auteurs.push({
+				'auteur' : `${auteur} #${id}`,
+				'id' : id
+			})
+		}
+	}
+	if(f_co_auteurs.length == 0){
 		input.value = '[]'
 	}else{
-		co_auteurs = JSON.parse(s);
+		co_auteurs = f_co_auteurs;
 		refreshList()
 	}
 }
 
-init()
+function getAuteurs(){
+	$.ajax({
+        url:GET_AUTEURS_UPDATE,
+        type:'GET',
+        success: function(data){
+			init(data)
+        },
+        error: function(e, x, r){
+            //console.log(e.responseText)
+        }
+    });
+}
+
+
+$(document).ready(function() {
+    console.log(GET_AUTEURS_UPDATE)
+	if(GET_AUTEURS_UPDATE != ""){
+		console.log("Update")
+		getAuteurs()
+	}
+
+});
+
+
 
