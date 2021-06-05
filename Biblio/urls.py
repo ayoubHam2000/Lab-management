@@ -6,6 +6,7 @@ from .views import (
     update,
     searchbib,
     deleteF,
+    AuteurViw,
 )
 
 app_name = 'Biblio'
@@ -13,6 +14,8 @@ app_name = 'Biblio'
 urlpatterns = [
     path('add/', Ajouter, name = "formulaire"),
     path('info/', pagebib, name = "information"),
+    path('auteurs/', AuteurViw.as_view(), name = "auteurs"),
+    path('auteurs/<str:action>/', AuteurViw.as_view(), name = "auteur_actions"),
     path('update/<int:f_id>/', update, name = "update"),
     path('searchbib/', searchbib.as_view(), name = "search_bib"),
     path('searchbib/<type>/', searchbib.as_view(), name = "search_bib"),

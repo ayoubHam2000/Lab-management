@@ -1,11 +1,15 @@
 from django import forms
 from django.forms import ModelForm
 #from django.forms.models import ModelForm
-from .models import PublicationModel
+
+from .models import (
+	PublicationModel, 
+	AuteurModel,
+)
 
 
 
-class FormulaireForm(ModelForm):
+class PublicationModelForm(ModelForm):
 	volume = forms.CharField(max_length=50)
 	pr_page = forms.CharField(max_length=50)
 	der_page = forms.CharField(max_length=50)
@@ -21,3 +25,11 @@ class FormulaireForm(ModelForm):
 		if not issn.isnumeric():
 			return forms.ValidationError("Field must be a number")
 		return issn
+
+class AddAuteurForm(ModelForm):
+	class Meta:
+		model = AuteurModel
+		fields = [
+			'name',
+			'user', 
+		]

@@ -1,0 +1,109 @@
+{% extends "base.html" %}
+{% load static %}
+{% load widget_tweaks %}
+
+{% block title %}
+    Auteurs
+{% endblock title %}
+
+{% block styles %}
+
+    {% comment %} <link rel="stylesheet" href="{% static 'styles/bib/co_input.css' %}"> {% endcomment %}
+    <link rel="stylesheet" href="{% static 'styles/member/table.css' %}">
+    <link rel="stylesheet" href="{% static 'styles/member/bar.css' %}">
+    <link rel="stylesheet" href="{% static 'styles/member/modal.css' %}">
+    <link rel="stylesheet" href="{% static 'styles/member/modal_ele.css' %}">
+{% endblock styles %}
+
+{% block content %}
+
+ 
+
+
+
+    {% if form.errors|length != 0 %}
+        
+        <div class = 'error_box'>
+        
+            {% for key, value in form.errors.items  %}
+                <div>{{value}}</div>
+            {% endfor %}
+
+        </div>
+
+    {% endif %}
+
+        
+
+    <form action="." method = 'POST' >
+        {% csrf_token %}
+
+        {% for field in form %}
+
+            <div class="form-group">
+
+                <label for="{{field.name}}">{{field.label}}</label>
+                {% render_field field id=field.name class="form-control" placeholder=field.name  %}
+
+            </div>
+
+        {% endfor %}
+
+<br>
+        <button type="submit"class="btn btn-primary" style="width:100%" >Ajouter</button>
+    </form>
+
+<br>
+<br>
+
+    <ul class="list-group" >
+
+
+        {% for auteur in auteurs %}
+            <li class="list-group-item" >
+                <span> #{{ auteur.id }}</span>
+                <span>->  {{ auteur.name }}</span>
+                <span>->  #{{ auteur.user.id }} {{ auteur.user }}</span>
+                <span class="text-muted pull-right">
+
+                <form action="{% url 'Biblio:auteur_actions' 'delete' %}" method='POST' >
+                {% csrf_token %}
+                <input type="number" name="id" value='{{auteur.id}}' hidden>
+                <button type="submit" class="close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+                </form>
+            </span>
+            </li>
+        {% endfor %}
+
+
+    </ul>
+
+
+
+
+
+
+
+{% endblock content %}
+
+
+{% block scripts %}
+<script type="application/javascript" src="{% static 'scriptes/bib/add_coauteur.js' %}"></script>
+{% endblock scripts %}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

@@ -1,89 +1,97 @@
-function refreshInput(parent){
-	var result = ""
-	var input = document.getElementById("co_auteur")
+co_auteurs = []
 
-	//console.log('ADD')
-
-	var liElements = parent.getElementsByTagName("li");
-	//console.log(parent)
-
-	for(i = 0; i < liElements.length; i++){
-		value = liElements[i].getElementsByTagName("div")[0].innerHTML
-		//console.log(value)
-		if(i != liElements.length - 1)
-			result += value + ","
-		else
-			result += value
-	}
-	//console.log(result)
-	input.value = result
-}
-
-function removeElement() {
-	var elem = this.parentElement;
-	var parent = elem.parentElement;
-	elem.parentNode.removeChild(elem);
-	refreshInput(parent);
-}
-
-function add_co_auteur(li) {
-	var parent = li.parentElement;
-	refreshInput(parent);
-}
-
-function addLi(inputValue) {
+function addLi(co_auteur_id, co_auteur_name) {
 	parent = document.getElementById("myUL");
 	var li = document.createElement("li");
 	
-	var valueDiv = document.createElement("div");
-	valueDiv.innerHTML = inputValue;
-	li.appendChild(valueDiv);
 	li.className = 'list-group-item form-control'
 	parent.appendChild(li);
+
+	deleteBtn = `
+	<div>
+		${co_auteur_name}
+	</div>
+	<span class="list-group-item close" onclick='delteCoAuteur(${co_auteur_id})' >×</span>`
 	
-		var span = document.createElement("SPAN");
-	var txt = document.createTextNode("\u00D7");
-	span.className = "list-group-item close";
-	span.onclick = removeElement;
-	span.appendChild(txt);
-	li.appendChild(span);
+	li.innerHTML = deleteBtn;
 	return li;
 }
 
-// Create a new list item when clicking on the "Add" button
-function newElement() {
-	var inputValue = document.getElementById("myInput").value;
-
-	if (inputValue === '') {
-		alert("You must write something!");
-	} else {
-		li = addLi(inputValue);
-		add_co_auteur(li);    
-		document.getElementById("myInput").value = "";
-	}
-
+ 
+function refreshList(){
+	p = document.getElementById("myUL")
+	p.innerHTML=""
+	for(var i = 0; i < co_auteurs.length; i++){
+		addLi(co_auteurs[i].id, co_auteurs[i].auteur)
+	}	
+	input = document.getElementById("co_auteur")
+	input.value = JSON.stringify(co_auteurs);
 }
 
 
-function init()     {
-	var parent = document.getElementById("myUL")
-
-	var input = document.getElementById("co_auteur");
-	var auteurs = input.value.split(",")
-	for (i = 0; i < auteurs.length; i++) {
-		
-		if (!(auteurs[i].length === 0 )) {
-			//console.log(auteurs[i])
-            addLi(auteurs[i])
+function isAlreadyExist(id){
+	for(var i = 0; i < co_auteurs.length; i++){
+		if(id == co_auteurs[i].id){
+			return true
 		}
-			
 	}
-	
-	var close = parent.getElementsByClassName("close");
-	for (var i = 0; i < close.length; i++) {
-		close[i].onclick = removeElement
-	}
+	return false
+}
 
+function addCoAuteur(co_auteur_id, co_auteur_name){
+	isExist = isAlreadyExist(co_auteur_id) 
+	if(isExist){
+		alert("déjà existé")
+	}else{
+		if(co_auteur_id === ''){
+			alert("!!!")
+		}else{
+			co_auteurs.push({
+				'auteur' : co_auteur_name,
+				'id' :co_auteur_id
+			})
+			refreshList()
+
+		}
+	}
+}
+
+function delteCoAuteur(co_auteur_id){
+	for(var i = 0; i < co_auteurs.length; i++){
+		if(co_auteur_id == co_auteurs[i].id){
+			co_auteurs.splice(i, 1)
+			refreshList()
+			break
+		}
+	}
+}
+
+
+function newElement() {
+	var sel = document.getElementById("myInput")
+	var co_auteur_id = sel.options[sel.selectedIndex].value;
+	var co_auteur_name = sel.options[sel.selectedIndex].text;
+	
+	console.log(co_auteur_id)
+	console.log(co_auteur_name)
+	addCoAuteur(co_auteur_id, co_auteur_name)
+	
+	console.log(co_auteurs)
+
+	//li = addLi(inputValue);
+}
+
+
+function init(){
+	input = input = document.getElementById("co_auteur")
+	s = input.value
+	if(s === ''){
+		input.value = '[]'
+	}else{
+		co_auteurs = JSON.parse(s);
+		refreshList()
+	}
 }
 
 init()
+
