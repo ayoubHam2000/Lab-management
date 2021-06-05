@@ -1,14 +1,14 @@
 #region import 
-from django.shortcuts import render, HttpResponse
+from django.shortcuts import render, HttpResponse, redirect
 from django.views import View
 from django.views.generic import TemplateView
 from django.core.files.storage import FileSystemStorage
 from django.db.models import Q
+from Utils.const import *
 
+from .models import PublicationModel, AuteurModel
 
-from .models import PublicationModel
-
-from .forms import FormulaireForm
+from .forms import PublicationModelForm, AddAuteurForm
 
 from Utils.functions import myredirect
 
@@ -23,12 +23,16 @@ decorator_login = [login_required(login_url='/login/')]
 #endregion
 
 
-
+#region Bib
 @login_required(login_url='/login/')
 def Ajouter(request):
-	form = FormulaireForm() 
+	def getAuteurList():
+		l = AuteurModel.objects.all()
+		return l
+
+	form = PublicationModelForm() 
 	if request.POST :
-		form = FormulaireForm(request.POST, request.FILES)
+		form = PublicationModelForm(request.POST, request.FILES)
 		if form.is_valid():
 			form.save()
 			return myredirect('Biblio:information')
@@ -36,7 +40,8 @@ def Ajouter(request):
 	context ={
 		"biblio_active" : "active",
 		"form" : form,
-		"title_section" : "Bibliotheque"
+		"title_section" : "Bibliotheque",
+		"auteurs" : getAuteurList()
 	 }
 		 
 	return render(request,'Biblio/ajouter.html', context)
@@ -47,10 +52,10 @@ def Ajouter(request):
 def update(request, f_id):
 	#get
 	formulaire = PublicationModel.objects.get(id = f_id)
-	form = FormulaireForm(instance = formulaire)
+	form = PublicationModelForm(instance = formulaire)
 
 	if request.POST:
-		form = FormulaireForm(request.POST, request.FILES, instance = formulaire)
+		form = PublicationModelForm(request.POST, request.FILES, instance = formulaire)
 		if form.is_valid():         
 			form.save()
 			return myredirect('Biblio:information')
@@ -59,7 +64,9 @@ def update(request, f_id):
 
 		"biblio_active" : "active",
 		"form" : form,
-		"title_section" : "Bibliotheque"
+		"title_section" : "Bibliotheque",
+		"auteurs" : AuteurModel.objects.all()
+		
 	 }
 		 
 	return render(request,'Biblio/ajouter.html', context)
@@ -177,4 +184,46 @@ class searchbib(View):   #c'est la nouvelle version de la partie de recherche
 				return self.getListAuteur()
 			return self.getList(type)
 			
-		
+#endregion
+
+class AuteurViw(View):
+	tmp_auteur = 'Auteur/auteur.html'
+
+	def getContext(self):
+		context = {}
+		return context
+
+	def getAuteurList(self):
+		l = AuteurModel.objects.all()
+		return l
+
+	def defaultPage(self, request):
+		form = AddAuteurForm()
+		context = self.getContext()
+
+		if request.POST:
+			form = AddAuteurForm(request.POST)
+			if form.is_valid():
+				form.save()
+
+		context['form'] = form
+		context['auteurs'] = self.getAuteurList()
+		return render(request, self.tmp_auteur, context)
+
+
+	def get(self, request, action = None):
+		return self.defaultPage(request)
+
+	def delete(self, request):
+		id = request.POST.get('id')
+		obj = AuteurModel.objects.get(id = id)
+		obj.delete()
+		return myredirect('Biblio:auteurs')
+
+	def post(self, request, action = None):
+		if action == None:
+			return self.defaultPage(request)
+		elif action == 'delete':
+			return self.delete(request)
+		return render(request, P_404)
+
