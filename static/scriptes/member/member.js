@@ -137,7 +137,7 @@ function delete_member(e, id){
             url: URL_MEMBER_DELETE, 
             success: function(response) { 
                 //console.log("delete sucees")
-                successAlert('supprimé avec succès')
+                successAlert('la suppression est effectué')
                 getMemberData()
             },
             error: function(e, x, r) {

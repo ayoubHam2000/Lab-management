@@ -39,12 +39,12 @@ function showError(e){
     if(e.responseText.length < 100 && e.responseText.length > 1){
         errorAlert(e.responseText)
     }else{
-        errorAlert("quelque chose s'est mal passé ")
+        errorAlert("une erreur s'est produite")
     }
 }
 
 function showDefaultError(){
-    errorAlert("quelque chose s'est mal passé ")
+    errorAlert("une erreur s'est produite")
 }
 
 

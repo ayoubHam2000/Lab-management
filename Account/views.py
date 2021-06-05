@@ -177,15 +177,15 @@ class UsersManagement(View):
     
     def getRelations(self, request):
         id = request.GET.get('id')
-        #try:
-        user = UserAccount.objects.get(id= int(id))
-        relations = RelationModel.objects.filter(user1 = user)    
-        context = {
-            "relations" : relations
-        }
-        return render(request, self.template_relations, context)
-        #except Exception as e:
-        #    return HttpResponseBadRequest()
+        try:
+            user = UserAccount.objects.get(id= int(id))
+            relations = RelationModel.objects.filter(user1 = user)    
+            context = {
+                "relations" : relations
+            }
+            return render(request, self.template_relations, context)
+        except Exception as e:
+            return HttpResponseBadRequest()
 
     def get(self, request, theType = None):
         if theType == None:
@@ -208,7 +208,7 @@ class UsersManagement(View):
      
         email = request.POST.get('email').lower()
         if request.user.email == email:
-            return HttpResponseBadRequest("impossible d'ajouter votre e-mail")
+            return HttpResponseBadRequest("l'email existe déjà")
         if form.is_valid():
             form.save()
         else:
@@ -237,47 +237,47 @@ class UsersManagement(View):
         return HttpResponse() 
 
     def associerRelation(self, request):
-        #try:
-        id = request.POST.get('id')
-        email = str(request.POST.get('memberEmail')).strip().lower()
-        relationType = int(request.POST.get('relationType'))
+        try:
+            id = request.POST.get('id')
+            email = str(request.POST.get('memberEmail')).strip().lower()
+            relationType = int(request.POST.get('relationType'))
 
-        user1 = UserAccount.objects.get(id = id)
-        user2 = UserAccount.objects.get(email = email)
+            user1 = UserAccount.objects.get(id = id)
+            user2 = UserAccount.objects.get(email = email)
 
-        relation1 = RelationModel(user1 = user1, user2 = user2, relationType = relationType)
-        relation2 = RelationModel(user1 = user2, user2 = user1, relationType = relationType)
+            relation1 = RelationModel(user1 = user1, user2 = user2, relationType = relationType)
+            relation2 = RelationModel(user1 = user2, user2 = user1, relationType = relationType)
 
-        if not relation1.isValide()[0]:
-            return HttpResponseBadRequest(relation1.isValide()[1])
-        
-        relation1.save()
-        relation2.save()
-        return HttpResponse('La relation a été créée avec succès')
-        #except Exception as e:
-        #    return HttpResponseBadRequest()
+            if not relation1.isValide()[0]:
+                return HttpResponseBadRequest(relation1.isValide()[1])
+            
+            relation1.save()
+            relation2.save()
+            return HttpResponse('la création de la relation est bien effectué')
+        except Exception as e:
+            return HttpResponseBadRequest()
 
     def deleteRelation(self, request):
-        #try:
-        id = request.POST.get('id')
-        relation1 = RelationModel.objects.get(id=int(id))
-        relation2 = RelationModel.objects.get(user1=relation1.user2, 
-        user2=relation1.user1, 
-        relationType=relation1.relationType)
-        relation1.delete()
-        relation2.delete()
-        return HttpResponse('suppression réussie de la relation ')
-        #except:
-        #    return HttpResponseBadRequest()
+        try:
+            id = request.POST.get('id')
+            relation1 = RelationModel.objects.get(id=int(id))
+            relation2 = RelationModel.objects.get(user1=relation1.user2, 
+            user2=relation1.user1, 
+            relationType=relation1.relationType)
+            relation1.delete()
+            relation2.delete()
+            return HttpResponse('la suppression est effectué')
+        except:
+            return HttpResponseBadRequest()
 
     def encadrant_switch_admin(self, request):
-        #try:
-        id = request.POST.get('id')
-        user = UserAccount.objects.get(id = int(id))
-        user.userSwitchAdmin()
-        return HttpResponse()
-        #except:
-        #    return HttpResponseBadRequest()
+        try:
+            id = request.POST.get('id')
+            user = UserAccount.objects.get(id = int(id))
+            user.userSwitchAdmin()
+            return HttpResponse()
+        except:
+            return HttpResponseBadRequest()
 
     def post(self, request, theType = None):
         if theType == 'add':
@@ -326,27 +326,27 @@ class CheckEmailView(View):
             fail_silently=True,
         )
         #print(activate_url)
-        return redirect(activate_url)
+        #return redirect(activate_url)
 
     def post(self, request):
-        #try:
-        form = CheckEmailForm(request.POST)
-        if form.is_valid():
-            email = form.cleaned_data.get('email').lower()
-            user = UserAccount.objects.get(email = email)
-            alreadySigned = user.hasAccount()
-            if alreadySigned:
-                user.is_signed = True
-                user.save()
-                return myredirect('Account:login')
-            else:
-                return self.sendEmail(request, user)
-        context = {
-            "form" : form
-        }
-        return render(request, self.template_name, context)
-        #except:
-        #    return render(request, P_404)
+        try:
+            form = CheckEmailForm(request.POST)
+            if form.is_valid():
+                email = form.cleaned_data.get('email').lower()
+                user = UserAccount.objects.get(email = email)
+                alreadySigned = user.hasAccount()
+                if alreadySigned:
+                    user.is_signed = True
+                    user.save()
+                    return myredirect('Account:login')
+                else:
+                    self.sendEmail(request, user)
+            context = {
+                "form" : form
+            }
+            return render(request, self.template_name, context)
+        except:
+            return render(request, P_404)
 
 @method_decorator(decorator_auth, name = 'dispatch')   
 class UserRegister(View):
@@ -400,16 +400,16 @@ class UserRegister(View):
         return render(request, P_404)
 
     def checkTocken(self, request, uidb64, token):
-        #try:
-        email = force_text(urlsafe_base64_decode(uidb64) ) 
-        user = UserAccount.objects.get(email = email)
-        is_valid_token = token_generator.check_token(user, token)
-        if is_valid_token:
-            return self.successToken(request, user)
-        #except Exception as e:
+        try:
+            email = force_text(urlsafe_base64_decode(uidb64) ) 
+            user = UserAccount.objects.get(email = email)
+            is_valid_token = token_generator.check_token(user, token)
+            if is_valid_token:
+                return self.successToken(request, user)
+        except Exception as e:
             #print("UserRegister Link Error")
-        #    pass
-        #return render(request, P_404)
+            pass
+        return render(request, P_404)
 
     def get(self, request, uidb64, token):
         return self.checkTocken(request, uidb64, token)
