@@ -133,7 +133,7 @@ class DoctorantUpdateModelForm(ModelForm):
         super(DoctorantUpdateModelForm, self).__init__(*args, **kwargs)
         is_my_doctorant = RelationModel.getEncadrant(targetUser) == user
         if not (user.isAdmin() or is_my_doctorant):
-            self.fields['these'].widget.attrs['readonly'] = readOnly
+            self.fields['these'].widget.attrs['readonly'] = True
 
     these = forms.TextInput(attrs={'readonly':'readonly'})
     class Meta:

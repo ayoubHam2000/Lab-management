@@ -102,7 +102,7 @@ function getListAuteur(type, data) {
 	auteurs = []
 	auteurs = auteurs.concat(data[type]['pr_auteurs'])  
 	auteurs = auteurs.concat(data[type]['co_auteurs'])  
-	//console.log(data)
+	console.log(data)
 	//console.log(data[type]['pr_auteurs'])
 	//console.log(data[type]['co_auteurs'])
 	//console.log(auteurs)

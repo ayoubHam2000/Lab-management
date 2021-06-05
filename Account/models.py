@@ -99,7 +99,7 @@ class UserAccount(AbstractBaseUser, PermissionsMixin):
     objects = MyUserManager()
 
     def __str__(self):
-        return self.last_name + ' ' + self.first_name
+        return self.getFullName()
     
     def get_profile_image_filename(self): 
         index = str(self.profile_image).index(f'profile_images/{self.pk}/')
@@ -126,6 +126,9 @@ class UserAccount(AbstractBaseUser, PermissionsMixin):
     def isEncadrant(self):
         return self.groups.filter(name__in = [ENCADRANT, ADMIN, SUPERADMIN]).exists()
     
+    def isEncadrantPure(self):
+        return self.groups.filter(name__in = [ENCADRANT]).exists()
+
     def isDoctorant(self):
         return self.groups.filter(name = DOCTORANT).exists()
 
@@ -243,7 +246,11 @@ class RelationModel(models.Model):
             return False, 'La relation existe déjà'
 
         if relationType == 0:
-            hasEncadrant = RelationModel.objects.filter(user1=user1, user2=user2, relationType=0)
+            hasEncadrant = None
+            if user1.isDoctorant():
+                hasEncadrant = RelationModel.objects.filter(user1=user1, relationType=0)
+            if user2.isDoctorant():
+                hasEncadrant = RelationModel.objects.filter(user1=user2, relationType=0)
             if hasEncadrant.exists():
                 return False, 'A déjà un encadrant'
         

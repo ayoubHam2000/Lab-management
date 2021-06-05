@@ -55,7 +55,7 @@ class PublicationModel(models.Model):
 		co_auteur = json.loads(self.co_auteur)
 		ids = [int(x['id']) for x in co_auteur]
 		list_auteurs = AuteurModel.objects.filter(id__in = ids)
-		co_auteur = [x.name + " #" + str(x.id) for x in list_auteurs]
+		co_auteur = [x.name for x in list_auteurs]
 
 		s = re.sub(r"('|\[|\])", '', str(co_auteur))
 		s = re.sub(r",", ' , ', s)
