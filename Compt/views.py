@@ -32,7 +32,7 @@ class PostsView(View):
 
     def getContext(self):
         context = {
-            "title_section" : "Home"
+            "title_section" : "Accueil"
         }
         return context
 
@@ -119,6 +119,6 @@ class DeletePostView(View):
             if request.user.id != post.user.id:
                 return HttpResponseBadRequest()
             post.delete()
-            return HttpResponse('delete success')
+            return HttpResponse('la suppression est effectué')
         except:
             return HttpResponse()

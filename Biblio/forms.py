@@ -33,3 +33,8 @@ class AddAuteurForm(ModelForm):
 			'name',
 			'user', 
 		]
+		labels = {
+            "name": "Nom",
+            "user": "Utilisateur",
+
+        }

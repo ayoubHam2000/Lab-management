@@ -25,7 +25,7 @@
         <div class="dropdown-menu dropdown-menu-left">
     
             <a class="dropdown-item" 
-            href="{% url 'Account:updateAccount' user.id %}">Account</a>
+            href="{% url 'Account:updateAccount' user.id %}">Compte</a>
 
             <a class="dropdown-item" 
             onclick="member_relations_mg(event, {{ user.id }})">Relations</a>
@@ -112,7 +112,7 @@
         {% if user.is_active %}
             <td class="status"><span class="active">Actif</span></td>
         {% else %}
-            <td class="status"><span class="waiting">Pas Actif </span></td>
+            <td class="status"><span class="waiting">Bloqué </span></td>
         {% endif %}
 
     {% else %}
