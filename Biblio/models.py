@@ -22,8 +22,8 @@ class AuteurModel(models.Model):
 
 class PublicationModel(models.Model):
 	#pr_auteur = models.CharField(max_length=MAXCHAR)
-	pr_auteur = models.ForeignKey(AuteurModel, null=True, on_delete=models.SET_NULL)
-	co_auteur = models.TextField()
+	#pr_auteur = models.ForeignKey(AuteurModel, null=True, on_delete=models.SET_NULL)
+	#co_auteur = models.TextField()
 	titre =models.CharField(max_length=MAXCHAR)
 	type_pub = models.CharField(max_length=MAXCHAR)
 	doi = models.CharField(max_length=MAXCHAR)
@@ -52,25 +52,28 @@ class PublicationModel(models.Model):
 		return f'/media/{self.fichier.name}'
 
 	def get_coAuteur(self):
-		co_auteur = json.loads(self.co_auteur)
-		ids = [int(x['id']) for x in co_auteur]
-		list_auteurs = AuteurModel.objects.filter(id__in = ids)
-		co_auteur = [x.name for x in list_auteurs]
-
-		s = re.sub(r"('|\[|\])", '', str(co_auteur))
+		auteurs = AuteurRelationsModel.objects.filter(auteur_type=1, pub=self)
+		auteurs = [x.auteur.name for x in auteurs]
+		s = re.sub(r"('|\[|\])", '', str(auteurs))
 		s = re.sub(r",", ' , ', s)
 		return s
 	
+	def getAuteur(self):
+		return AuteurRelationsModel.objects.get(auteur_type=0, pub=self).auteur.name
+	
 
 
-# class AuteurRelationsModel(models.Model):
-# 	Types = (
-# 		(0, "Pr.Auteur"),
-# 		(1, "Co.Auteur"),
-# 	)
-# 	auteur = models.ForeignKey(AuteurModel, on_delete=models.CASCADE)
-# 	pub = models.ForeignKey(PublicationModel, null=True, blank=True, on_delete=models.CASCADE)
-# 	auteur_type = models.IntegerField(choices=Types, default=0)
+class AuteurRelationsModel(models.Model):
+	Types = (
+		(0, "Pr.Auteur"),
+		(1, "Co.Auteur"),
+	)
+	auteur = models.ForeignKey(AuteurModel, on_delete=models.CASCADE)
+	pub = models.ForeignKey(PublicationModel, null=True, blank=True, on_delete=models.CASCADE)
+	auteur_type = models.IntegerField(choices=Types, default=0)
+
+	def __str__(self):
+		return f'{self.pub}->{self.auteur}->{self.auteur_type}'
 
 
 

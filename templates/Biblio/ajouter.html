@@ -17,84 +17,77 @@
 
  
 
-    <div>
-        {{ form.errors }}
-    </div>
-
-
-       {% if form1.errors|length != 0 or form2.errors|length != 0 %}
+    {% if form.errors|length != 0 %}
         
         <div class = 'error_box'>
         
-            {% for key, value in form1.errors.items  %}
+            {% for key, value in form.errors.items  %}
                 <div>{{value}}</div>
             {% endfor %}
-            {% for key, value in form2.errors.items  %}
-                <div>{{value}}</div>
-            {% endfor %}
+
         </div>
 
     {% endif %}
 
         
 
-    <form class="ajouter_bib_form" action="." method = 'POST' enctype="multipart/form-data" >
-        {% csrf_token %}
+<form class="ajouter_bib_form" action="." method = 'POST' enctype="multipart/form-data" >
+    {% csrf_token %}
 
-        {% for field in form %}
-            <div class="form-group">
+    <div class="form-group">
 
-            {% if field.name == 'pr_auteur' %}
-                <label for="{{field.name}}">{{field.label}}</label>
-                <select name="co_auteurs" placeholder="Co.Auteurs" class="form-control" id="myInput" required="">
-                    <option value="">---------</option>
-                    {% for auteur in auteurs %}
-                        <option value="{{auteur.id}}">{{auteur.name}} #{{auteur.id}}</option>
-                    {% endfor %}
+
+        <label for="pr_auteur">Pr auteur</label>
+        <select name="pr_auteur" placeholder="Pr.Auteur" class="form-control" id="pr_auteur" required="">
+            <option value="">---------</option>
+            {% for auteur in auteurs %}
+                <option value="{{auteur.id}}">{{auteur.name}} #{{auteur.id}}</option>
+            {% endfor %}
+        </select>
+
+
+
+        <label for="{{field.name}}">Co.Auteurs</label>
+        <input type="text" name="co_auteurs"  class="form-control" id="co_auteur" required="" hidden>
+        <div class="container_co">
+
+
+            <div id="myDIV" class="container_co_header">
+                
+                <select name="co_auteurs_select" placeholder="Co.Auteurs" class="form-control" id="myInput" >
+                <option value="">---------</option>
+                {% for auteur in auteurs %}
+                    <option value="{{auteur.id}}">{{auteur.name}} #{{auteur.id}}</option>
+                {% endfor %}
                 </select>
-            {% elif field.name == 'co_auteur' %}
-                <label for="{{field.name}}">{{field.label}}</label>
-                {% render_field field id=field.name class="form-control" placeholder=field.name %}
-                <div class="container_co">
-
-
-                    <div id="myDIV" class="container_co_header">
-                        
-                        <select name="co_auteurs" placeholder="Co.Auteurs" class="form-control" id="myInput" >
-                        <option value="">---------</option>
-                        {% for auteur in auteurs %}
-                            <option value="{{auteur.id}}">{{auteur.name}} #{{auteur.id}}</option>
-                        {% endfor %}
-                        </select>
-                        <span onclick="newElement()" class="addBtn btn btn-primary">Add</span>
-                    </div>
-
-                    <ul class='list_item' id="myUL">
-                    </ul>
-                </div>
-
-            {% elif field.name == 'date' %}
-
-                <label for="{{field.name}}">{{field.label}}</label>
-                {% render_field field id=field.name class="form-control" placeholder=field.name type='date' %}
-                
-            {% else %}
-                
-                <label for="{{field.name}}">{{field.label}}</label>
-                {% render_field field id=field.name class="form-control" placeholder=field.name  %}
-                
-            {% endif %}
-                
-
-                
-
+                <span onclick="newElement()" class="addBtn btn btn-primary">Add</span>
             </div>
 
-        {% endfor %}
+            <ul class='list_item' id="myUL">
+            </ul>
+        </div>
+
+    {% for field in form %}
+
+        {% if field.name == 'date' %}
+
+            <label for="{{field.name}}">{{field.label}}</label>
+            {% render_field field id=field.name class="form-control" placeholder=field.name type='date' %}
+            
+        {% else %}
+            
+            <label for="{{field.name}}">{{field.label}}</label>
+            {% render_field field id=field.name class="form-control" placeholder=field.name  %}
+            
+        {% endif %}
+            
+    {% endfor %}
+    
+    </div>
 
 
-        <button type="submit" class="btn btn-primary btn_post">Submit</button>
-    </form>
+    <button type="submit" class="btn btn-primary btn_post">Submit</button>
+</form>
 
 
   
@@ -109,6 +102,13 @@
 
 
 {% block scripts %}
+<script>
+{% if f_id %}
+GET_AUTEURS_UPDATE = "{% url 'Biblio:updateAuteurs' f_id %}"
+{% else %}
+GET_AUTEURS_UPDATE = ""
+{% endif %}
+</script>
 <script type="application/javascript" src="{% static 'scriptes/bib/add_coauteur.js' %}"></script>
 {% endblock scripts %}
 

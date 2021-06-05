@@ -6,7 +6,7 @@ from django.core.files.storage import FileSystemStorage
 from django.db.models import Q
 from Utils.const import *
 
-from .models import PublicationModel, AuteurModel, UserAccount
+from .models import PublicationModel, AuteurModel, UserAccount, AuteurRelationsModel
 
 from .forms import PublicationModelForm, AddAuteurForm
 
@@ -24,61 +24,173 @@ decorator_login = [login_required(login_url='/login/')]
 
 
 #region Bib
-@login_required(login_url='/login/')
-def Ajouter(request):
-	def getAuteurList():
-		l = AuteurModel.objects.all()
-		return l
+@method_decorator(decorator_login, name='dispatch')
+class AddPublication(View):
+	tmp_add_publication = 'Biblio/ajouter.html'
 
-	form = PublicationModelForm() 
-	if request.POST :
-		form = PublicationModelForm(request.POST, request.FILES)
-		if form.is_valid():
-			form.save()
-			return myredirect('Biblio:information')
-			
-	context ={
-		"biblio_active" : "active",
-		"form" : form,
-		"title_section" : "Bibliotheque",
-		"auteurs" : getAuteurList()
-	 }
-		 
-	return render(request,'Biblio/ajouter.html', context)
+	def getContext(self):
+		return {
+			"biblio_active" : "active",
+			"title_section" : "Bibliotheque",
+		}
+
+	def getTestData(self):
+		return {
+			'titre' : 'titre',
+			'type_pub' : 'journal',
+			'doi' : '120',
+			'volume' : '20',
+			'pr_page' : '20',
+			'der_page' : '20',
+			'citation' : '20',
+			'journal' : 'le journal de matin',
+			'issn' : '125480',
+			'publisher' : 'the publisher'
+		}
+
+
+	def saveAuteurs(self, pr_auteur, co_auteurs, pub):
+		errors = []
+		try:
+			json_auteurs = json.loads(co_auteurs)
+			ids = [int(x['id']) for x in json_auteurs]
+			prauteur = AuteurModel.objects.filter(id = pr_auteur)
+			coauteurs = AuteurModel.objects.filter(id__in=ids)
+			if not prauteur.exists():
+				errors.append('pr.auteur')
+			if not coauteurs.exists():
+				errors.append('co.auteur')
+			if pr_auteur in co_auteurs:
+				errors.append('pr.auteur = co.auteur')
+			if len(errors) != 0:
+				return errors
+
+			pub.save()
+			AuteurRelationsModel(auteur = prauteur[0], pub = pub, auteur_type=0).save()
+			for item in coauteurs:
+				AuteurRelationsModel(auteur = item, pub = pub, auteur_type=1).save()
+			return errors
+		except:
+			errors.append("error")
+			return errors
+		
+
+	def defaultPage(self, request):
+		form = PublicationModelForm(data = self.getTestData()) 
+		auteursList =  AuteurModel.objects.all()
+
+		if request.POST:
+			form = PublicationModelForm(request.POST, request.FILES)
+			pr_auteur = request.POST.get('pr_auteur')
+			co_auteurs = request.POST.get('co_auteurs')
+			if form.is_valid():
+				pub = form.save(commit=False)
+				errors = self.saveAuteurs(pr_auteur, co_auteurs, pub)
+				for e in errors:
+					form.add_error(None, e)
+				if len(errors) == 0:
+					return myredirect('Biblio:information')
+
+		context = self.getContext()
+		context['form'] = form
+		context['auteurs'] = auteursList
+		return render(request, self.tmp_add_publication, context)
+
+	def get(self, request):
+		return self.defaultPage(request)
+	
+	def post(self, request):
+		return self.defaultPage(request)
 
 #la fonction sert a modifier un block d'informations (une formulaire precise)
 #le parametre id sert a definir une formulaire precise chaque formulaire a un identificateurs precise definie par django
 @login_required(login_url='/login/')
 def update(request, f_id):
+	def saveAuteurs(pr_auteur, co_auteurs, pub):
+		errors = []
+		try:
+			json_auteurs = json.loads(co_auteurs)
+			ids = [int(x['id']) for x in json_auteurs]
+			prauteur = AuteurModel.objects.filter(id = pr_auteur)
+			coauteurs = AuteurModel.objects.filter(id__in=ids)
+			if not prauteur.exists():
+				errors.append('pr.auteur')
+			if not coauteurs.exists():
+				errors.append('co.auteur')
+			if pr_auteur in co_auteurs:
+				errors.append('pr.auteur = co.auteur')
+			if len(errors) != 0:
+				return errors
+
+			a = AuteurRelationsModel.objects.filter(pub = pub)
+			a.delete()
+			pub.save()
+			AuteurRelationsModel(auteur = prauteur[0], pub = pub, auteur_type=0).save()
+			for item in coauteurs:
+			 	AuteurRelationsModel(auteur = item, pub = pub, auteur_type=1).save()
+			return errors
+		except:
+			errors.append("error")
+			return errors
 	#get
 	formulaire = PublicationModel.objects.get(id = f_id)
 	form = PublicationModelForm(instance = formulaire)
 
 	if request.POST:
 		form = PublicationModelForm(request.POST, request.FILES, instance = formulaire)
+		pr_auteur = request.POST.get('pr_auteur')
+		co_auteurs = request.POST.get('co_auteurs')
 		if form.is_valid():         
-			form.save()
-			return myredirect('Biblio:information')
+			pub = form.save(commit=False)
+			errors = saveAuteurs(pr_auteur, co_auteurs, pub)
+			for e in errors:
+				form.add_error(None, e)
+			if len(errors) == 0:
+				return myredirect('Biblio:information')
 	
 	context ={
 
 		"biblio_active" : "active",
 		"form" : form,
 		"title_section" : "Bibliotheque",
-		"auteurs" : AuteurModel.objects.all()
+		"auteurs" : AuteurModel.objects.all(),
+		'f_id' : f_id
 		
 	 }
 		 
 	return render(request,'Biblio/ajouter.html', context)
 
+class GetUpdateAuteurs(View):
+	def getAsJson(self, type, data):
+		response_data = {}
+		response_data[type] = data
+			
+		return HttpResponse(
+			json.dumps(response_data),
+			content_type='application/json'
+		)
+
+	def get(self, request, id):
+		result = []
+		auteurs = AuteurRelationsModel.objects.filter(pub = id)
+		for item in auteurs:
+			aut = item.auteur
+			result.append({
+				'id' : aut.id, 
+				'auteur' : aut.name, 
+				'type' : item.auteur_type
+			})
+		print(result)
+		return self.getAsJson('auteurs', result)
+
+
+
 
 def searchAuteur(auteur):
-	listAuteurs = []
-	formulaires = PublicationModel.objects.all()
-	for item in formulaires:
-		if item.pr_auteur.user.getFullName() == auteur or auteur in item.co_auteur.split(","):
-			listAuteurs.append(item)
-	return listAuteurs
+	auteurs = AuteurModel.objects.filter(name__contains = auteur)
+	pubs = AuteurRelationsModel.objects.filter(auteur__in = auteurs)
+	pubs = [item.pub for item in pubs]
+	return pubs
 			
 #cette fonction sert a la recherche (a partir de la barre de recherche )
 @login_required(login_url='/login/')
@@ -104,9 +216,7 @@ def pagebib(request):
 	length = len(formulaires)
 	for i in range(0, length):
 		arr.append(formulaires[length - 1 - i])
-	print(arr)
 
-	#formulaires = formulaires.order_by('-date')
 	context ={
 		"biblio_active" : "active",
 		"formulaires" : arr,
@@ -150,22 +260,13 @@ class searchbib(View):   #c'est la nouvelle version de la partie de recherche
 	def getListAuteur(self):
 		s_type = ['pr_auteur', 'co_auteur'] 
 
-		pr_auteurs = PublicationModel.objects.order_by().values(s_type[0]).distinct()
-		co_auteurs = PublicationModel.objects.order_by().values(s_type[1]).distinct()
+		auteurs = AuteurRelationsModel.objects.all().values('auteur').distinct()
+		auteurs = [int(x['auteur']) for x in auteurs]
+		auteurs = AuteurModel.objects.filter(id__in = auteurs)
+		auteurs = [x.name for x in auteurs]
 
-		data1 = [AuteurModel.objects.get(id = x.get('pr_auteur')).name for x in pr_auteurs]
+		data = auteurs
 
-		data2 = []
-		for item in co_auteurs:
-			t = item.get(s_type[1])
-			co_auteurs_json = json.loads(t)
-			data2 = data2 + ([x['auteur'] for x in co_auteurs_json])
-
-
-		data = {
-			'pr_auteurs' : data1,
-			'co_auteurs' : data2,
-		}
 		return self.getAsJson('auteur', data)
 
 	def pageRecherche(self, request):

@@ -110,11 +110,7 @@ function getListAuteur(type, data) {
 }
 
 function getTheList(type, data) {
-	if (type == 'auteur') {  
-		return getListAuteur(type, data)
-	} else {
-		return data[type]
-	}
+	return data[type]
 }
 
 function getData(type) {
