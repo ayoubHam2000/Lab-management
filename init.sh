@@ -35,5 +35,5 @@ superUser+="DoctorantModel(user = ayoub, apogee = '18005544', cin = 'GM215420').
 
 
 echo "$superUser"
-#py manage.py shell -c "$superUser"
-#py manage.py runserver
+py manage.py shell -c "$superUser"
+py manage.py runserver

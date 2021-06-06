@@ -125,7 +125,7 @@ function encadrant_switch_admin(e, id){
 
 function delete_member(e, id){
     //console.log('ask delete_member')
-    var a = ft_confirm("Are you sure ?? (if account exist it will be also deleted)")
+    var a = ft_confirm("Êtes-vous sûr ?? (si le compte existe, il sera également supprimé)")
     if(a){
         //console.log('delete_member')
         data = getPostDict()
