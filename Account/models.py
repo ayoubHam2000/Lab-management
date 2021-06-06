@@ -189,7 +189,10 @@ class DoctorantModel(models.Model):
     user = models.OneToOneField(UserAccount, on_delete=models.CASCADE)
     university = models.IntegerField(choices=UNIVERSITIES, default=0)
     apogee = models.CharField(max_length=APOGEE_MAX)
-    cin = models.CharField(max_length=CIN_MAX)
+    cin = models.CharField(max_length=CIN_MAX, blank=True)
+    cne = models.CharField(max_length=10, blank=True)
+    laboratoire = models.CharField(max_length=50, blank=True)
+    tele = models.CharField(max_length=20, blank=True)
     these = models.TextField(blank=True)
     
     def __str__(self):

@@ -68,8 +68,10 @@ class UserForm(UserCreationForm):
             'password2'
         ]
         labels = {
-            "first_name": "Prénom",
-            "last_name": "Nom",
+            "first_name": "Prénom *",
+            "last_name": "Nom *",
+            "password1": "Mot de pass*",
+            "password2": "Confirmer Mot de pass*",
         }
     
 class DoctorantModelForm(ModelForm):
@@ -79,9 +81,17 @@ class DoctorantModelForm(ModelForm):
             'university',
             'apogee',
             'cin',
+            'cne',
+            'laboratoire',
+            'tele',
         ]
         labels = {
-            "university": "Université"
+            "university": "Université *",
+            "apogee": "Apogee *",
+            "cin" : "CIN",
+            "cne" : "CNE",
+            'laboratoire' : "Laboratoire",
+            'tele' : "Téléphone",
         }
     def saveDoctorant(self, user):
         doctorant = super(DoctorantModelForm, self).save(commit=False)
@@ -122,8 +132,10 @@ class UserUpdateForm(ModelForm):
             'last_name',
         ]
         labels = {
-            "first_name": "Prénom",
-            "last_name": "Nom",
+            "first_name": "Prénom *",
+            "last_name": "Nom *",
+            "password1": "Mot de pass*",
+            "password2": "Confirmer Mot de pass*",
         }
 
 class DoctorantUpdateModelForm(ModelForm):    
@@ -142,10 +154,18 @@ class DoctorantUpdateModelForm(ModelForm):
             'university',
             'apogee',
             'cin',
-            'these'
+            'cne',
+            'laboratoire',
+            'tele',
+            'these',
         ]
         labels = {
-            "university": "Université"
+            "university": "Université *",
+            "apogee": "Apogee *",
+            "cin" : "CIN",
+            "cne" : "CNE",
+            'laboratoire' : "Laboratoire",
+            'tele' : "Téléphone",
         }
 
 class EncadrantUpdateModelForm(ModelForm):
@@ -165,3 +185,6 @@ class UpdatePasswordModelFrom(ModelForm):
         fields = [
             'password'
         ]
+        labels = {
+            "password": "Mot de pass*",
+        }

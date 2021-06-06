@@ -7,7 +7,6 @@ from .models import (
 )
 
 
-
 class PublicationModelForm(ModelForm):
 	volume = forms.CharField(max_length=50)
 	pr_page = forms.CharField(max_length=50)
@@ -17,6 +16,22 @@ class PublicationModelForm(ModelForm):
 		model = PublicationModel
 		fields = '__all__'
 		exclude = ('user_publisher',)
+		labels = {
+			'pr_auteur' : "Premiere Auteur*",
+			'co_auteur' : "Co.Auteur*",
+			"titre":"Titre *",
+            "type_pub": "Type publication*",
+            "doi": "DOI*",
+            "volume": "Volume",
+            "pr_page": "Premiere page",
+			"der_page":"Derniere page",
+            "citation": "Nomber citation",
+            "date": "Date",
+            "journal": "Journal*",
+            "issn": "ISSN*",
+            "publisher": "Publisher",
+            "fichier": "Fichier*",
+        }
 
 	# clean_issn nous permet de controler issn
 	def clean_issn(self):

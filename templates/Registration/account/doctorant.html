@@ -41,12 +41,11 @@
 
     {% for field in form1 %}
         <div class="form-group">
-
+            
             {% if field.name != 'profile_image' %}
-                
                 <label for="{{field.name}}">{{field.label}}</label>
                 {% render_field field id=field.name class="form-control" placeholder=field.name  %}
-                
+        
             {% else %}
 
             <label class="filebutton">

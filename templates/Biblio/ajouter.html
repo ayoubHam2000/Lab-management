@@ -44,7 +44,7 @@
             {% render_field field id=field.name class="form-control" placeholder=field.name hidden="" %}
             <div class="container_co">
                 <div id="myDIV" class="container_co_header">
-                    <input class='co_input' type="text" id="myInput" placeholder="Title...">
+                    <input class='co_input' type="text" id="myInput" placeholder="Co.Auteur...">
                     <span onclick="newElement()" class="addBtn btn btn-primary">Add</span>
                 </div>
 
@@ -54,10 +54,10 @@
         {% else %}
         {% if field.name == 'date' %}
             <label for="{{field.name}}">{{field.label}}</label>
-            {% render_field field id=field.name class="form-control" placeholder=field.name type='date' %}
+            {% render_field field id=field.name class="form-control" placeholder=field.label type='date' %}
         {% else %}
             <label for="{{field.name}}">{{field.label}}</label>
-            {% render_field field id=field.name class="form-control" placeholder=field.name  %}
+            {% render_field field id=field.name class="form-control" placeholder=field.label  %}
         {% endif %}
             
         {% endif %}
