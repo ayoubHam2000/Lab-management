@@ -11,19 +11,10 @@ import re
 def get_file_path(self,filename):
 	return f'files/{self.id}/{filename}'
 
-class AuteurModel(models.Model):
-	user = models.OneToOneField(UserAccount, null=True, blank=True, on_delete=models.CASCADE)
-	name = models.CharField(max_length=100)
-	# pub = models.ForeignKey(PublicationModel, null=True, blank=True, on_delete=models.CASCADE)
-	# auteur_type = models.IntegerField(choices=Types, default=0)
-
-	def __str__(self):
-		return self.name
 
 class PublicationModel(models.Model):
-	#pr_auteur = models.CharField(max_length=MAXCHAR)
-	#pr_auteur = models.ForeignKey(AuteurModel, null=True, on_delete=models.SET_NULL)
-	#co_auteur = models.TextField()
+	pr_auteur = models.CharField(max_length=MAXCHAR)
+	co_auteur = models.TextField()
 	user_publisher = models.ForeignKey(UserAccount, on_delete=models.SET_NULL, null=True, blank=True)
 	titre =models.CharField(max_length=MAXCHAR)
 	type_pub = models.CharField(max_length=MAXCHAR)
@@ -53,15 +44,11 @@ class PublicationModel(models.Model):
 		return f'/media/{self.fichier.name}'
 
 	def get_coAuteur(self):
-		auteurs = AuteurRelationsModel.objects.filter(auteur_type=1, pub=self)
-		auteurs = [x.auteur.name for x in auteurs]
-		s = re.sub(r"('|\[|\])", '', str(auteurs))
-		s = re.sub(r",", ' , ', s)
-		return s
+		return self.co_auteur.replace(',', ' , ')
 	
-	def getAuteur(self):
-		return AuteurRelationsModel.objects.get(auteur_type=0, pub=self).auteur.name
-	
+	def get_pr_author(self):
+		return self.pr_auteur
+
 	def getEncadrant(self):
 		user = self.user_publisher
 		if user.isDoctorant():
@@ -70,19 +57,18 @@ class PublicationModel(models.Model):
 				return encadrants[0].user2
 		return None
 	
+	def getAllAuthors():
+		auth = []
+		pubs = PublicationModel.objects.all()
+		for item in pubs:
+			a = item.co_auteur.split(",") + [item.pr_auteur]
+			for i in a:
+				if i not in auth:
+					auth.append(i)
+		return auth
+	
 
 
-class AuteurRelationsModel(models.Model):
-	Types = (
-		(0, "Pr.Auteur"),
-		(1, "Co.Auteur"),
-	)
-	auteur = models.ForeignKey(AuteurModel, on_delete=models.CASCADE)
-	pub = models.ForeignKey(PublicationModel, null=True, blank=True, on_delete=models.CASCADE)
-	auteur_type = models.IntegerField(choices=Types, default=0)
-
-	def __str__(self):
-		return f'{self.pub}->{self.auteur}->{self.auteur_type}'
 
 
 

@@ -3,8 +3,7 @@ from django.forms import ModelForm
 #from django.forms.models import ModelForm
 
 from .models import (
-	PublicationModel, 
-	AuteurModel,
+	PublicationModel,
 )
 
 
@@ -26,15 +25,3 @@ class PublicationModelForm(ModelForm):
 			return forms.ValidationError("Field must be a number")
 		return issn
 
-class AddAuteurForm(ModelForm):
-	class Meta:
-		model = AuteurModel
-		fields = [
-			'name',
-			'user', 
-		]
-		labels = {
-            "name": "Nom",
-            "user": "Utilisateur",
-
-        }
