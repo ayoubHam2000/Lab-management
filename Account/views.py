@@ -121,8 +121,8 @@ class HomeView(View):
 @method_decorator(decorator_user(['admin', 'superadmin']), name = 'dispatch')
 class UsersManagement(View):
     template_name = 'Registration/addmember.html'
-    template_memebers_list = 'Registration\jsPages\members.html'
-    template_relations = 'Registration\include\list_relations.html'
+    template_memebers_list = 'Registration/jsPages/members.html'
+    template_relations = 'Registration/include/list_relations.html'
 
     def getContext(self):
         context = {
