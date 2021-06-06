@@ -113,7 +113,7 @@
 
                 <div class="buttons_detail" >
                 
-                {% if request.user.isAdmin or request.user.isEncadrant %}
+                {% if request.user.isAdmin or request.user == i.user_publisher or request.user == i.getEncadrant %}
                     <form id="deleteform" method="POST" action="{% url 'Biblio:deleteFormulaire' i.id %}">
                         {% csrf_token %}
                         <button type="submit" class="btn btn-danger" id="myBtn3"> supprimer </button>

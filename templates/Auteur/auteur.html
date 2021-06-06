@@ -90,6 +90,13 @@
 
 
 {% block scripts %}
+<script>
+{% if f_id %}
+GET_AUTEURS_UPDATE = "{% url 'Biblio:updateAuteurs' f_id %}"
+{% else %}
+GET_AUTEURS_UPDATE = ""
+{% endif %}
+</script>
 <script type="application/javascript" src="{% static 'scriptes/bib/add_coauteur.js' %}"></script>
 {% endblock scripts %}
 

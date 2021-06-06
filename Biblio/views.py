@@ -57,11 +57,11 @@ class AddPublication(View):
 			prauteur = AuteurModel.objects.filter(id = pr_auteur)
 			coauteurs = AuteurModel.objects.filter(id__in=ids)
 			if not prauteur.exists():
-				errors.append('pr.auteur')
+				errors.append('le champ premier auteur est vide')
 			if not coauteurs.exists():
-				errors.append('co.auteur')
+				errors.append('le champ co.auteur est vide')
 			if pr_auteur in co_auteurs:
-				errors.append('pr.auteur = co.auteur')
+				errors.append('Les champs pr.auteur et co.auteur sont identiques')
 			if len(errors) != 0:
 				return errors
 
@@ -76,7 +76,8 @@ class AddPublication(View):
 		
 
 	def defaultPage(self, request):
-		form = PublicationModelForm(data = self.getTestData()) 
+		form = PublicationModelForm() 
+		# form = PublicationModelForm(self.getTestData()) 
 		auteursList =  AuteurModel.objects.all()
 
 		if request.POST:
@@ -85,6 +86,7 @@ class AddPublication(View):
 			co_auteurs = request.POST.get('co_auteurs')
 			if form.is_valid():
 				pub = form.save(commit=False)
+				pub.user_publisher = request.user
 				errors = self.saveAuteurs(pr_auteur, co_auteurs, pub)
 				for e in errors:
 					form.add_error(None, e)
