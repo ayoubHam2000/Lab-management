@@ -99,8 +99,8 @@
                 
                 <ul class="list-group" >
                     <li class="list-group-item" >Journal : {{ i.journal }}</li>
-                    <li class="list-group-item" >Auteurs : {{i.getAuteur}} , {{i.get_coAuteur}}</li>
-                    <li class="list-group-item" > DOI : {{i.doi}}</li>
+                    <li class="list-group-item" >Auteurs : {{i.get_pr_author}} , {{i.get_coAuteur}}</li>
+                    <li class="list-group-item" >DOI : {{i.doi}}</li>
                     <li class="list-group-item" >Volume : {{i.volume}}</li>
                     <li class="list-group-item" >Pages : {{i.pr_page}}-{{i.der_page}}</li>
                     <li class="list-group-item" >Publisher : {{i.publisher}}</li>
@@ -111,18 +111,18 @@
 
                 
 
+                {% if request.user.isAdmin or request.user == i.user_publisher or request.user == i.getEncadrant %}
                 <div class="buttons_detail" >
                 
-                {% if request.user.isAdmin or request.user == i.user_publisher or request.user == i.getEncadrant %}
                     <form id="deleteform" method="POST" action="{% url 'Biblio:deleteFormulaire' i.id %}">
                         {% csrf_token %}
                         <button type="submit" class="btn btn-danger" id="myBtn3"> supprimer </button>
                     </form>
-                {% endif %}
                     
                     <button class="btn btn-dark" id="myBtn1"><a href="{% url 'Biblio:update' i.id %}">modifier</a></button>
                
                 </div>
+                {% endif %}
 
             </div>
         </div>

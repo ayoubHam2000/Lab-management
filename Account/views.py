@@ -121,8 +121,8 @@ class HomeView(View):
 @method_decorator(decorator_user(['admin', 'superadmin']), name = 'dispatch')
 class UsersManagement(View):
     template_name = 'Registration/addmember.html'
-    template_memebers_list = 'Registration\jsPages\members.html'
-    template_relations = 'Registration\include\list_relations.html'
+    template_memebers_list = 'Registration/jsPages/members.html'
+    template_relations = 'Registration/include/list_relations.html'
 
     def getContext(self):
         context = {
@@ -471,15 +471,15 @@ class AccountUpdate(View):
         return render(request, self.temp_encadrant, context)
 
     def getPage(self, request, accountId):
-        try:
-            user = UserAccount.objects.get(id = accountId)
-            if user.isEncadrant():
-                return self.encadrant(request, user)
-            elif user.isDoctorant():
-                return self.doctorant(request, user)
-        except:
+        #try:
+        user = UserAccount.objects.get(id = accountId)
+        if user.isEncadrant():
+            return self.encadrant(request, user)
+        elif user.isDoctorant():
+            return self.doctorant(request, user)
+        #except:
             pass
-        return render(request, P_404)
+        #return render(request, P_404)
         
     def get(self, request, accountId):
         return self.getPage(request, accountId)

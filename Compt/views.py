@@ -36,6 +36,17 @@ class PostsView(View):
         }
         return context
 
+    def get_co_encadrant_equipe(self, doctorants):
+        co_encadrant_equipe = RelationModel.objects.filter(user1__in=doctorants, relationType=1)
+        users = []
+        res = []
+        for item in co_encadrant_equipe:
+            user2 = item.user2
+            if user2 not in users:
+                users.append(user2)
+                res.append(item)
+        return res
+
 
     def getEquipe(self, request):
         user = request.user
@@ -44,7 +55,7 @@ class PostsView(View):
             c_mesDoctorant = RelationModel.objects.filter(user1=user, relationType=1)
 
             doctorants = [x.user2 for x in mesDoctorants]
-            co_encadrant_equipe = RelationModel.objects.filter(user1__in=doctorants, relationType=1)
+            co_encadrant_equipe = self.get_co_encadrant_equipe(doctorants)
             return mesDoctorants, c_mesDoctorant, co_encadrant_equipe, 'encadrant'
         
         if user.isDoctorant():

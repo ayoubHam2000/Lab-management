@@ -3,10 +3,8 @@ from django.forms import ModelForm
 #from django.forms.models import ModelForm
 
 from .models import (
-	PublicationModel, 
-	AuteurModel,
+	PublicationModel,
 )
-
 
 
 class PublicationModelForm(ModelForm):
@@ -18,6 +16,22 @@ class PublicationModelForm(ModelForm):
 		model = PublicationModel
 		fields = '__all__'
 		exclude = ('user_publisher',)
+		labels = {
+			'pr_auteur' : "Premiere Auteur*",
+			'co_auteur' : "Co.Auteur*",
+			"titre":"Titre *",
+            "type_pub": "Type publication*",
+            "doi": "DOI*",
+            "volume": "Volume",
+            "pr_page": "Premiere page",
+			"der_page":"Derniere page",
+            "citation": "Nomber citation",
+            "date": "Date",
+            "journal": "Journal*",
+            "issn": "ISSN*",
+            "publisher": "Publisher",
+            "fichier": "Fichier*",
+        }
 
 	# clean_issn nous permet de controler issn
 	def clean_issn(self):
@@ -26,15 +40,3 @@ class PublicationModelForm(ModelForm):
 			return forms.ValidationError("Field must be a number")
 		return issn
 
-class AddAuteurForm(ModelForm):
-	class Meta:
-		model = AuteurModel
-		fields = [
-			'name',
-			'user', 
-		]
-		labels = {
-            "name": "Nom",
-            "user": "Utilisateur",
-
-        }

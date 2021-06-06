@@ -31,59 +31,41 @@
 
         
 
+
 <form class="ajouter_bib_form" action="." method = 'POST' enctype="multipart/form-data" >
     {% csrf_token %}
 
-    <div class="form-group">
-
-
-        <label for="pr_auteur">Pr auteur</label>
-        <select name="pr_auteur" placeholder="Pr.Auteur" class="form-control" id="pr_auteur" required="">
-            <option value="">---------</option>
-            {% for auteur in auteurs %}
-                <option value="{{auteur.id}}">{{auteur.name}} #{{auteur.id}}</option>
-            {% endfor %}
-        </select>
-
-
-
-        <label for="{{field.name}}">Co.Auteurs</label>
-        <input type="text" name="co_auteurs"  class="form-control" id="co_auteur" required="" hidden>
-        <div class="container_co">
-
-
-            <div id="myDIV" class="container_co_header">
-                
-                <select name="co_auteurs_select" placeholder="Co.Auteurs" class="form-control" id="myInput" >
-                <option value="">---------</option>
-                {% for auteur in auteurs %}
-                    <option value="{{auteur.id}}">{{auteur.name}} #{{auteur.id}}</option>
-                {% endfor %}
-                </select>
-                <span onclick="newElement()" class="addBtn btn btn-primary">Add</span>
-            </div>
-
-            <ul class='list_item' id="myUL">
-            </ul>
-        </div>
-
     {% for field in form %}
+        <div class="form-group">
 
-        {% if field.name == 'date' %}
 
+        {% if field.name == 'co_auteur' %}
             <label for="{{field.name}}">{{field.label}}</label>
-            {% render_field field id=field.name class="form-control" placeholder=field.name type='date' %}
-            
+            {% render_field field id=field.name class="form-control" placeholder=field.name hidden="" %}
+            <div class="container_co">
+                <div id="myDIV" class="container_co_header">
+                    <input class='co_input' type="text" id="myInput" placeholder="Co.Auteur...">
+                    <span onclick="newElement()" class="addBtn btn btn-primary">Add</span>
+                </div>
+
+                <ul class='list_item' id="myUL">
+                </ul>
+            </div>
         {% else %}
-            
+        {% if field.name == 'date' %}
             <label for="{{field.name}}">{{field.label}}</label>
-            {% render_field field id=field.name class="form-control" placeholder=field.name  %}
+            {% render_field field id=field.name class="form-control" placeholder=field.label type='date' %}
+        {% else %}
+            <label for="{{field.name}}">{{field.label}}</label>
+            {% render_field field id=field.name class="form-control" placeholder=field.label  %}
+        {% endif %}
             
         {% endif %}
             
+
+        </div>
+
     {% endfor %}
-    
-    </div>
 
 
     <button type="submit" class="btn btn-primary btn_post">Submit</button>
@@ -101,16 +83,11 @@
 {% endblock content %}
 
 
+
 {% block scripts %}
-<script>
-{% if f_id %}
-GET_AUTEURS_UPDATE = "{% url 'Biblio:updateAuteurs' f_id %}"
-{% else %}
-GET_AUTEURS_UPDATE = ""
-{% endif %}
-</script>
 <script type="application/javascript" src="{% static 'scriptes/bib/add_coauteur.js' %}"></script>
 {% endblock scripts %}
+
 
 
 

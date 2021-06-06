@@ -1,8 +1,6 @@
 from django.contrib import admin
 
-from .models import PublicationModel, AuteurModel, AuteurRelationsModel
+from .models import PublicationModel
 
 
 admin.site.register(PublicationModel)
-admin.site.register(AuteurModel)
-admin.site.register(AuteurRelationsModel)
