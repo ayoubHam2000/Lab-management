@@ -17,7 +17,7 @@ class PublicationModelForm(ModelForm):
 	class Meta:
 		model = PublicationModel
 		fields = '__all__'
-        #exclude = ['user']
+		exclude = ('user_publisher',)
 
 	# clean_issn nous permet de controler issn
 	def clean_issn(self):

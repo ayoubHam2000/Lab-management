@@ -2,7 +2,7 @@ from django.db import models
 
 from Utils.const import *
 
-from Account.models import UserAccount
+from Account.models import UserAccount, RelationModel
 
 import os
 import json
@@ -24,6 +24,7 @@ class PublicationModel(models.Model):
 	#pr_auteur = models.CharField(max_length=MAXCHAR)
 	#pr_auteur = models.ForeignKey(AuteurModel, null=True, on_delete=models.SET_NULL)
 	#co_auteur = models.TextField()
+	user_publisher = models.ForeignKey(UserAccount, on_delete=models.SET_NULL, null=True, blank=True)
 	titre =models.CharField(max_length=MAXCHAR)
 	type_pub = models.CharField(max_length=MAXCHAR)
 	doi = models.CharField(max_length=MAXCHAR)
@@ -60,6 +61,14 @@ class PublicationModel(models.Model):
 	
 	def getAuteur(self):
 		return AuteurRelationsModel.objects.get(auteur_type=0, pub=self).auteur.name
+	
+	def getEncadrant(self):
+		user = self.user_publisher
+		if user.isDoctorant():
+			encadrants = RelationModel.objects.filter(user1=user, relationType=0)
+			if encadrants.exists():
+				return encadrants[0].user2
+		return None
 	
 
 
