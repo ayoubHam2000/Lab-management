@@ -8,10 +8,10 @@ from .models import (
 
 
 class PublicationModelForm(ModelForm):
-	volume = forms.CharField(max_length=50)
-	pr_page = forms.CharField(max_length=50)
-	der_page = forms.CharField(max_length=50)
-	citation = forms.CharField(max_length=50)
+	volume = forms.CharField(label = "Volume", max_length=50)
+	pr_page = forms.CharField(label = "Premiere page", max_length=50)
+	der_page = forms.CharField(label = "Derniere page", max_length=50)
+	citation = forms.CharField(label = "Nomber citation", max_length=50)
 	class Meta:
 		model = PublicationModel
 		fields = '__all__'
